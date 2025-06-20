@@ -25,7 +25,7 @@ export const navigationItems = [
 // --- Video Configuration ---
 export const videoConfig = {
   // Local video file path (relative to public directory)
-  localVideoSrc: '/videos/background.mp4',
+  localVideoSrc: '/videos/PlaceholderClip.mp4',
   // Fallback poster image
   posterSrc: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1920&q=80',
   // Legacy YouTube video ID (for reference)

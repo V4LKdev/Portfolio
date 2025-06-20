@@ -6,8 +6,9 @@
 // Uses Tailwind CSS for styling and custom UI components for interactivity
 
 import React, { useState } from 'react';
-import { Settings, Volume2, VolumeX, Menu, X, ArrowLeft, Pause, Play } from 'lucide-react';
+import { Menu, X, ArrowLeft, Pause, Play, Volume2, VolumeX } from 'lucide-react';
 import BackgroundMusic from './BackgroundMusic';
+import LocalVideoBackground from './LocalVideoBackground';
 import HomeSection from './sections/HomeSection';
 import ProjectsSection from './sections/ProjectsSection';
 import AboutSection from './sections/AboutSection';
@@ -21,12 +22,11 @@ import {
   type Project 
 } from '../content';
 
-const DeadlockPortfolio = () => {
-  // --- State Management ---
+const DeadlockPortfolio = () => {  // --- State Management ---
   // Controls for music, video, menu, and navigation
-  const [isMuted, setIsMuted] = useState(videoConfig.defaultMuted); // YouTube video mute
+  const [isMuted, setIsMuted] = useState(videoConfig.defaultMuted); // Video mute
   const [isMusicMuted, setIsMusicMuted] = useState(true); // Background music mute
-  const [isPaused, setIsPaused] = useState(videoConfig.defaultPaused); // YouTube video pause
+  const [isPaused, setIsPaused] = useState(videoConfig.defaultPaused); // Video pause
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // Mobile nav menu
   const [currentSection, setCurrentSection] = useState('home'); // Current visible section
   const [selectedProject, setSelectedProject] = useState<Project | null>(null); // Selected project for detail view
@@ -55,14 +55,14 @@ const DeadlockPortfolio = () => {
       setCurrentSection('home');
     }
   };
-
   // --- Video Controls ---
-  // Pauses/plays the background YouTube video
+  // Controls for video playback and muting
   const toggleVideoPlayback = () => {
-    const iframe = document.querySelector('iframe');
-    if (iframe) {
-      setIsPaused(!isPaused);
-    }
+    setIsPaused(!isPaused);
+  };
+
+  const toggleVideoMute = () => {
+    setIsMuted(!isMuted);
   };
 
   // --- Section Backgrounds ---
@@ -176,16 +176,16 @@ const DeadlockPortfolio = () => {
 
   // --- Main Render ---
   return (
-    <div className="min-h-screen bg-black text-foreground overflow-x-hidden">
-      {/* Background Video or Static Image */}
-      {/* Shows YouTube video on home, static image on other sections */}
+    <div className="min-h-screen bg-black text-foreground overflow-x-hidden">      {/* Background Video or Static Image */}
+      {/* Shows local video on home, static image on other sections */}
       {!isInnerPage ? (
         <div className="fixed inset-0 z-0">
-          <iframe
-            className="absolute inset-0 w-full h-full object-cover video-responsive"
-            src={`https://www.youtube.com/embed/${videoConfig.youtubeVideoId}?autoplay=${isPaused ? '0' : '1'}&mute=${isMuted ? '1' : '0'}&loop=1&playlist=${videoConfig.youtubeVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3`}
-            allow="autoplay; encrypted-media"
-            allowFullScreen
+          <LocalVideoBackground
+            videoSrc={videoConfig.localVideoSrc}
+            posterSrc={videoConfig.posterSrc}
+            isPaused={isPaused}
+            isMuted={isMuted}
+            className="video-responsive"
           />
           <div className="absolute inset-0 video-overlay" />
         </div>
@@ -253,9 +253,7 @@ const DeadlockPortfolio = () => {
                   </div>
                 </div>
               ))}
-            </div>
-
-            {/* Bottom Controls */}
+            </div>            {/* Bottom Controls */}
             <div className="absolute bottom-8 left-8 flex items-center space-x-4">
               <BackgroundMusic 
                 isMuted={isMusicMuted}
@@ -269,6 +267,16 @@ const DeadlockPortfolio = () => {
                   <Play className="w-5 h-5 text-amber-200" />
                 ) : (
                   <Pause className="w-5 h-5 text-amber-200" />
+                )}
+              </button>
+              <button
+                onClick={toggleVideoMute}
+                className="p-2 rounded-lg bg-amber-500/10 border border-amber-500/30 hover:border-amber-500/60 transition-all duration-300 hover:bg-amber-500/20"
+              >
+                {isMuted ? (
+                  <VolumeX className="w-5 h-5 text-amber-200" />
+                ) : (
+                  <Volume2 className="w-5 h-5 text-amber-200" />
                 )}
               </button>
             </div>
