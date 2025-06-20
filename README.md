@@ -19,8 +19,8 @@
   <!-- Good for branding and accessibility. Consider using Tailwind's theming or CSS custom properties. -->
 - [ ] Make the button menu look and behave more like a game main menu.
   <!-- Fun idea! Can use custom fonts, sound, hover effects, and layout. Very feasible. -->
-- [ ] Edit the "Available for freelance" box to look like a video game server connection panel, showing general location (e.g., Germany) and fake or real network stats (ping, packet loss).
-  <!-- Very creative! Fake stats are easy; real-time ping to your server is possible but requires backend/API work. -->
+- [x] Edit the "Available for freelance" box to look like a video game server connection panel, showing general location (e.g., Germany) and fake or real network stats (ping, packet loss).
+  <!-- Complete! Now uses real HTTP latency and packet loss stats for authentic game-style UI. -->
 - [ ] Overwatch 2-style Projects page: List project genres as "Game Modes" (Singleplayer, Multiplayer, Competitive, Custom, etc.), then show projects in each category on click.
   <!-- Unique and memorable! Not too much for a portfolio if well-organized. Can be implemented with nested menus or tabs. -->
 
