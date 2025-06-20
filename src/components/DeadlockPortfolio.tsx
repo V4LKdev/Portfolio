@@ -35,13 +35,17 @@ const DeadlockPortfolio = () => {  // --- State Management ---
   // --- Navigation Menu Items ---
   // Navigation items are now imported from content files
   const menuItems = navigationItems;
-
   // --- Navigation Handlers ---
   // Handles section switching and project selection
   const handleMenuClick = (sectionId: string) => {
     setCurrentSection(sectionId);
     setSelectedProject(null);
     setIsMobileMenuOpen(false);
+    
+    // Pause video when navigating away from home for memory optimization
+    if (sectionId !== 'home') {
+      setIsPaused(true);
+    }
   };
 
   const handleProjectClick = (project: Project) => {
@@ -53,6 +57,8 @@ const DeadlockPortfolio = () => {  // --- State Management ---
       setSelectedProject(null);
     } else {
       setCurrentSection('home');
+      // Resume video when returning to home
+      setIsPaused(false);
     }
   };
   // --- Video Controls ---
@@ -255,13 +261,17 @@ const DeadlockPortfolio = () => {  // --- State Management ---
               ))}
             </div>            {/* Bottom Controls */}
             <div className="absolute bottom-8 left-8 flex items-center space-x-4">
+              {/* Background Music Control */}
               <BackgroundMusic 
                 isMuted={isMusicMuted}
                 onToggleMute={() => setIsMusicMuted(!isMusicMuted)}
               />
+              
+              {/* Video Playback Control */}
               <button
                 onClick={toggleVideoPlayback}
                 className="p-2 rounded-lg bg-amber-500/10 border border-amber-500/30 hover:border-amber-500/60 transition-all duration-300 hover:bg-amber-500/20"
+                title={isPaused ? "Play background video" : "Pause background video"}
               >
                 {isPaused ? (
                   <Play className="w-5 h-5 text-amber-200" />
@@ -269,9 +279,12 @@ const DeadlockPortfolio = () => {  // --- State Management ---
                   <Pause className="w-5 h-5 text-amber-200" />
                 )}
               </button>
+              
+              {/* Video Audio Control */}
               <button
                 onClick={toggleVideoMute}
                 className="p-2 rounded-lg bg-amber-500/10 border border-amber-500/30 hover:border-amber-500/60 transition-all duration-300 hover:bg-amber-500/20"
+                title={isMuted ? "Unmute video audio" : "Mute video audio"}
               >
                 {isMuted ? (
                   <VolumeX className="w-5 h-5 text-amber-200" />

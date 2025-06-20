@@ -103,8 +103,7 @@ const LocalVideoBackground: React.FC<LocalVideoBackgroundProps> = ({
   }, []);
 
   return (
-    <div className={`relative w-full h-full overflow-hidden ${className}`}>      {/* Video Element */}
-      <video
+    <div className={`relative w-full h-full overflow-hidden ${className}`}>      {/* Video Element */}      <video
         ref={videoRef}
         className="absolute inset-0 w-full h-full object-cover"
         src={videoSrc}
@@ -112,7 +111,9 @@ const LocalVideoBackground: React.FC<LocalVideoBackgroundProps> = ({
         muted={isMuted}
         loop
         playsInline
-        preload="metadata"
+        preload="auto"
+        disablePictureInPicture
+        controlsList="nodownload nofullscreen noremoteplayback"
         aria-label="Background video"
         onLoadStart={handleLoadStart}
         onCanPlay={handleCanPlay}
