@@ -268,11 +268,6 @@ const DeadlockPortfolio = () => {  // --- State Management ---
                 </button>
               ))}            </div>
 
-            {/* Social Media Icons */}
-            <div className="absolute bottom-20 left-8 right-8">
-              <SocialMediaIcons />
-            </div>
-
             {/* Bottom Controls */}
             <div className="absolute bottom-8 left-8 flex items-center space-x-4">
               {/* Video Playback Control */}
@@ -306,6 +301,11 @@ const DeadlockPortfolio = () => {  // --- State Management ---
       )}      {/* Server Connection Panel (home only) */}
       {!isInnerPage && (
         <ServerConnectionPanel className="fixed top-8 right-8 z-30" />
+      )}
+
+      {/* Social Media Icons (home only) */}
+      {!isInnerPage && (
+        <SocialMediaIcons className="fixed bottom-8 right-8 z-30" />
       )}
 
       {/* Main Content Area */}

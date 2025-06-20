@@ -1,6 +1,6 @@
 // SocialMediaIcons.tsx
-// Game-style social media icons for the main menu
-// Inspired by FPS/multiplayer game UIs with hover effects and gaming aesthetics
+// Game-style social media icons for the bottom right of the main page
+// Horizontal layout without borders, positioned over video background
 
 import * as React from 'react';
 
@@ -9,8 +9,8 @@ interface SocialMediaIconsProps {
 }
 
 /**
- * Social media icons component styled for game main menu
- * Features hover effects, glowing borders, and game-style transitions
+ * Social media icons component styled as a clean horizontal bar
+ * Features subtle hover effects and game-style transitions
  */
 const SocialMediaIcons: React.FC<SocialMediaIconsProps> = ({ 
   className = '' 
@@ -35,52 +35,42 @@ const SocialMediaIcons: React.FC<SocialMediaIconsProps> = ({
       )
     },
     {
-      name: 'Email',
-      url: 'mailto:your.email@example.com', // Replace with your actual email
+      name: 'The Rookies',
+      url: 'https://www.therookies.co/u/your-profile', // Replace with your actual The Rookies profile
       icon: (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 2L3.09 8.26l1.82 1.54L12 4.52l7.09 5.28l1.82-1.54L12 2zM12 7.3l-6.91 5.14v8.42c0 .66.54 1.2 1.2 1.2h11.42c.66 0 1.2-.54 1.2-1.2v-8.42L12 7.3zm-3.6 9.6v-3.6h7.2v3.6h-7.2z"/>
+        </svg>
+      )
+    },
+    {
+      name: 'YouTube',
+      url: 'https://youtube.com/@your-channel', // Replace with your actual YouTube channel
+      icon: (
+        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
         </svg>
       )
     }
   ];
 
   return (
-    <div className={`${className}`}>
-      {/* Social Media Header */}
-      <div className="mb-3">
-        <div className="h-px bg-gradient-to-r from-transparent via-amber-500/30 to-transparent mb-2"></div>
-        <h3 className="text-amber-200/70 text-xs font-mono uppercase tracking-wider text-center">
-          Connect
-        </h3>
-      </div>
-
-      {/* Social Icons */}
-      <div className="flex justify-center space-x-3">
-        {socialLinks.map((social) => (
-          <a
-            key={social.name}
-            href={social.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group relative p-2 rounded-lg bg-amber-500/5 border border-amber-500/20 hover:border-amber-500/60 transition-all duration-300 hover:bg-amber-500/10 hover:shadow-[0_0_15px_rgba(251,191,36,0.3)]"
-            title={social.name}
-          >
-            {/* Icon */}
-            <div className="text-amber-200/70 group-hover:text-amber-100 transition-colors duration-300">
-              {social.icon}
-            </div>
-            
-            {/* Glow effect on hover */}
-            <div className="absolute inset-0 rounded-lg bg-amber-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
-          </a>
-        ))}
-      </div>
-
-      {/* Bottom accent line */}
-      <div className="mt-3">
-        <div className="h-px bg-gradient-to-r from-transparent via-amber-500/20 to-transparent"></div>
-      </div>
+    <div className={`flex items-center space-x-4 ${className}`}>
+      {socialLinks.map((social) => (
+        <a
+          key={social.name}
+          href={social.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group p-2 transition-all duration-300 hover:scale-110"
+          title={social.name}
+        >
+          {/* Icon with hover glow */}
+          <div className="text-amber-200/60 group-hover:text-amber-100 transition-all duration-300 group-hover:drop-shadow-[0_0_8px_rgba(251,191,36,0.6)]">
+            {social.icon}
+          </div>
+        </a>
+      ))}
     </div>
   );
 };
