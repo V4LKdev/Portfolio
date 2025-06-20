@@ -10,6 +10,7 @@ import { useState } from 'react';
 import { Menu, X, ArrowLeft, Pause, Play, Volume2, VolumeX } from 'lucide-react';
 import LocalVideoBackground from './LocalVideoBackground';
 import ServerConnectionPanel from './ServerConnectionPanel';
+import SocialMediaIcons from './SocialMediaIcons';
 import HomeSection from './sections/HomeSection';
 import ProjectsSection from './sections/ProjectsSection';
 import AboutSection from './sections/AboutSection';
@@ -265,8 +266,14 @@ const DeadlockPortfolio = () => {  // --- State Management ---
                     {item.hoverLabel}
                   </span>
                 </button>
-              ))}
-            </div>            {/* Bottom Controls */}
+              ))}            </div>
+
+            {/* Social Media Icons */}
+            <div className="absolute bottom-20 left-8 right-8">
+              <SocialMediaIcons />
+            </div>
+
+            {/* Bottom Controls */}
             <div className="absolute bottom-8 left-8 flex items-center space-x-4">
               {/* Video Playback Control */}
               <button
