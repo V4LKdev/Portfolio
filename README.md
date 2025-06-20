@@ -1,73 +1,37 @@
-# Welcome to your Lovable project
+# TODO
 
-## Project info
+## Feature
+- [ ] Replace YouTube embed on Home with an optimized local video player (using a React video player package, e.g. `react-player` or `video-react`).
+  <!-- Great idea! This will improve UX, remove ads, and give you full control over styling and playback. Very feasible with modern React packages. -->
+- [ ] Add Night/Day mode toggle (not just dark/light, but warm/yellow vs. cool/blue themes).
+  <!-- Excellent for personalization and mood. Not difficult with Tailwind or CSS variables, but will require some design planning. -->
+- [ ] Add transition animations when opening subpages from the main menu.
+  <!-- Very doable with Framer Motion or React Transition Group. Subtle transitions can greatly improve feel. -->
+- [ ] Add a button/link to GitHub repo or project download on Project Details page, only if available.
+  <!-- Standard for portfolios, easy to conditionally render. -->
+- [ ] Add Social Media icons to the bottom of the main page.
+  <!-- Simple and effective for networking. -->
 
-**URL**: https://lovable.dev/projects/44ea01e9-9c29-40ed-84ac-2b919cd5b5ac
+## Style
+- [ ] Overhaul color scheme; implement Night/Day (warm/cool) themes.
+  <!-- Good for branding and accessibility. Consider using Tailwind's theming or CSS custom properties. -->
+- [ ] Make the button menu look and behave more like a game main menu.
+  <!-- Fun idea! Can use custom fonts, sound, hover effects, and layout. Very feasible. -->
+- [ ] Edit the "Available for freelance" box to look like a video game server connection panel, showing general location (e.g., Germany) and fake or real network stats (ping, packet loss).
+  <!-- Very creative! Fake stats are easy; real-time ping to your server is possible but requires backend/API work. -->
+- [ ] Overwatch 2-style Projects page: List project genres as "Game Modes" (Singleplayer, Multiplayer, Competitive, Custom, etc.), then show projects in each category on click.
+  <!-- Unique and memorable! Not too much for a portfolio if well-organized. Can be implemented with nested menus or tabs. -->
 
-## How can I edit this code?
+## Feel
+- [ ] Make project cards and menu more interactive (hover, tilt, sound, etc.).
+  <!-- Adds polish and game-like feel. Use Framer Motion, CSS, or small sound libraries. -->
+- [ ] Ensure subpage transitions are smooth and game-like.
+  <!-- See above, very feasible. -->
 
-There are several ways of editing your application.
+## Content
+- [ ] Project Details: Improve layout for images, code (with syntax highlighting), and YouTube embeds. Ensure vertical alignment so tabs are equally long, with blank space if needed.
+  <!-- This is a bit tricky but possible with CSS grid/flexbox and careful layout planning. Syntax highlighting is easy with Prism.js or Highlight.js. -->
+- [ ] Add more links, writeups, and polish to project details as needed.
+  <!-- Always a good idea! -->
 
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/44ea01e9-9c29-40ed-84ac-2b919cd5b5ac) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/44ea01e9-9c29-40ed-84ac-2b919cd5b5ac) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+---
