@@ -7,14 +7,13 @@
 
 import React, { useState } from 'react';
 import { Settings, Volume2, VolumeX, Menu, X, ArrowLeft, Pause, Play } from 'lucide-react';
-import ProjectFilter from './ProjectFilter';
 import BackgroundMusic from './BackgroundMusic';
-import MenuButton from './MenuButton';
+import HomeSection from './sections/HomeSection';
+import ProjectsSection from './sections/ProjectsSection';
+import AboutSection from './sections/AboutSection';
+import SkillsSection from './sections/SkillsSection';
+import ContactSection from './sections/ContactSection';
 import { 
-  projects, 
-  personalInfo, 
-  aboutContent, 
-  skillsContent, 
   backgroundImages,
   navigationItems,
   videoConfig,
@@ -35,20 +34,6 @@ const DeadlockPortfolio = () => {
   // --- Navigation Menu Items ---
   // Navigation items are now imported from content files
   const menuItems = navigationItems;
-
-  // --- Project Data ---
-  // Project data is now imported from content file for easier editing
-  // Located in: src/content/portfolioData.ts
-
-  // --- Project Filtering ---
-  // Filters projects based on selected filter
-  const filteredProjects = projects.filter(project => {
-    if (projectFilter === 'all') return true;
-    if (projectFilter === 'team') return project.type === 'team';
-    if (projectFilter === 'solo') return project.type === 'solo';
-    if (projectFilter === 'academic') return project.type === 'academic';
-    return true;
-  });
 
   // --- Navigation Handlers ---
   // Handles section switching and project selection
@@ -83,50 +68,6 @@ const DeadlockPortfolio = () => {
   // Returns a static background image for each section
   const getStaticBackground = (section: string) => {
     return backgroundImages[section as keyof typeof backgroundImages] || backgroundImages.projects;
-  };
-
-  // --- Project Detail Renderer ---
-  // Renders the detail view for a selected project
-  const renderProjectDetail = () => {
-    if (!selectedProject) return null;
-
-    return (
-      <div className="max-w-6xl mx-auto">
-        <button
-          onClick={handleBackClick}
-          className="mb-8 flex items-center space-x-2 text-amber-200 hover:text-amber-100 transition-colors"
-        >
-          <ArrowLeft className="w-5 h-5" />
-          <span>Back to Projects</span>
-        </button>
-        
-        <div className="bg-black/50 backdrop-blur-sm border border-amber-500/20 rounded-lg overflow-hidden atmospheric-glow">
-          <img
-            src={selectedProject.image}
-            alt={selectedProject.title}
-            className="w-full h-64 object-cover"
-          />
-          <div className="p-8">
-            <div className="flex flex-wrap gap-2 mb-4">
-              {selectedProject.tags.map((tag: string) => (
-                <span key={tag} className="px-3 py-1 bg-amber-500/20 text-amber-200 text-sm rounded-full">
-                  {tag}
-                </span>
-              ))}
-            </div>
-            <h1 className="text-4xl font-bold text-amber-100 mb-4 deadlock-title">
-              {selectedProject.title}
-            </h1>
-            <p className="text-xl text-amber-200/80 mb-6">
-              {selectedProject.description}
-            </p>
-            <div className="text-amber-400">
-              {selectedProject.details}
-            </div>
-          </div>
-        </div>
-      </div>
-    );
   };
 
   // --- Main Content Renderer ---
@@ -175,248 +116,47 @@ const DeadlockPortfolio = () => {
     switch (currentSection) {
       case 'home':
         return (
-          <div className="text-left max-w-4xl pt-8 transition-all duration-500 animate-fade-in">
-            <h1 className="text-3xl lg:text-5xl font-bold text-amber-100 mb-3 deadlock-title">
-              {personalInfo.name}
-            </h1>
-            <h2 className="text-xl lg:text-2xl font-bold text-amber-200 mb-4" style={{ fontFamily: 'Good Timing, serif' }}>
-              {personalInfo.title}
-            </h2>
-            <p className="text-base lg:text-lg text-amber-200/80 mb-6 font-light leading-relaxed max-w-2xl">
-              {personalInfo.tagline}
-            </p>
-            <MenuButton
-              label="View My Work"
-              hoverLabel="Explore Projects"
-              onClick={() => setCurrentSection('projects')}
-            />
-          </div>
+          <HomeSection 
+            onNavigateToProjects={() => setCurrentSection('projects')}
+          />
         );
 
       case 'projects':
         return (
-          <div className="max-w-6xl mx-auto transition-all duration-500 animate-fade-in">
-            <button
-              onClick={handleBackClick}
-              className="mb-8 flex items-center space-x-2 text-amber-200 hover:text-amber-100 transition-colors"
-            >
-              <ArrowLeft className="w-5 h-5" />
-              <span>Back to Home</span>
-            </button>
-            
-            <h2 className="text-5xl font-bold text-amber-100 mb-8 text-center deadlock-title">
-              FEATURED PROJECTS
-            </h2>
-            <p className="text-center text-amber-400 mb-12 text-lg" style={{ fontFamily: 'Good Timing, serif' }}>
-              Portfolio of Game Development Work
-            </p>
-            
-            <ProjectFilter 
-              activeFilter={projectFilter}
-              onFilterChange={setProjectFilter}
-            />
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {filteredProjects.map((project) => (
-                <div
-                  key={project.id}
-                  onClick={() => handleProjectClick(project)}
-                  className="bg-black/50 backdrop-blur-sm border border-amber-500/20 rounded-lg overflow-hidden hover:border-amber-500/50 transition-all duration-300 atmospheric-glow hover:scale-105 cursor-pointer"
-                >
-                  <img
-                    src={project.image}
-                    alt={project.title}
-                    className="w-full h-48 object-cover"
-                  />
-                  <div className="p-6">
-                    <div className="flex flex-wrap gap-2 mb-3">
-                      {project.tags.slice(0, 3).map((tag) => (
-                        <span key={tag} className="px-2 py-1 bg-amber-500/20 text-amber-200 text-xs rounded-full">
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                    <h3 className="text-xl font-semibold text-amber-100 mb-2" style={{ fontFamily: 'Good Timing, serif' }}>
-                      {project.title}
-                    </h3>
-                    <p className="text-amber-200/70 text-sm mb-4 line-clamp-3">
-                      {project.description}
-                    </p>
-                    <div className="text-amber-400 text-xs">
-                      {project.details}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+          <ProjectsSection
+            onBack={() => setCurrentSection('home')}
+            onProjectClick={handleProjectClick}
+            projectFilter={projectFilter}
+            onFilterChange={setProjectFilter}
+          />
         );
 
       case 'about':
         return (
-          <div className="max-w-4xl mx-auto">
-            <button
-              onClick={handleBackClick}
-              className="mb-8 flex items-center space-x-2 text-amber-200 hover:text-amber-100 transition-colors"
-            >
-              <ArrowLeft className="w-5 h-5" />
-              <span>Back to Home</span>
-            </button>
-            
-            <h2 className="text-5xl font-bold text-amber-100 mb-16 text-center deadlock-title">
-              ABOUT ME
-            </h2>
-            
-            <div className="bg-black/50 backdrop-blur-sm border border-amber-500/20 rounded-lg p-8 atmospheric-glow">
-              {aboutContent.intro.map((paragraph, index) => (
-                <p key={index} className="text-lg text-amber-200/80 leading-relaxed mb-6">
-                  {paragraph}
-                </p>
-              ))}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-                <div>
-                  <h3 className="text-xl font-semibold text-amber-100 mb-3" style={{ fontFamily: 'Good Timing, serif' }}>Education</h3>
-                  {aboutContent.education.map((edu, index) => (
-                    <p key={index} className="text-amber-200/70 text-sm mb-2">
-                      <strong>{edu.institution}</strong> - {edu.degree}<br/>
-                      {edu.period}
-                    </p>
-                  ))}
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-amber-100 mb-3" style={{ fontFamily: 'Good Timing, serif' }}>Experience</h3>
-                  <p className="text-amber-200/70 text-sm">
-                    {aboutContent.experience}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
+          <AboutSection 
+            onBack={() => setCurrentSection('home')}
+          />
         );
 
       case 'skills':
         return (
-          <div className="max-w-6xl mx-auto">
-            <button
-              onClick={handleBackClick}
-              className="mb-8 flex items-center space-x-2 text-amber-200 hover:text-amber-100 transition-colors"
-            >
-              <ArrowLeft className="w-5 h-5" />
-              <span>Back to Home</span>
-            </button>
-            
-            <h2 className="text-5xl font-bold text-amber-100 mb-16 text-center deadlock-title">
-              SKILLS & TOOLS
-            </h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              <div className="bg-black/50 backdrop-blur-sm border border-amber-500/20 rounded-lg p-6 atmospheric-glow">
-                <h3 className="text-2xl font-semibold text-amber-100 mb-4" style={{ fontFamily: 'Good Timing, serif' }}>
-                  Software
-                </h3>
-                <ul className="space-y-2">
-                  {skillsContent.software.map((skill, index) => (
-                    <li key={index} className="text-amber-200/80">• {skill}</li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="bg-black/50 backdrop-blur-sm border border-amber-500/20 rounded-lg p-6 atmospheric-glow">
-                <h3 className="text-2xl font-semibold text-amber-100 mb-4" style={{ fontFamily: 'Good Timing, serif' }}>
-                  Programming Languages
-                </h3>
-                <ul className="space-y-2">
-                  {skillsContent.programmingLanguages.map((lang, index) => (
-                    <li key={index} className="text-amber-200/80">• {lang}</li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="bg-black/50 backdrop-blur-sm border border-amber-500/20 rounded-lg p-6 atmospheric-glow">
-                <h3 className="text-2xl font-semibold text-amber-100 mb-4" style={{ fontFamily: 'Good Timing, serif' }}>
-                  Unreal Engine
-                </h3>
-                <ul className="space-y-2">
-                  {skillsContent.unrealEngine.map((skill, index) => (
-                    <li key={index} className="text-amber-200/80">• {skill}</li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="bg-black/50 backdrop-blur-sm border border-amber-500/20 rounded-lg p-6 atmospheric-glow md:col-span-2 lg:col-span-3">
-                <h3 className="text-2xl font-semibold text-amber-100 mb-4" style={{ fontFamily: 'Good Timing, serif' }}>
-                  Soft Skills
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-                  {skillsContent.softSkills.map((skill, index) => (
-                    <div key={index} className="text-amber-200/80">• {skill}</div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
+          <SkillsSection 
+            onBack={() => setCurrentSection('home')}
+          />
         );
 
       case 'contact':
         return (
-          <div className="max-w-4xl mx-auto">
-            <button
-              onClick={handleBackClick}
-              className="mb-8 flex items-center space-x-2 text-amber-200 hover:text-amber-100 transition-colors"
-            >
-              <ArrowLeft className="w-5 h-5" />
-              <span>Back to Home</span>
-            </button>
-            
-            <h2 className="text-5xl font-bold text-amber-100 mb-16 text-center deadlock-title">
-              GLOBAL CHAT
-            </h2>
-            <div className="bg-black/70 backdrop-blur-sm border border-amber-500/30 rounded-lg p-8 atmospheric-glow">
-              <div className="border-b border-amber-500/20 pb-4 mb-6">
-                <div className="flex items-center space-x-3 mb-2">
-                  <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
-                  <span className="text-amber-100 font-semibold">Nicolas Martin</span>
-                  <span className="text-amber-200/60 text-sm">@Game_Programmer</span>
-                </div>
-                <p className="text-amber-200/80 text-sm">Status: Available for new projects</p>
-              </div>
-              
-              <div className="space-y-4">
-                <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg p-4">
-                  <p className="text-amber-100 mb-2">📧 Direct Message:</p>
-                  <p className="text-amber-200/80">{personalInfo.email}</p>
-                </div>
-                
-                <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg p-4">
-                  <p className="text-amber-100 mb-2">📱 Voice Chat:</p>
-                  <p className="text-amber-200/80">{personalInfo.phone}</p>
-                </div>
-                
-                <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg p-4">
-                  <p className="text-amber-100 mb-2">🐙 Guild Repository:</p>
-                  <p className="text-amber-200/80">{personalInfo.github}</p>
-                </div>
-                
-                <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg p-4">
-                  <p className="text-amber-100 mb-2">📍 Server Location:</p>
-                  <p className="text-amber-200/80">{personalInfo.location}</p>
-                </div>
-              </div>
-              
-              <div className="mt-8 pt-6 border-t border-amber-500/20">
-                <p className="text-amber-200/60 text-sm text-center">
-                  Ready to join forces? Send a message and let's build something legendary!
-                </p>
-              </div>
-            </div>
-          </div>
+          <ContactSection 
+            onBack={() => setCurrentSection('home')}
+          />
         );
 
       case 'additional':
         return (
           <div className="max-w-4xl mx-auto">
             <button
-              onClick={handleBackClick}
+              onClick={() => setCurrentSection('home')}
               className="mb-8 flex items-center space-x-2 text-amber-200 hover:text-amber-100 transition-colors"
             >
               <ArrowLeft className="w-5 h-5" />
