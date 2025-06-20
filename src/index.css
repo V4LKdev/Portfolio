@@ -1,0 +1,198 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.cdnfonts.com/css/good-timing');
+@import url('https://fonts.cdnfonts.com/css/toxigenesis');
+@import url('https://fonts.googleapis.com/css2?family=Expletus+Sans:wght@400;500;600;700&display=swap');
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. */
+
+@layer base {
+  :root {
+    --background: 8 8% 8%;
+    --foreground: 45 15% 85%;
+
+    --card: 12 10% 12%;
+    --card-foreground: 45 15% 85%;
+
+    --popover: 12 10% 12%;
+    --popover-foreground: 45 15% 85%;
+
+    --primary: 45 85% 65%;
+    --primary-foreground: 12 10% 12%;
+
+    --secondary: 20 15% 20%;
+    --secondary-foreground: 45 15% 85%;
+
+    --muted: 15 12% 15%;
+    --muted-foreground: 45 8% 55%;
+
+    --accent: 45 85% 65%;
+    --accent-foreground: 12 10% 12%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 20 15% 25%;
+    --input: 20 15% 25%;
+    --ring: 45 85% 65%;
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 8 8% 8%;
+    --sidebar-foreground: 45 15% 85%;
+    --sidebar-primary: 45 85% 65%;
+    --sidebar-primary-foreground: 12 10% 12%;
+    --sidebar-accent: 20 15% 20%;
+    --sidebar-accent-foreground: 45 15% 85%;
+    --sidebar-border: 20 15% 25%;
+    --sidebar-ring: 45 85% 65%;
+  }
+
+  .dark {
+    --background: 8 8% 8%;
+    --foreground: 45 15% 85%;
+
+    --card: 12 10% 12%;
+    --card-foreground: 45 15% 85%;
+
+    --popover: 12 10% 12%;
+    --popover-foreground: 45 15% 85%;
+
+    --primary: 45 85% 65%;
+    --primary-foreground: 12 10% 12%;
+
+    --secondary: 20 15% 20%;
+    --secondary-foreground: 45 15% 85%;
+
+    --muted: 15 12% 15%;
+    --muted-foreground: 45 8% 55%;
+
+    --accent: 45 85% 65%;
+    --accent-foreground: 12 10% 12%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 20 15% 25%;
+    --input: 20 15% 25%;
+    --ring: 45 85% 65%;
+    --sidebar-background: 8 8% 8%;
+    --sidebar-foreground: 45 15% 85%;
+    --sidebar-primary: 45 85% 65%;
+    --sidebar-primary-foreground: 12 10% 12%;
+    --sidebar-accent: 20 15% 20%;
+    --sidebar-accent-foreground: 45 15% 85%;
+    --sidebar-border: 20 15% 25%;
+    --sidebar-ring: 45 85% 65%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Expletus Sans', sans-serif;
+  }
+}
+
+@layer components {
+  .deadlock-menu-item {
+    @apply text-2xl font-semibold text-amber-200/90 hover:text-amber-100 
+           transition-all duration-300 ease-out cursor-pointer
+           hover:drop-shadow-[0_0_10px_rgba(251,191,36,0.6)]
+           hover:translate-x-1;
+    font-family: 'Good Timing', serif;
+  }
+  
+  .deadlock-menu-item:hover {
+    text-shadow: 0 0 20px rgba(251, 191, 36, 0.8);
+  }
+  
+  .deadlock-title {
+    font-family: 'Toxigenesis', 'Good Timing', serif;
+    @apply text-4xl font-bold text-amber-100 tracking-wider;
+    text-shadow: 0 0 30px rgba(251, 191, 36, 0.5);
+  }
+  
+  .atmospheric-glow {
+    box-shadow: 
+      0 0 20px rgba(251, 191, 36, 0.1),
+      inset 0 0 20px rgba(0, 0, 0, 0.5);
+  }
+  
+  .video-overlay {
+    background: linear-gradient(
+      45deg,
+      rgba(0, 0, 0, 0.8) 0%,
+      rgba(0, 0, 0, 0.3) 50%,
+      rgba(0, 0, 0, 0.6) 100%
+    );
+  }
+
+  .video-responsive {
+    min-width: 100vw;
+    min-height: 100vh;
+    width: auto;
+    height: auto;
+  }
+
+  /* Mobile video optimization */
+  @media (max-aspect-ratio: 16/9) {
+    .video-responsive {
+      width: 100vw;
+      height: 56.25vw; /* 16:9 aspect ratio */
+      min-height: 100vh;
+    }
+  }
+
+  @media (max-aspect-ratio: 4/3) {
+    .video-responsive {
+      width: 133.33vh; /* 4:3 aspect ratio */
+      height: 100vh;
+      min-width: 100vw;
+    }
+  }
+
+  /* Mobile portrait mode - stretch video */
+  @media (orientation: portrait) and (max-width: 768px) {
+    .video-responsive {
+      width: 100vw !important;
+      height: 100vh !important;
+      object-fit: cover;
+    }
+  }
+}
+
+@layer utilities {
+  .text-shadow-glow {
+    text-shadow: 0 0 10px rgba(251, 191, 36, 0.6);
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
