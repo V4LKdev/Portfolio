@@ -190,7 +190,7 @@ private:
         'https://images.unsplash.com/photo-1551103782-8ab07afd45c1?auto=format&fit=crop&w=800&q=80'
       ]
     },    code: {
-      architecture: 'Built with UE5 using C++ for core gameplay systems and Blueprints for rapid prototyping of spell effects and UI elements. The architecture features a modular design with separate systems for shape recognition, spell casting, movement mechanics, and visual effects. The shape recognition system uses machine learning algorithms implemented in C++ for real-time processing, while the spell system leverages UE5\'s Blueprint system for flexible spell configuration and visual effects management.',
+      architecture: 'Built with UE5 using C++ for core gameplay systems and Blueprints for rapid prototyping of spell effects and UI elements. Its very cool!',
       keyFeatures: [
         'Real-time shape drawing and recognition system',
         'Fast-paced FPS movement with wall-running mechanics',

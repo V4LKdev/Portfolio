@@ -88,17 +88,17 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project, onBack }) => {
   const getTeamDisplay = (): string => {
     if (project.type === 'solo') return 'Solo Project';
     if (project.type === 'academic') return 'Academic Project';
-    return project.team || 'Team Project';
-  };
+    return project.team || 'Team Project';  };
+
   // --- Content Renderers ---
     /**
    * Renders the Design tab content
    */
   const renderDesignContent = () => (
-    <div className="space-y-8 w-full max-w-none min-w-full">{/* Ensure consistent width with min-width */}
+    <div className="space-y-8 w-full max-w-none">
       <div>
         <h3 className="text-2xl font-semibold text-amber-100 mb-4">Design Overview</h3>
-        <p className="text-amber-200/80 text-lg leading-relaxed mb-6 min-h-[3rem]">{/* Min height to prevent layout shift */}
+        <p className="text-amber-200/80 text-lg leading-relaxed mb-6">
           {project.design?.overview || 'Design overview will be added here...'}
         </p>
       </div>
@@ -141,9 +141,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project, onBack }) => {
             <h5 className="text-amber-100 font-medium mb-2">User Experience</h5>
             <p className="text-amber-200/70 text-sm">
               User flow analysis and interaction design patterns.
-            </p>
-          </div>
-          <div className="bg-amber-500/5 p-4 rounded border border-amber-500/10">
+            </p>          </div>          <div className="bg-amber-500/5 p-4 rounded border border-amber-500/10">
             <h5 className="text-amber-100 font-medium mb-2">Visual Design</h5>
             <p className="text-amber-200/70 text-sm">
               Color schemes, typography, and UI component design.
@@ -152,14 +150,18 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project, onBack }) => {
         </div>
       </div>
     </div>
-  );  /**
+  );
+    /**
    * Renders the Code tab content
+   * TODO: Fix width consistency issue - Code tab renders narrower than Design/Implementation tabs
+   * due to CSS layout engine calculating container width based on first paragraph text length.
+   * This affects projects with shorter technical architecture descriptions.
    */
   const renderCodeContent = () => (
-    <div className="space-y-8 w-full max-w-none min-w-full">{/* Ensure consistent width with min-width */}
+    <div className="space-y-8 w-full max-w-none">
       <div>
         <h3 className="text-2xl font-semibold text-amber-100 mb-4">Technical Architecture</h3>
-        <p className="text-amber-200/80 text-lg leading-relaxed mb-6 min-h-[3rem]">{/* Min height to prevent layout shift */}
+        <p className="text-amber-200/80 text-lg leading-relaxed mb-6">
           {project.code?.architecture || 'Technical architecture will be documented here...'}
         </p>
       </div>
@@ -217,10 +219,10 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project, onBack }) => {
    * Renders the Implementation tab content
    */
   const renderImplementationContent = () => (
-    <div className="space-y-8 w-full max-w-none min-w-full">{/* Ensure consistent width with min-width */}
+    <div className="space-y-8 w-full max-w-none">
       <div>
         <h3 className="text-2xl font-semibold text-amber-100 mb-4">Development Process</h3>
-        <p className="text-amber-200/80 text-lg leading-relaxed mb-6 min-h-[3rem]">{/* Min height to prevent layout shift */}
+        <p className="text-amber-200/80 text-lg leading-relaxed mb-6">
           {project.implementation?.process || 'Development process documentation will be added here...'}
         </p>
       </div>
@@ -406,7 +408,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project, onBack }) => {
         </div>
       )}      {/* Content Area */}
       <div className="bg-black/50 backdrop-blur-sm border border-amber-500/20 rounded-lg atmospheric-glow">
-        <div className="p-8 min-h-[600px] w-full">{/* Removed overflow-hidden to allow proper code snippet display */}
+        <div className="p-8 min-h-[600px] w-full">
           {availableTabs.length > 0 ? renderTabContent() : (
             <div className="text-center py-12">
               <p className="text-xl text-amber-200/80">
