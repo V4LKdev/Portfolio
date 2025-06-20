@@ -1,8 +1,8 @@
 # TODO
 
 ## Feature
-- [ ] Replace YouTube embed on Home with an optimized local video player (using a React video player package, e.g. `react-player` or `video-react`).
-  <!-- Great idea! This will improve UX, remove ads, and give you full control over styling and playback. Very feasible with modern React packages. -->
+- [x] Replace YouTube embed on Home with an optimized local video player (custom React component, efficient, persistent, and memory-optimized).
+  <!-- Complete! Uses HTML5 video, cookies for preferences, and smart resource management. -->
 - [ ] Add Night/Day mode toggle (not just dark/light, but warm/yellow vs. cool/blue themes).
   <!-- Excellent for personalization and mood. Not difficult with Tailwind or CSS variables, but will require some design planning. -->
 - [ ] Add transition animations when opening subpages from the main menu.
@@ -11,6 +11,8 @@
   <!-- Standard for portfolios, easy to conditionally render. -->
 - [ ] Add Social Media icons to the bottom of the main page.
   <!-- Simple and effective for networking. -->
+- [ ] [Future] Improve video quality and compression (test AV1, adaptive streaming, or higher bitrates as server allows).
+  <!-- Consider AV1, H.265, or adaptive streaming for best quality/size balance. -->
 
 ## Style
 - [ ] Overhaul color scheme; implement Night/Day (warm/cool) themes.
