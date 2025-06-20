@@ -1,41 +1,51 @@
-# TODO
+# Nicolas Martin Portfolio
 
-## Feature
-- [x] Replace YouTube embed on Home with an optimized local video player (custom React component, efficient, persistent, and memory-optimized).
-  <!-- Complete! Uses HTML5 video, cookies for preferences, and smart resource management. -->
-- [ ] Add Night/Day mode toggle (not just dark/light, but warm/yellow vs. cool/blue themes).
-  <!-- Excellent for personalization and mood. Not difficult with Tailwind or CSS variables, but will require some design planning. -->
-- [ ] Add transition animations when opening subpages from the main menu.
-  <!-- Very doable with Framer Motion or React Transition Group. Subtle transitions can greatly improve feel. -->
-- [ ] Add a button/link to GitHub repo or project download on Project Details page, only if available.
-  <!-- Standard for portfolios, easy to conditionally render. -->
-- [x] Add Social Media icons to the bottom of the main page.
-  <!-- Complete! Added GitHub, LinkedIn, The Rookies, YouTube icons at bottom right with mobile responsiveness. -->
-- [ ] [Future] Improve video quality and compression (test AV1, adaptive streaming, or higher bitrates as server allows).
-  <!-- Consider AV1, H.265, or adaptive streaming for best quality/size balance. -->
+A modern, game-inspired portfolio website built with React, TypeScript, and Tailwind CSS.
 
-## Style
-- [ ] Overhaul color scheme; implement Night/Day (warm/cool) themes.
-  <!-- Good for branding and accessibility. Consider using Tailwind's theming or CSS custom properties. -->
-- [ ] Make the button menu look and behave more like a game main menu.
-  <!-- Fun idea! Can use custom fonts, sound, hover effects, and layout. Very feasible. -->
-- [x] Edit the "Available for freelance" box to look like a video game server connection panel, showing general location (e.g., Germany) and fake or real network stats (ping, packet loss).
-  <!-- Complete! Now uses real HTTP latency and packet loss stats for authentic game-style UI. -->
-- [ ] Overwatch 2-style Projects page: List project genres as "Game Modes" (Singleplayer, Multiplayer, Competitive, Custom, etc.), then show projects in each category on click.
-  <!-- Unique and memorable! Not too much for a portfolio if well-organized. Can be implemented with nested menus or tabs. -->
+## Features
 
-## Feel
-- [ ] Make project cards and menu more interactive (hover, tilt, sound, etc.).
-  <!-- Adds polish and game-like feel. Use Framer Motion, CSS, or small sound libraries. -->
-- [ ] Ensure subpage transitions are smooth and game-like.
-  <!-- See above, very feasible. -->
+### ✅ Completed
+- **Responsive Design**: Single component that adapts to all screen sizes using modern CSS breakpoints
+- **Local Video Background**: Optimized HTML5 video player with cookie-based preferences and memory management
+- **Server Connection Panel**: Real HTTP latency and packet loss stats in game-style UI (desktop only)
+- **Social Media Integration**: GitHub, LinkedIn, The Rookies, YouTube icons with responsive positioning
+- **Game-Style Navigation**: Interactive menu with hover effects and smooth transitions
+- **Project Filtering**: Filter projects by type (All/Team/Solo/Academic)
+- **Mobile-Friendly**: Responsive navigation, touch-friendly controls, and optimized layout
 
-## Content
-- [ ] Project Details: Improve layout for images, code (with syntax highlighting), and YouTube embeds. Ensure vertical alignment so tabs are equally long, with blank space if needed.
-  <!-- This is a bit tricky but possible with CSS grid/flexbox and careful layout planning. Syntax highlighting is easy with Prism.js or Highlight.js. -->
-- [ ] Add more links, writeups, and polish to project details as needed.
-  <!-- Always a good idea! -->
-- [ ] Create a dedicated mobile-friendly version or layout of the site.
-  <!-- Consider responsive design, or separate mobile/desktop components for a truly app-like experience. -->
+### 🔄 TODO
+
+#### Feature Improvements
+- [ ] Add Night/Day mode toggle (warm/yellow vs. cool/blue themes)
+- [ ] Add transition animations when opening subpages from the main menu
+- [ ] Add GitHub repo/download links on Project Details pages where available
+- [ ] [Future] Improve video quality and compression (AV1, adaptive streaming, higher bitrates)
+
+#### Style Enhancements
+- [ ] Implement Night/Day (warm/cool) color theme system
+- [ ] Enhanced game-style menu with custom fonts, sound effects, and hover animations
+- [ ] Overwatch 2-style Projects page: Game Modes categorization system
+- [ ] More interactive project cards (hover, tilt, sound effects)
+
+#### Content & Polish
+- [ ] Improve Project Details layout with better image/code/video alignment
+- [ ] Add syntax highlighting for code snippets
+- [ ] Enhanced project writeups and additional links
+- [ ] Smooth subpage transitions with game-like animations
+
+## Technical Stack
+- **Frontend**: React 18, TypeScript, Tailwind CSS
+- **Build Tool**: Vite
+- **UI Components**: Custom components with shadcn/ui integration
+- **Video**: HTML5 with cookie-based preference persistence
+- **Network Stats**: Real-time HTTP latency and packet loss measurement
+- **Responsive Design**: Mobile-first approach with Tailwind breakpoints
+
+## Architecture
+- `src/components/ResponsivePortfolio.tsx` - Main responsive portfolio component
+- `src/components/sections/` - Individual page sections (Home, Projects, About, etc.)
+- `src/components/ui/` - Reusable UI components
+- `src/content/` - Content configuration and data
+- `src/lib/` - Utilities and helper functions
 
 ---
