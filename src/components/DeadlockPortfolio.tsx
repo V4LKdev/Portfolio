@@ -6,14 +6,15 @@
 // Uses Tailwind CSS for styling and custom UI components for interactivity
 
 import React, { useState } from 'react';
-import { Settings, Volume2, VolumeX, Menu, X, ArrowLeft, Pause, Play } from 'lucide-react';
-import BackgroundMusic from './BackgroundMusic';
+import { Menu, X, ArrowLeft, Pause, Play, Volume2, VolumeX } from 'lucide-react';
+import LocalVideoBackground from './LocalVideoBackground';
 import HomeSection from './sections/HomeSection';
 import ProjectsSection from './sections/ProjectsSection';
 import AboutSection from './sections/AboutSection';
 import SkillsSection from './sections/SkillsSection';
 import ContactSection from './sections/ContactSection';
 import ProjectDetail from './ProjectDetail';
+import { VideoPreferences } from '../lib/cookies';
 import { 
   backgroundImages,
   navigationItems,
@@ -21,49 +22,66 @@ import {
   type Project 
 } from '../content';
 
-const DeadlockPortfolio = () => {
-  // --- State Management ---
-  // Controls for music, video, menu, and navigation
-  const [isMuted, setIsMuted] = useState(videoConfig.defaultMuted); // YouTube video mute
-  const [isMusicMuted, setIsMusicMuted] = useState(true); // Background music mute
-  const [isPaused, setIsPaused] = useState(videoConfig.defaultPaused); // YouTube video pause
+const DeadlockPortfolio = () => {  // --- State Management ---
+  // Controls for video, menu, and navigation
+  const [isMuted, setIsMuted] = useState(() => VideoPreferences.getMuted()); // Video mute from cookies
+  const [isPaused, setIsPaused] = useState(() => VideoPreferences.getPaused()); // Video pause from cookies
+  const [isManuallyPaused, setIsManuallyPaused] = useState(() => VideoPreferences.getPaused()); // Track manual pause from cookies
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // Mobile nav menu
   const [currentSection, setCurrentSection] = useState('home'); // Current visible section
   const [selectedProject, setSelectedProject] = useState<Project | null>(null); // Selected project for detail view
-  const [projectFilter, setProjectFilter] = useState('all'); // Project filter (all/team/solo/academic)
+  const [projectFilter, setProjectFilter] = useState('all'); // Project filter (all/team/solo/academic)lo/academic)
 
   // --- Navigation Menu Items ---
   // Navigation items are now imported from content files
   const menuItems = navigationItems;
-
   // --- Navigation Handlers ---
   // Handles section switching and project selection
   const handleMenuClick = (sectionId: string) => {
     setCurrentSection(sectionId);
     setSelectedProject(null);
     setIsMobileMenuOpen(false);
+    
+    // Pause video when navigating away from home for memory optimization
+    if (sectionId !== 'home') {
+      setIsPaused(true);
+    }
   };
 
   const handleProjectClick = (project: Project) => {
     setSelectedProject(project);
-  };
-
-  const handleBackClick = () => {
+  };  const handleBackClick = () => {
     if (selectedProject) {
       setSelectedProject(null);
     } else {
       setCurrentSection('home');
-    }
-  };
+      // Always resume video when returning to home, unless user manually paused it
+      if (!isManuallyPaused) {
+        setTimeout(() => setIsPaused(false), 100); // Small delay to ensure component is ready
+      }
+    }  };
 
   // --- Video Controls ---
-  // Pauses/plays the background YouTube video
+  // Controls for video playback and muting
   const toggleVideoPlayback = () => {
-    const iframe = document.querySelector('iframe');
-    if (iframe) {
-      setIsPaused(!isPaused);
-    }
+    const newPausedState = !isPaused;
+    setIsPaused(newPausedState);
+    setIsManuallyPaused(newPausedState);
+    VideoPreferences.setPaused(newPausedState); // Save to cookies
   };
+
+  const toggleVideoMute = () => {
+    const newMutedState = !isMuted;
+    setIsMuted(newMutedState);
+    VideoPreferences.setMuted(newMutedState); // Save to cookies
+  };
+
+  // Auto-resume video when returning to home section (unless manually paused)
+  React.useEffect(() => {
+    if (currentSection === 'home' && !isManuallyPaused) {
+      setIsPaused(false);
+    }
+  }, [currentSection, isManuallyPaused]);
 
   // --- Section Backgrounds ---
   // Returns a static background image for each section
@@ -176,33 +194,26 @@ const DeadlockPortfolio = () => {
 
   // --- Main Render ---
   return (
-    <div className="min-h-screen bg-black text-foreground overflow-x-hidden">
-      {/* Background Video or Static Image */}
-      {/* Shows YouTube video on home, static image on other sections */}
+    <div className="min-h-screen bg-black text-foreground overflow-x-hidden">      {/* Background Video or Static Image */}
+      {/* Shows local video on home, static image on other sections */}
       {!isInnerPage ? (
         <div className="fixed inset-0 z-0">
-          <iframe
-            className="absolute inset-0 w-full h-full object-cover video-responsive"
-            src={`https://www.youtube.com/embed/${videoConfig.youtubeVideoId}?autoplay=${isPaused ? '0' : '1'}&mute=${isMuted ? '1' : '0'}&loop=1&playlist=${videoConfig.youtubeVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3`}
-            allow="autoplay; encrypted-media"
-            allowFullScreen
+          <LocalVideoBackground
+            videoSrc={videoConfig.localVideoSrc}
+            posterSrc={videoConfig.posterSrc}
+            isPaused={isPaused}
+            isMuted={isMuted}
+            className="video-responsive"
           />
           <div className="absolute inset-0 video-overlay" />
         </div>
       ) : (
         <div 
           className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat transition-all duration-500"
-          style={{ backgroundImage: `url(${getStaticBackground(currentSection)})` }}
-        >
+          style={{ backgroundImage: `url(${getStaticBackground(currentSection)})` }}        >
           <div className="absolute inset-0 video-overlay" />
         </div>
       )}
-
-      {/* Background Music */}
-      <BackgroundMusic 
-        isMuted={isMusicMuted}
-        onToggleMute={() => setIsMusicMuted(!isMusicMuted)}
-      />
 
       {/* Mobile Menu Button */}
       {!isInnerPage && (
@@ -253,22 +264,31 @@ const DeadlockPortfolio = () => {
                   </div>
                 </div>
               ))}
-            </div>
-
-            {/* Bottom Controls */}
+            </div>            {/* Bottom Controls */}
             <div className="absolute bottom-8 left-8 flex items-center space-x-4">
-              <BackgroundMusic 
-                isMuted={isMusicMuted}
-                onToggleMute={() => setIsMusicMuted(!isMusicMuted)}
-              />
+              {/* Video Playback Control */}
               <button
                 onClick={toggleVideoPlayback}
                 className="p-2 rounded-lg bg-amber-500/10 border border-amber-500/30 hover:border-amber-500/60 transition-all duration-300 hover:bg-amber-500/20"
+                title={isPaused ? "Play background video" : "Pause background video"}
               >
                 {isPaused ? (
                   <Play className="w-5 h-5 text-amber-200" />
                 ) : (
                   <Pause className="w-5 h-5 text-amber-200" />
+                )}
+              </button>
+              
+              {/* Video Audio Control */}
+              <button
+                onClick={toggleVideoMute}
+                className="p-2 rounded-lg bg-amber-500/10 border border-amber-500/30 hover:border-amber-500/60 transition-all duration-300 hover:bg-amber-500/20"
+                title={isMuted ? "Unmute video audio" : "Mute video audio"}
+              >
+                {isMuted ? (
+                  <VolumeX className="w-5 h-5 text-amber-200" />
+                ) : (
+                  <Volume2 className="w-5 h-5 text-amber-200" />
                 )}
               </button>
             </div>
