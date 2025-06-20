@@ -8,6 +8,10 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
+
+# Previous project versions (for reference only)
+previous-versions/
+
 dist
 dist-ssr
 *.local

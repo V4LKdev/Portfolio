@@ -13,6 +13,7 @@ import ProjectsSection from './sections/ProjectsSection';
 import AboutSection from './sections/AboutSection';
 import SkillsSection from './sections/SkillsSection';
 import ContactSection from './sections/ContactSection';
+import ProjectDetail from './ProjectDetail';
 import { 
   backgroundImages,
   navigationItems,
@@ -75,41 +76,10 @@ const DeadlockPortfolio = () => {
   const renderContent = () => {
     if (selectedProject) {
       return (
-        <div className="max-w-6xl mx-auto transition-all duration-500 animate-fade-in">
-          <button
-            onClick={handleBackClick}
-            className="mb-8 flex items-center space-x-2 text-amber-200 hover:text-amber-100 transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5" />
-            <span>Back to Projects</span>
-          </button>
-          
-          <div className="bg-black/50 backdrop-blur-sm border border-amber-500/20 rounded-lg overflow-hidden atmospheric-glow">
-            <img
-              src={selectedProject.image}
-              alt={selectedProject.title}
-              className="w-full h-64 object-cover"
-            />
-            <div className="p-8">
-              <div className="flex flex-wrap gap-2 mb-4">
-                {selectedProject.tags.map((tag: string) => (
-                  <span key={tag} className="px-3 py-1 bg-amber-500/20 text-amber-200 text-sm rounded-full">
-                    {tag}
-                  </span>
-                ))}
-              </div>
-              <h1 className="text-4xl font-bold text-amber-100 mb-4 deadlock-title">
-                {selectedProject.title}
-              </h1>
-              <p className="text-xl text-amber-200/80 mb-6">
-                {selectedProject.description}
-              </p>
-              <div className="text-amber-400">
-                {selectedProject.details}
-              </div>
-            </div>
-          </div>
-        </div>
+        <ProjectDetail 
+          project={selectedProject}
+          onBack={handleBackClick}
+        />
       );
     }
 
