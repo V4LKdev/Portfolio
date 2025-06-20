@@ -528,11 +528,19 @@ const DeadlockPortfolio = () => {
                 <div
                   key={item.id}
                   onClick={() => handleMenuClick(item.section)}
-                  className={`deadlock-menu-item ${
+                  className={`deadlock-menu-item group cursor-pointer transition-all duration-300 relative ${
                     currentSection === item.section ? 'text-amber-100 text-shadow-glow' : ''
                   }`}
                 >
-                  {item.label}
+                  {/* Game-style text with hover effect - both texts occupy same space */}
+                  <div className="relative">
+                    <span className="block group-hover:opacity-0 transition-opacity duration-300">
+                      {item.gameLabel}
+                    </span>
+                    <span className="absolute top-0 left-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      {item.hoverLabel}
+                    </span>
+                  </div>
                 </div>
               ))}
             </div>

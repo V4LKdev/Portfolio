@@ -12,14 +12,14 @@ export const backgroundImages = {
 };
 
 // --- Navigation Menu Items ---
+// Game-style navigation with hover text changes
 export const navigationItems = [
-  { id: 'home', label: 'Home', section: 'home' },
-  { id: 'projects', label: 'Projects', section: 'projects' },
-  { id: 'about', label: 'About Me', section: 'about' },
-  { id: 'skills', label: 'Skills & Tools', section: 'skills' },
-  { id: 'contact', label: 'Contact', section: 'contact' },
-  { id: 'additional', label: 'Additional Content', section: 'additional' },
-  { id: 'exit', label: 'Exit', section: 'exit' }
+  { id: 'projects', label: 'Projects', section: 'projects', gameLabel: 'Play', hoverLabel: 'Projects' },
+  { id: 'about', label: 'About Me', section: 'about', gameLabel: 'Profile', hoverLabel: 'About Me' },
+  { id: 'skills', label: 'Skills & Tools', section: 'skills', gameLabel: 'Achievements', hoverLabel: 'Skills & CV' },
+  { id: 'additional', label: 'Additional Content', section: 'additional', gameLabel: 'DLC', hoverLabel: 'Hobbies' },
+  { id: 'contact', label: 'Contact', section: 'contact', gameLabel: 'Chat', hoverLabel: 'Contact' },
+  { id: 'exit', label: 'Exit', section: 'exit', gameLabel: 'Quit', hoverLabel: 'Quit' }
 ];
 
 // --- Video Configuration ---
