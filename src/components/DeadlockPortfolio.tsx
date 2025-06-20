@@ -14,6 +14,7 @@ import AboutSection from './sections/AboutSection';
 import SkillsSection from './sections/SkillsSection';
 import ContactSection from './sections/ContactSection';
 import ProjectDetail from './ProjectDetail';
+import { VideoPreferences } from '../lib/cookies';
 import { 
   backgroundImages,
   navigationItems,
@@ -23,13 +24,13 @@ import {
 
 const DeadlockPortfolio = () => {  // --- State Management ---
   // Controls for video, menu, and navigation
-  const [isMuted, setIsMuted] = useState(videoConfig.defaultMuted); // Video mute
-  const [isPaused, setIsPaused] = useState(videoConfig.defaultPaused); // Video pause
-  const [isManuallyPaused, setIsManuallyPaused] = useState(false); // Track manual pause
+  const [isMuted, setIsMuted] = useState(() => VideoPreferences.getMuted()); // Video mute from cookies
+  const [isPaused, setIsPaused] = useState(() => VideoPreferences.getPaused()); // Video pause from cookies
+  const [isManuallyPaused, setIsManuallyPaused] = useState(() => VideoPreferences.getPaused()); // Track manual pause from cookies
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // Mobile nav menu
   const [currentSection, setCurrentSection] = useState('home'); // Current visible section
   const [selectedProject, setSelectedProject] = useState<Project | null>(null); // Selected project for detail view
-  const [projectFilter, setProjectFilter] = useState('all'); // Project filter (all/team/solo/academic)
+  const [projectFilter, setProjectFilter] = useState('all'); // Project filter (all/team/solo/academic)lo/academic)
 
   // --- Navigation Menu Items ---
   // Navigation items are now imported from content files
@@ -58,16 +59,21 @@ const DeadlockPortfolio = () => {  // --- State Management ---
       if (!isManuallyPaused) {
         setTimeout(() => setIsPaused(false), 100); // Small delay to ensure component is ready
       }
-    }
-  };// --- Video Controls ---
+    }  };
+
+  // --- Video Controls ---
   // Controls for video playback and muting
   const toggleVideoPlayback = () => {
     const newPausedState = !isPaused;
     setIsPaused(newPausedState);
     setIsManuallyPaused(newPausedState);
+    VideoPreferences.setPaused(newPausedState); // Save to cookies
   };
+
   const toggleVideoMute = () => {
-    setIsMuted(!isMuted);
+    const newMutedState = !isMuted;
+    setIsMuted(newMutedState);
+    VideoPreferences.setMuted(newMutedState); // Save to cookies
   };
 
   // Auto-resume video when returning to home section (unless manually paused)
