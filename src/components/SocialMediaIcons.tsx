@@ -53,9 +53,8 @@ const SocialMediaIcons: React.FC<SocialMediaIconsProps> = ({
       )
     }
   ];
-
   return (
-    <div className={`flex items-center space-x-4 ${className}`}>
+    <div className={`flex items-center lg:flex-row flex-col lg:space-x-4 lg:space-y-0 space-y-2 ${className}`}>
       {socialLinks.map((social) => (
         <a
           key={social.name}
