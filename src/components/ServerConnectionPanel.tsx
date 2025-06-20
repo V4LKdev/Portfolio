@@ -1,6 +1,6 @@
 // ServerConnectionPanel.tsx
-// Game-style server connection panel showing network stats and location
-// Inspired by FPS/multiplayer game UIs with authentic gaming aesthetics
+// Game-style server connection panel showing real network latency and stats
+// Measures actual HTTP request latency to provide authentic network quality data
 
 import * as React from 'react';
 import { useState, useEffect } from 'react';
@@ -46,29 +46,90 @@ const SignalBars: React.FC<{ ping: number }> = ({ ping }) => {
 
 /**
  * Server connection panel component styled like a game networking UI
- * Shows fake but realistic network statistics and server location
+ * Shows real HTTP latency and estimated network quality metrics
  */
 const ServerConnectionPanel: React.FC<ServerConnectionPanelProps> = ({ 
   className = '' 
 }) => {
-  // Network stats state with realistic fake data
+  // Network stats state with real HTTP latency measurement
   const [networkStats, setNetworkStats] = useState({
-    ping: 23,
-    packetLoss: 0.1,
-    jitter: 2,
+    ping: 0,
+    packetLoss: 0,
+    jitter: 0,
     serverLocation: 'EU-Central (Munich)',
-    status: 'Connected' as 'Connected' | 'Reconnecting' | 'Unstable'
+    status: 'Connecting' as 'Connected' | 'Reconnecting' | 'Unstable' | 'Connecting'
   });
-  // Simulate slight network fluctuations for realism
-  useEffect(() => {
-    const interval = setInterval(() => {
+
+  // Measure actual HTTP request latency
+  const measureLatency = async () => {
+    const attempts = 3;
+    const results: number[] = [];
+    let failures = 0;
+
+    for (let i = 0; i < attempts; i++) {
+      try {
+        const startTime = performance.now();
+        
+        // Use a fast, reliable endpoint (Google's public DNS over HTTPS)
+        // This gives us real network latency to a nearby server
+        const response = await fetch('https://dns.google/resolve?name=google.com&type=A', {
+          method: 'GET',
+          mode: 'cors',
+          cache: 'no-cache'
+        });
+        
+        if (response.ok) {
+          const endTime = performance.now();
+          results.push(endTime - startTime);
+        } else {
+          failures++;
+        }
+      } catch (error) {
+        failures++;
+        console.log('Latency measurement failed:', error);
+      }
+      
+      // Small delay between requests
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }    if (results.length > 0) {
+      const avgLatency = results.reduce((a, b) => a + b, 0) / results.length;
+      const jitter = results.length > 1 ? 
+        Math.sqrt(results.reduce((sum, val) => sum + Math.pow(val - avgLatency, 2), 0) / results.length) : 0;
+      
+      let connectionStatus: 'Connected' | 'Unstable' | 'Reconnecting';
+      if (failures === 0) {
+        connectionStatus = 'Connected';
+      } else if (failures < attempts) {
+        connectionStatus = 'Unstable';
+      } else {
+        connectionStatus = 'Reconnecting';
+      }
+      
       setNetworkStats(prev => ({
         ...prev,
-        ping: Math.max(15, Math.min(45, prev.ping + (Math.random() - 0.5) * 8)),
-        packetLoss: Math.max(0, Math.min(2, prev.packetLoss + (Math.random() - 0.5) * 0.3)),
-        jitter: Math.max(1, Math.min(5, prev.jitter + (Math.random() - 0.5) * 2))
+        ping: avgLatency,
+        packetLoss: (failures / attempts) * 100,
+        jitter: jitter,
+        status: connectionStatus
       }));
-    }, 3000); // Update every 3 seconds
+    } else {
+      // All requests failed
+      setNetworkStats(prev => ({
+        ...prev,
+        ping: 999,
+        packetLoss: 100,
+        status: 'Reconnecting'
+      }));
+    }
+  };
+
+  // Measure latency on component mount and then every 5 seconds
+  useEffect(() => {
+    measureLatency(); // Initial measurement
+    
+    const interval = setInterval(() => {
+      measureLatency();
+    }, 5000); // Update every 5 seconds
 
     return () => clearInterval(interval);
   }, []);
