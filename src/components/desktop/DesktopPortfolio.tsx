@@ -1,6 +1,6 @@
-// DeadlockPortfolio.tsx
-// Main portfolio component for Nicolas Martin's website
-// Handles navigation, section rendering, and layout for all main content sections
+// DesktopPortfolio.tsx
+// Desktop-specific portfolio component for Nicolas Martin's website
+// Handles navigation, section rendering, and layout for desktop/large screen viewing
 //
 // Sections: Home, Projects, About, Skills, Contact, Additional, Exit
 // Uses Tailwind CSS for styling and custom UI components for interactivity
@@ -8,24 +8,24 @@
 import * as React from 'react';
 import { useState } from 'react';
 import { Menu, X, ArrowLeft, Pause, Play, Volume2, VolumeX } from 'lucide-react';
-import LocalVideoBackground from './LocalVideoBackground';
-import ServerConnectionPanel from './ServerConnectionPanel';
-import SocialMediaIcons from './SocialMediaIcons';
-import HomeSection from './sections/HomeSection';
-import ProjectsSection from './sections/ProjectsSection';
-import AboutSection from './sections/AboutSection';
-import SkillsSection from './sections/SkillsSection';
-import ContactSection from './sections/ContactSection';
-import ProjectDetail from './ProjectDetail';
-import { VideoPreferences } from '../lib/cookies';
+import LocalVideoBackground from '../LocalVideoBackground';
+import ServerConnectionPanel from '../ServerConnectionPanel';
+import SocialMediaIcons from '../SocialMediaIcons';
+import HomeSection from '../sections/HomeSection';
+import ProjectsSection from '../sections/ProjectsSection';
+import AboutSection from '../sections/AboutSection';
+import SkillsSection from '../sections/SkillsSection';
+import ContactSection from '../sections/ContactSection';
+import ProjectDetail from '../ProjectDetail';
+import { VideoPreferences } from '../../lib/cookies';
 import { 
   backgroundImages,
   navigationItems,
   videoConfig,
   type Project 
-} from '../content';
+} from '../../content';
 
-const DeadlockPortfolio = () => {  // --- State Management ---
+const DesktopPortfolio = () => {  // --- State Management ---
   // Controls for video, menu, and navigation
   const [isMuted, setIsMuted] = useState(() => VideoPreferences.getMuted()); // Video mute from cookies
   const [isPaused, setIsPaused] = useState(() => VideoPreferences.getPaused()); // Video pause from cookies
@@ -89,7 +89,7 @@ const DeadlockPortfolio = () => {  // --- State Management ---
   // --- Section Backgrounds ---
   // Returns a static background image for each section
   const getStaticBackground = (section: string) => {
-    return backgroundImages[section as keyof typeof backgroundImages] || backgroundImages.projects;
+    return backgroundImages[section as keyof typeof backgroundImages] ?? backgroundImages.projects;
   };
 
   // --- Main Content Renderer ---
@@ -328,4 +328,4 @@ const DeadlockPortfolio = () => {  // --- State Management ---
   );
 };
 
-export default DeadlockPortfolio;
+export default DesktopPortfolio;
