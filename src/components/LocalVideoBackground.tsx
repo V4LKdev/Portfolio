@@ -2,7 +2,8 @@
 // Efficient local video background with smart scaling, fallbacks, and memory management
 // Replaces YouTube iframe with native HTML5 video for better performance and control
 
-import React, { useRef, useState, useEffect } from 'react';
+import * as React from 'react';
+import { useRef, useState, useEffect } from 'react';
 
 interface LocalVideoBackgroundProps {
   videoSrc: string;

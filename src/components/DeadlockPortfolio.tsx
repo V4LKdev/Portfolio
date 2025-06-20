@@ -5,7 +5,8 @@
 // Sections: Home, Projects, About, Skills, Contact, Additional, Exit
 // Uses Tailwind CSS for styling and custom UI components for interactivity
 
-import React, { useState } from 'react';
+import * as React from 'react';
+import { useState } from 'react';
 import { Menu, X, ArrowLeft, Pause, Play, Volume2, VolumeX } from 'lucide-react';
 import LocalVideoBackground from './LocalVideoBackground';
 import HomeSection from './sections/HomeSection';
@@ -246,23 +247,24 @@ const DeadlockPortfolio = () => {  // --- State Management ---
             {/* Menu Items */}
             <div className="px-8 space-y-6">
               {menuItems.map((item) => (
-                <div
+                <button
                   key={item.id}
                   onClick={() => handleMenuClick(item.section)}
                   className={`deadlock-menu-item group cursor-pointer transition-all duration-300 relative ${
                     currentSection === item.section ? 'text-amber-100 text-shadow-glow' : ''
                   }`}
+                  type="button"
+                  tabIndex={0}
+                  aria-current={currentSection === item.section ? 'page' : undefined}
                 >
                   {/* Game-style text with hover effect - both texts occupy same space */}
-                  <div className="relative">
-                    <span className="block group-hover:opacity-0 transition-opacity duration-300">
-                      {item.gameLabel}
-                    </span>
-                    <span className="absolute top-0 left-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      {item.hoverLabel}
-                    </span>
-                  </div>
-                </div>
+                  <span className="block group-hover:opacity-0 transition-opacity duration-300">
+                    {item.gameLabel}
+                  </span>
+                  <span className="absolute top-0 left-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    {item.hoverLabel}
+                  </span>
+                </button>
               ))}
             </div>            {/* Bottom Controls */}
             <div className="absolute bottom-8 left-8 flex items-center space-x-4">
@@ -321,9 +323,13 @@ const DeadlockPortfolio = () => {  // --- State Management ---
 
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && !isInnerPage && (
-        <div
+        <button
           className="fixed inset-0 bg-black/50 z-30 lg:hidden"
           onClick={() => setIsMobileMenuOpen(false)}
+          aria-label="Close mobile menu overlay"
+          tabIndex={0}
+          type="button"
+          style={{ cursor: 'pointer' }}
         />
       )}
     </div>
