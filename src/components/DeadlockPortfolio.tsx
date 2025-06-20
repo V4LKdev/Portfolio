@@ -9,6 +9,7 @@ import * as React from 'react';
 import { useState } from 'react';
 import { Menu, X, ArrowLeft, Pause, Play, Volume2, VolumeX } from 'lucide-react';
 import LocalVideoBackground from './LocalVideoBackground';
+import ServerConnectionPanel from './ServerConnectionPanel';
 import HomeSection from './sections/HomeSection';
 import ProjectsSection from './sections/ProjectsSection';
 import AboutSection from './sections/AboutSection';
@@ -246,11 +247,10 @@ const DeadlockPortfolio = () => {  // --- State Management ---
 
             {/* Menu Items */}
             <div className="px-8 space-y-6">
-              {menuItems.map((item) => (
-                <button
+              {menuItems.map((item) => (                <button
                   key={item.id}
                   onClick={() => handleMenuClick(item.section)}
-                  className={`deadlock-menu-item group cursor-pointer transition-all duration-300 relative ${
+                  className={`deadlock-menu-item group cursor-pointer transition-all duration-300 relative block w-full text-left ${
                     currentSection === item.section ? 'text-amber-100 text-shadow-glow' : ''
                   }`}
                   type="button"
@@ -296,22 +296,9 @@ const DeadlockPortfolio = () => {  // --- State Management ---
             </div>
           </div>
         </nav>
-      )}
-
-      {/* Availability Status Box (home only) */}
+      )}      {/* Server Connection Panel (home only) */}
       {!isInnerPage && (
-        <div className="fixed bottom-8 right-8 z-30 bg-black/70 backdrop-blur-sm border border-amber-500/30 rounded-lg p-4 atmospheric-glow">
-          <div className="text-amber-100 font-semibold text-sm mb-1">
-            Available for Freelance
-          </div>
-          <div className="text-amber-200/80 text-xs">
-            Mon-Fri 9AM-6PM CET
-          </div>
-          <div className="flex items-center mt-2">
-            <div className="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></div>
-            <span className="text-green-400 text-xs">Currently Available</span>
-          </div>
-        </div>
+        <ServerConnectionPanel className="fixed top-8 right-8 z-30" />
       )}
 
       {/* Main Content Area */}

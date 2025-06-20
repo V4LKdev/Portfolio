@@ -74,21 +74,18 @@ const ServerConnectionPanel: React.FC<ServerConnectionPanelProps> = ({
   }, []);
 
   return (
-    <div className={`bg-black/80 backdrop-blur-sm border border-amber-500/30 rounded-lg p-3 atmospheric-glow ${className}`}>
-      {/* Header with signal bars and server location */}
-      <div className="flex items-center justify-between mb-2">        <div className="flex items-center gap-2">
-          <SignalBars ping={networkStats.ping} />
-          <span className="text-amber-100 font-mono text-xs font-medium">
-            {networkStats.serverLocation}
-          </span>
-        </div>
+    <div className={`bg-black/80 backdrop-blur-sm border border-amber-500/30 rounded-lg p-3 atmospheric-glow ${className}`}>      {/* Header with signal bars and server location */}
+      <div className="flex items-center gap-2 mb-2">
+        <SignalBars ping={networkStats.ping} />
+        <span className="text-amber-100 font-mono text-xs font-medium">
+          {networkStats.serverLocation}
+        </span>
       </div>
 
-      {/* Network stats */}
-      <div className="space-y-1">        {/* Ping */}
-        <div className="flex justify-between items-center">
-          <span className="text-amber-200/80 text-xs font-mono">PING</span>
-          <span className={`text-xs font-mono font-medium ${
+      {/* Network stats on same line */}
+      <div className="flex items-center gap-4 text-xs font-mono text-amber-200/70">
+        <span>
+          PING <span className={`ml-1 font-medium ${
             (() => {
               if (networkStats.ping <= 30) return 'text-green-400';
               if (networkStats.ping <= 60) return 'text-yellow-400';
@@ -97,15 +94,10 @@ const ServerConnectionPanel: React.FC<ServerConnectionPanelProps> = ({
           }`}>
             {Math.round(networkStats.ping)}ms
           </span>
-        </div>
-
-        {/* Packet Loss - smaller and less prominent */}
-        <div className="flex justify-between items-center opacity-70">
-          <span className="text-amber-200/60 text-xs font-mono">PKT</span>
-          <span className="text-xs font-mono text-amber-200/60">
-            {networkStats.packetLoss.toFixed(1)}%
-          </span>
-        </div>
+        </span>
+        <span>
+          PKT <span className="text-amber-200/60">{networkStats.packetLoss.toFixed(1)}%</span>
+        </span>
       </div>
     </div>
   );
