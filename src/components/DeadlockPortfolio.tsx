@@ -298,12 +298,10 @@ const DeadlockPortfolio = () => {  // --- State Management ---
             </div>
           </div>
         </nav>
-      )}      {/* Server Connection Panel (home only) */}
+      )}      {/* Server Connection Panel (home only, hidden on mobile) */}
       {!isInnerPage && (
-        <ServerConnectionPanel className="fixed top-8 right-8 z-30" />
-      )}
-
-      {/* Social Media Icons (home only) */}
+        <ServerConnectionPanel className="fixed top-8 right-8 z-30 hidden lg:block" />
+      )}      {/* Social Media Icons (home only, responsive positioning) */}
       {!isInnerPage && (
         <SocialMediaIcons className="fixed bottom-8 right-8 z-30" />
       )}

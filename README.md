@@ -9,8 +9,8 @@
   <!-- Very doable with Framer Motion or React Transition Group. Subtle transitions can greatly improve feel. -->
 - [ ] Add a button/link to GitHub repo or project download on Project Details page, only if available.
   <!-- Standard for portfolios, easy to conditionally render. -->
-- [ ] Add Social Media icons to the bottom of the main page.
-  <!-- Simple and effective for networking. -->
+- [x] Add Social Media icons to the bottom of the main page.
+  <!-- Complete! Added GitHub, LinkedIn, The Rookies, YouTube icons at bottom right with mobile responsiveness. -->
 - [ ] [Future] Improve video quality and compression (test AV1, adaptive streaming, or higher bitrates as server allows).
   <!-- Consider AV1, H.265, or adaptive streaming for best quality/size balance. -->
 
