@@ -90,17 +90,15 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project, onBack }) => {
     if (project.type === 'academic') return 'Academic Project';
     return project.team || 'Team Project';
   };
-
   // --- Content Renderers ---
-  
-  /**
+    /**
    * Renders the Design tab content
    */
   const renderDesignContent = () => (
-    <div className="space-y-8">
+    <div className="space-y-8 w-full max-w-none min-w-full">{/* Ensure consistent width with min-width */}
       <div>
         <h3 className="text-2xl font-semibold text-amber-100 mb-4">Design Overview</h3>
-        <p className="text-amber-200/80 text-lg leading-relaxed mb-6">
+        <p className="text-amber-200/80 text-lg leading-relaxed mb-6 min-h-[3rem]">{/* Min height to prevent layout shift */}
           {project.design?.overview || 'Design overview will be added here...'}
         </p>
       </div>
@@ -154,16 +152,14 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project, onBack }) => {
         </div>
       </div>
     </div>
-  );
-
-  /**
+  );  /**
    * Renders the Code tab content
    */
   const renderCodeContent = () => (
-    <div className="space-y-8">
+    <div className="space-y-8 w-full max-w-none min-w-full">{/* Ensure consistent width with min-width */}
       <div>
         <h3 className="text-2xl font-semibold text-amber-100 mb-4">Technical Architecture</h3>
-        <p className="text-amber-200/80 text-lg leading-relaxed mb-6">
+        <p className="text-amber-200/80 text-lg leading-relaxed mb-6 min-h-[3rem]">{/* Min height to prevent layout shift */}
           {project.code?.architecture || 'Technical architecture will be documented here...'}
         </p>
       </div>
@@ -180,30 +176,28 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project, onBack }) => {
             ))}
           </ul>
         </div>
-      )}
-
-      {project.code?.codeSnippets && project.code.codeSnippets.length > 0 && (
-        <div>
+      )}      {project.code?.codeSnippets && project.code.codeSnippets.length > 0 && (
+        <div className="w-full">
           <h4 className="text-xl font-semibold text-amber-100 mb-3">Code Examples</h4>
-          <div className="space-y-4">
+          <div className="space-y-4 w-full">
             {project.code.codeSnippets.map((snippet, index) => (
-              <div key={index} className="bg-black/40 rounded-lg border border-amber-500/20 overflow-hidden">
+              <div key={index} className="bg-black/40 rounded-lg border border-amber-500/20 w-full">
                 <div className="bg-amber-500/10 px-4 py-2 border-b border-amber-500/20">
                   <h5 className="text-amber-100 font-medium">{snippet.title}</h5>
                   <span className="text-amber-200/60 text-sm">{snippet.language}</span>
                 </div>
-                <pre className="p-4 text-amber-200/80 text-sm overflow-x-auto">
-                  <code>{snippet.code}</code>
-                </pre>
+                <div className="w-full">
+                  <pre className="p-4 text-amber-200/80 text-sm whitespace-pre w-full overflow-x-auto">
+                    <code className="block">{snippet.code}</code>
+                  </pre>
+                </div>
               </div>
             ))}
           </div>
         </div>
-      )}
-
-      <div className="bg-black/30 p-6 rounded-lg border border-amber-500/20">
+      )}      <div className="bg-black/30 p-6 rounded-lg border border-amber-500/20 w-full">
         <h4 className="text-xl font-semibold text-amber-100 mb-3">Technical Documentation</h4>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
           <div className="bg-amber-500/5 p-4 rounded border border-amber-500/10">
             <h5 className="text-amber-100 font-medium mb-2">Performance</h5>
             <p className="text-amber-200/70 text-sm">
@@ -219,16 +213,14 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project, onBack }) => {
         </div>
       </div>
     </div>
-  );
-
-  /**
+  );  /**
    * Renders the Implementation tab content
    */
   const renderImplementationContent = () => (
-    <div className="space-y-8">
+    <div className="space-y-8 w-full max-w-none min-w-full">{/* Ensure consistent width with min-width */}
       <div>
         <h3 className="text-2xl font-semibold text-amber-100 mb-4">Development Process</h3>
-        <p className="text-amber-200/80 text-lg leading-relaxed mb-6">
+        <p className="text-amber-200/80 text-lg leading-relaxed mb-6 min-h-[3rem]">{/* Min height to prevent layout shift */}
           {project.implementation?.process || 'Development process documentation will be added here...'}
         </p>
       </div>
@@ -412,11 +404,9 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project, onBack }) => {
           {/* Placeholder to maintain space when sticky */}
           {isSticky && <div className="h-20"></div>}
         </div>
-      )}
-
-      {/* Content Area */}
+      )}      {/* Content Area */}
       <div className="bg-black/50 backdrop-blur-sm border border-amber-500/20 rounded-lg atmospheric-glow">
-        <div className="p-8 min-h-[600px]">
+        <div className="p-8 min-h-[600px] w-full">{/* Removed overflow-hidden to allow proper code snippet display */}
           {availableTabs.length > 0 ? renderTabContent() : (
             <div className="text-center py-12">
               <p className="text-xl text-amber-200/80">
