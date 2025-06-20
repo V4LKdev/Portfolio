@@ -35,5 +35,7 @@
   <!-- This is a bit tricky but possible with CSS grid/flexbox and careful layout planning. Syntax highlighting is easy with Prism.js or Highlight.js. -->
 - [ ] Add more links, writeups, and polish to project details as needed.
   <!-- Always a good idea! -->
+- [ ] Create a dedicated mobile-friendly version or layout of the site.
+  <!-- Consider responsive design, or separate mobile/desktop components for a truly app-like experience. -->
 
 ---

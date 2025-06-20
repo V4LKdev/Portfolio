@@ -1,8 +1,8 @@
 
-import DeadlockPortfolio from "@/components/DeadlockPortfolio";
+import Portfolio from "@/components/Portfolio";
 
 const Index = () => {
-  return <DeadlockPortfolio />;
+  return <Portfolio />;
 };
 
 export default Index;
