@@ -21,7 +21,7 @@ interface LocalVideoBackgroundProps {
  * - Object-fit: cover for natural scaling without stretching
  * - Fallback poster image for loading/error states
  * - Memory management and cleanup
- * - Mobile optimization
+ * - Browser visibility detection for better performance
  * - Proper aspect ratio handling
  */
 const LocalVideoBackground: React.FC<LocalVideoBackgroundProps> = ({
@@ -38,8 +38,29 @@ const LocalVideoBackground: React.FC<LocalVideoBackgroundProps> = ({
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
   const [showPoster, setShowPoster] = useState(true);
+  const [wasPlayingBeforeHidden, setWasPlayingBeforeHidden] = useState(false);
+  // Handle browser visibility changes for performance
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      const video = videoRef.current;
+      if (!video || hasError) return;
 
-  // Handle play/pause state changes
+      if (document.hidden) {
+        // Browser tab is hidden - pause video to save resources
+        if (!video.paused) {
+          setWasPlayingBeforeHidden(true);
+          video.pause();
+        }
+      } else if (wasPlayingBeforeHidden && !isPaused) {
+        // Browser tab is visible again - resume if it was playing before
+        setWasPlayingBeforeHidden(false);
+        video.play().catch(console.warn);
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, [isPaused, hasError, wasPlayingBeforeHidden]);  // Handle play/pause state changes
   useEffect(() => {
     const video = videoRef.current;
     if (!video || hasError) return;
@@ -48,12 +69,13 @@ const LocalVideoBackground: React.FC<LocalVideoBackgroundProps> = ({
       video.pause();
       setShowPoster(true);
     } else {
+      // Hide poster immediately when resuming
+      setShowPoster(false);
       video.play().catch((error) => {
         console.warn('Video autoplay failed:', error);
         setHasError(true);
         onError?.();
       });
-      setShowPoster(false);
     }
   }, [isPaused, hasError, onError]);
 

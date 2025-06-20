@@ -7,7 +7,6 @@
 
 import React, { useState } from 'react';
 import { Menu, X, ArrowLeft, Pause, Play, Volume2, VolumeX } from 'lucide-react';
-import BackgroundMusic from './BackgroundMusic';
 import LocalVideoBackground from './LocalVideoBackground';
 import HomeSection from './sections/HomeSection';
 import ProjectsSection from './sections/ProjectsSection';
@@ -23,10 +22,10 @@ import {
 } from '../content';
 
 const DeadlockPortfolio = () => {  // --- State Management ---
-  // Controls for music, video, menu, and navigation
+  // Controls for video, menu, and navigation
   const [isMuted, setIsMuted] = useState(videoConfig.defaultMuted); // Video mute
-  const [isMusicMuted, setIsMusicMuted] = useState(true); // Background music mute
   const [isPaused, setIsPaused] = useState(videoConfig.defaultPaused); // Video pause
+  const [isManuallyPaused, setIsManuallyPaused] = useState(false); // Track manual pause
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // Mobile nav menu
   const [currentSection, setCurrentSection] = useState('home'); // Current visible section
   const [selectedProject, setSelectedProject] = useState<Project | null>(null); // Selected project for detail view
@@ -50,26 +49,33 @@ const DeadlockPortfolio = () => {  // --- State Management ---
 
   const handleProjectClick = (project: Project) => {
     setSelectedProject(project);
-  };
-
-  const handleBackClick = () => {
+  };  const handleBackClick = () => {
     if (selectedProject) {
       setSelectedProject(null);
     } else {
       setCurrentSection('home');
-      // Resume video when returning to home
-      setIsPaused(false);
+      // Always resume video when returning to home, unless user manually paused it
+      if (!isManuallyPaused) {
+        setTimeout(() => setIsPaused(false), 100); // Small delay to ensure component is ready
+      }
     }
-  };
-  // --- Video Controls ---
+  };// --- Video Controls ---
   // Controls for video playback and muting
   const toggleVideoPlayback = () => {
-    setIsPaused(!isPaused);
+    const newPausedState = !isPaused;
+    setIsPaused(newPausedState);
+    setIsManuallyPaused(newPausedState);
   };
-
   const toggleVideoMute = () => {
     setIsMuted(!isMuted);
   };
+
+  // Auto-resume video when returning to home section (unless manually paused)
+  React.useEffect(() => {
+    if (currentSection === 'home' && !isManuallyPaused) {
+      setIsPaused(false);
+    }
+  }, [currentSection, isManuallyPaused]);
 
   // --- Section Backgrounds ---
   // Returns a static background image for each section
@@ -198,17 +204,10 @@ const DeadlockPortfolio = () => {  // --- State Management ---
       ) : (
         <div 
           className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat transition-all duration-500"
-          style={{ backgroundImage: `url(${getStaticBackground(currentSection)})` }}
-        >
+          style={{ backgroundImage: `url(${getStaticBackground(currentSection)})` }}        >
           <div className="absolute inset-0 video-overlay" />
         </div>
       )}
-
-      {/* Background Music */}
-      <BackgroundMusic 
-        isMuted={isMusicMuted}
-        onToggleMute={() => setIsMusicMuted(!isMusicMuted)}
-      />
 
       {/* Mobile Menu Button */}
       {!isInnerPage && (
@@ -261,12 +260,6 @@ const DeadlockPortfolio = () => {  // --- State Management ---
               ))}
             </div>            {/* Bottom Controls */}
             <div className="absolute bottom-8 left-8 flex items-center space-x-4">
-              {/* Background Music Control */}
-              <BackgroundMusic 
-                isMuted={isMusicMuted}
-                onToggleMute={() => setIsMusicMuted(!isMusicMuted)}
-              />
-              
               {/* Video Playback Control */}
               <button
                 onClick={toggleVideoPlayback}
