@@ -12,6 +12,7 @@ import {
   Menu,
   X,
   ArrowLeft,
+  ChevronLeft,
   Pause,
   Play,
   Volume2,
@@ -399,23 +400,85 @@ const Portfolio = () => {
                 </button>
                 );
               })}
-            </div>{" "}
-            {/* Bottom Controls - Just Settings Button */}
-            <div className="absolute bottom-6 md:bottom-8 left-8 md:left-12">
-              {" "}
-              <button
-                onClick={() => setIsSettingsOpen(!isSettingsOpen)}
-                className="p-3 transition-all duration-300 hover:scale-110"
-                // With background: "p-3 rounded-lg bg-amber-500/10 transition-all duration-300 hover:bg-amber-500/20 hover:scale-110"
-                // With border: "p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 hover:border-amber-500/60 transition-all duration-300 hover:bg-amber-500/20 hover:scale-110"
-                aria-label={
-                  isSettingsOpen ? "Close settings menu" : "Open settings menu"
-                }
-                aria-expanded={isSettingsOpen}
-                aria-haspopup="true"
-              >
-                <Settings className="w-5 h-5 text-amber-200" />
-              </button>
+            </div>{" "}            {/* Bottom Controls - Settings Button or Expanded Menu */}
+            <div className="absolute bottom-12 md:bottom-14 left-8 md:left-12">              {!isSettingsOpen ? (
+                /* Settings Gear Button */
+                <button
+                  onClick={() => setIsSettingsOpen(true)}
+                  className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 hover:border-amber-500/60 transition-all duration-300 hover:bg-amber-500/20 hover:scale-110"
+                  aria-label="Open settings menu"
+                  aria-expanded={false}
+                  aria-haspopup="true"
+                >
+                  <Settings className="w-5 h-5 text-amber-200" />
+                </button>
+              ) : (
+                /* Expanded Settings Menu - Same height as single button */
+                <div className="flex items-center space-x-1 rounded-lg bg-amber-500/10 border border-amber-500/30">{" "}
+                  {/* Collapse Button */}
+                  <button
+                    onClick={() => setIsSettingsOpen(false)}
+                    className="p-3 transition-all duration-300 hover:scale-110"
+                    aria-label="Close settings menu"
+                    title="Close settings menu"
+                  >
+                    <ChevronLeft className="w-5 h-5 text-amber-200" />
+                  </button>
+                  {/* Separator Line */}
+                  <div className="w-px h-6 bg-amber-500/30"></div>
+                  {/* Theme Toggle */}
+                  <button
+                    onClick={() =>
+                      setWebsiteTheme(websiteTheme === "dark" ? "light" : "dark")
+                    }
+                    className="p-3 transition-all duration-300 hover:scale-110"
+                    aria-label={`Switch to ${websiteTheme === "dark" ? "light" : "dark"} theme`}
+                    title={`Switch to ${websiteTheme === "dark" ? "light" : "dark"} theme`}
+                  >
+                    {websiteTheme === "dark" ? (
+                      <Sun className="w-5 h-5 text-amber-200" />
+                    ) : (
+                      <Moon className="w-5 h-5 text-amber-200" />
+                    )}
+                  </button>
+                  {/* Video Toggle */}
+                  <button
+                    onClick={toggleVideoPlayback}
+                    className="p-3 transition-all duration-300 hover:scale-110"
+                    aria-label={
+                      isPaused
+                        ? "Play background video"
+                        : "Pause background video"
+                    }
+                    title={
+                      isPaused
+                        ? "Play background video"
+                        : "Pause background video"
+                    }
+                  >
+                    {isPaused ? (
+                      <Play className="w-5 h-5 text-amber-200" />
+                    ) : (
+                      <Pause className="w-5 h-5 text-amber-200" />
+                    )}
+                  </button>
+                  {/* Audio Toggle */}
+                  <button
+                    onClick={toggleVideoMute}
+                    className="p-3 transition-all duration-300 hover:scale-110"
+                    aria-label={
+                      isMuted ? "Unmute video audio" : "Mute video audio"
+                    }
+                    title={isMuted ? "Unmute video audio" : "Mute video audio"}
+                  >
+                    {isMuted ? (
+                      <VolumeX className="w-5 h-5 text-amber-200" />
+                    ) : (
+                      <Volume2 className="w-5 h-5 text-amber-200" />
+                    )}
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </nav>
@@ -429,79 +492,10 @@ const Portfolio = () => {
         <SocialMediaIcons className="fixed bottom-4 right-4 md:bottom-6 md:right-6 lg:bottom-8 lg:right-8 z-30" />
       )}      {/* Game-style Build ID - Bottom left corner */}
       {!isInnerPage && (
-        <div className="fixed bottom-20 left-8 md:bottom-24 md:left-12 z-50 text-gray-400 text-xs font-mono select-none pointer-events-none">
-          <span className="bg-black/60 px-2 py-1 rounded backdrop-blur-sm">v2025.07.1</span>
+        <div className="fixed bottom-4 left-8 md:bottom-6 md:left-12 z-50 text-gray-400 text-xs font-mono select-none pointer-events-none">
+          <span className="bg-black/60 px-2 py-1 rounded backdrop-blur-sm">v2025.07_v01</span>
         </div>
-      )}{" "}      {/* Settings Mini Menu */}
-      {isSettingsOpen && !isInnerPage && (
-        <>
-          {/* Settings Overlay */}
-          <button
-            className="fixed inset-0 bg-transparent z-50"
-            onClick={() => setIsSettingsOpen(false)}
-            aria-label="Close settings menu"
-            type="button"
-          />
-          {/* Horizontal Settings Menu Rolling Out to the Right */}
-          <div className="fixed bottom-6 md:bottom-8 left-20 md:left-24 z-[60]">
-            <div className="bg-black/90 backdrop-blur-sm border border-amber-500/40 rounded-lg p-2 shadow-xl">
-              <div className="flex space-x-2">
-                {/* Theme Toggle */}
-                <button
-                  onClick={() =>
-                    setWebsiteTheme(websiteTheme === "dark" ? "light" : "dark")
-                  }
-                  className="p-3 transition-all duration-300 hover:scale-110"
-                  aria-label={`Switch to ${websiteTheme === "dark" ? "light" : "dark"} theme`}
-                  title={`Switch to ${websiteTheme === "dark" ? "light" : "dark"} theme`}
-                >
-                  {websiteTheme === "dark" ? (
-                    <Sun className="w-5 h-5 text-amber-200" />
-                  ) : (
-                    <Moon className="w-5 h-5 text-amber-200" />
-                  )}
-                </button>
-                {/* Video Toggle */}
-                <button
-                  onClick={toggleVideoPlayback}
-                  className="p-3 transition-all duration-300 hover:scale-110"
-                  aria-label={
-                    isPaused
-                      ? "Play background video"
-                      : "Pause background video"
-                  }
-                  title={
-                    isPaused
-                      ? "Play background video"
-                      : "Pause background video"
-                  }
-                >
-                  {isPaused ? (
-                    <Play className="w-5 h-5 text-amber-200" />
-                  ) : (
-                    <Pause className="w-5 h-5 text-amber-200" />
-                  )}
-                </button>
-                {/* Audio Toggle */}
-                <button
-                  onClick={toggleVideoMute}
-                  className="p-3 transition-all duration-300 hover:scale-110"
-                  aria-label={
-                    isMuted ? "Unmute video audio" : "Mute video audio"
-                  }
-                  title={isMuted ? "Unmute video audio" : "Mute video audio"}
-                >
-                  {isMuted ? (
-                    <VolumeX className="w-5 h-5 text-amber-200" />
-                  ) : (
-                    <Volume2 className="w-5 h-5 text-amber-200" />
-                  )}
-                </button>
-              </div>
-            </div>
-          </div>
-        </>
-      )}{" "}
+      )}{" "}      {/* Settings Mini Menu - No overlay needed since buttons work inline */}{" "}
       {/* Main Content Area - Responsive margins and padding */}
       <div
         className={`relative z-10 content-area ${!isInnerPage ? "lg:ml-sidebar" : ""}`}
