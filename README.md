@@ -53,4 +53,108 @@ A modern, game-inspired portfolio website built with React, TypeScript, and Tail
 - `src/content/` - Content configuration and data
 - `src/lib/` - Utilities and helper functions
 
+## Development Workflow & Principles
+
+### Architecture Principles
+- **Component-Based Design**: Modular React components with clear separation of concerns
+- **TypeScript First**: Strict typing for better code quality and developer experience
+- **Mobile-First Responsive**: Built with Tailwind CSS breakpoints (mobile → tablet → desktop)
+- **Game-Inspired UX**: Clean, modern UI with video game aesthetics and smooth interactions
+- **Performance Optimized**: Video management, efficient re-renders, and optimized asset loading
+- **Accessibility**: Proper ARIA labels, keyboard navigation, and semantic HTML
+
+### Code Organization
+```
+src/
+├── components/           # React components
+│   ├── Portfolio.tsx    # Main container component
+│   ├── sections/        # Page sections (Home, Projects, etc.)
+│   ├── ui/             # Reusable UI components (shadcn/ui)
+│   └── *.tsx           # Feature components
+├── content/            # Content configuration & data
+│   ├── projects.ts     # Project data and interfaces
+│   ├── skills.ts       # Skills and tools data
+│   ├── about.ts        # About page content
+│   ├── personal.ts     # Personal info and contacts
+│   ├── ui-config.ts    # Navigation, backgrounds, UI config
+│   └── index.ts        # Central content exports
+├── hooks/              # Custom React hooks
+├── lib/                # Utilities and helper functions
+│   ├── utils.ts        # General utilities (cn, etc.)
+│   └── cookies.ts      # Video preference persistence
+└── pages/              # Route components
+```
+
+### Git Workflow & Version Management
+
+#### Branch Structure
+- **`main`**: Production-ready source code
+- **`releases`**: Production build artifacts for deployment tracking
+
+#### Build & Release Process
+1. **Development**: Work on features in `main` branch
+2. **Build**: `npm run build` creates production files in `dist/`
+3. **Release**: Production builds are committed to `releases` branch with version tags
+4. **Deploy**: Deploy from `releases` branch with traceable build IDs
+
+#### Commands
+```bash
+# Development
+npm run dev          # Start development server
+npm run lint         # Run ESLint checks
+npm run build        # Create production build
+
+# Release Process
+npm run build                           # Create production build
+git checkout releases                   # Switch to releases branch
+# Copy dist/ contents to releases branch root
+git add . && git commit -m "build: production build vX.XX.XX_vXX"
+git push origin releases               # Push release to GitHub
+git checkout main                      # Return to development
+```
+
+### Build ID System
+- **Format**: `v2025.07_v01` (year.month_version)
+- **Location**: Displayed in bottom-left corner of main menu
+- **Purpose**: Match deployed versions to git commits in `releases` branch
+- **Updates**: Increment for each production release
+
+### Development Guidelines
+
+#### TypeScript
+- Strict mode disabled for flexibility during rapid development
+- Interface definitions in content files for data structures
+- Proper typing for component props and state
+
+#### Styling
+- **Tailwind CSS** for all styling with custom game-inspired classes
+- **CSS Custom Properties** for theme colors and dynamic values
+- **Responsive Design** using Tailwind breakpoints (`sm:`, `md:`, `lg:`, `xl:`)
+- **Game Aesthetics**: Amber color scheme, atmospheric glows, backdrop blur
+
+#### Performance
+- **Video Optimization**: Cookie-based preferences, memory management
+- **Component Optimization**: useCallback for expensive operations
+- **Asset Management**: Optimized images, efficient imports
+- **Build Optimization**: Vite bundling with tree-shaking
+
+#### Code Quality
+- **ESLint**: Configured with React and TypeScript rules
+- **Prettier**: Consistent code formatting
+- **Clean Code**: Descriptive variable names, commented complex logic
+- **No Unused Code**: Regular cleanup of unused imports and components
+
+### File Conventions
+- **Components**: PascalCase (`Portfolio.tsx`)
+- **Hooks**: camelCase with `use` prefix (`useToast.ts`)
+- **Content**: camelCase (`ui-config.ts`)
+- **Utilities**: camelCase (`utils.ts`)
+- **Types**: PascalCase interfaces and types
+
+### Content Management
+- **Centralized Data**: All content in `src/content/` directory
+- **Type Safety**: TypeScript interfaces for all data structures
+- **Easy Updates**: Modify content files without touching components
+- **Modular Exports**: Clean imports through `content/index.ts`
+
 ---
