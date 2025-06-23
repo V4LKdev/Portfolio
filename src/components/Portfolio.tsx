@@ -8,7 +8,7 @@
 
 import * as React from 'react';
 import { useState } from 'react';
-import { Menu, X, ArrowLeft, Pause, Play, Volume2, VolumeX } from 'lucide-react';
+import { Menu, X, ArrowLeft, Pause, Play, Volume2, VolumeX, Settings, Sun, Moon } from 'lucide-react';
 import LocalVideoBackground from './LocalVideoBackground';
 import ServerConnectionPanel from './ServerConnectionPanel';
 import SocialMediaIcons from './SocialMediaIcons';
@@ -26,8 +26,7 @@ import {
   type Project 
 } from '../content';
 
-const Portfolio = () => {
-  // --- State Management ---
+const Portfolio = () => {  // --- State Management ---
   // Controls for video, menu, and navigation
   const [isMuted, setIsMuted] = useState(() => VideoPreferences.getMuted()); // Video mute from cookies
   const [isPaused, setIsPaused] = useState(() => VideoPreferences.getPaused()); // Video pause from cookies
@@ -36,6 +35,8 @@ const Portfolio = () => {
   const [currentSection, setCurrentSection] = useState('home'); // Current visible section
   const [selectedProject, setSelectedProject] = useState<Project | null>(null); // Selected project for detail view
   const [projectFilter, setProjectFilter] = useState('all'); // Project filter (all/team/solo/academic)
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false); // Settings panel state
+  const [websiteTheme, setWebsiteTheme] = useState<'dark' | 'light'>('dark'); // Website theme
 
   // --- Navigation Menu Items ---
   // Navigation items are now imported from content files
@@ -238,19 +239,16 @@ const Portfolio = () => {
             <Menu className="w-6 h-6 text-amber-100" />
           )}
         </button>
-      )}
-
-      {/* Left Navigation Menu - Responsive Design */}
+      )}      {/* Left Navigation Menu - Responsive Design */}
       {!isInnerPage && (
-        <nav className={`fixed left-0 top-0 h-full w-72 md:w-80 z-40 transition-transform duration-300 lg:translate-x-0 ${
+        <nav className={`fixed left-0 top-0 h-full w-88 md:w-[28rem] z-40 transition-transform duration-300 lg:translate-x-0 ${
           isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         }`}>
-          <div className="h-full bg-black/70 backdrop-blur-sm border-r border-amber-500/20 atmospheric-glow">
-            {/* Game Logo Area - Responsive padding */}
-            <div className="pt-12 md:pt-16 pb-6 md:pb-8 px-6 md:px-8">
-              <h1 className="deadlock-title mb-2 text-xl md:text-2xl">PORTFOLIO</h1>
-              <p className="text-amber-200/60 text-xs md:text-sm tracking-wide font-light">
-                NICOLAS MARTIN WORKSPACE
+          <div className="h-full bg-gradient-to-r from-black/95 via-black/70 via-black/30 to-transparent">{/* Game Logo Area - Responsive padding */}
+            <div className="pt-14 md:pt-20 pb-7 md:pb-10 px-8 md:px-12">
+              <h1 className="deadlock-title mb-1 text-3xl md:text-4xl lg:text-5xl">NICOLAS MARTIN</h1>
+              <p className="text-amber-200/80 text-base md:text-lg lg:text-xl tracking-wide font-medium" style={{ fontFamily: 'Good Timing, serif' }}>
+                Game Programmer
               </p>
             </div>
 
@@ -276,34 +274,14 @@ const Portfolio = () => {
                   </span>
                 </button>
               ))}
-            </div>
-
-            {/* Bottom Controls - Responsive positioning */}
-            <div className="absolute bottom-6 md:bottom-8 left-6 md:left-8 flex items-center space-x-3 md:space-x-4">
-              {/* Video Playback Control */}
+            </div>            {/* Bottom Controls - Just Settings Button */}
+            <div className="absolute bottom-6 md:bottom-8 left-8 md:left-12">
               <button
-                onClick={toggleVideoPlayback}
-                className="p-2 rounded-lg bg-amber-500/10 border border-amber-500/30 hover:border-amber-500/60 transition-all duration-300 hover:bg-amber-500/20"
-                title={isPaused ? "Play background video" : "Pause background video"}
+                onClick={() => setIsSettingsOpen(!isSettingsOpen)}
+                className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 hover:border-amber-500/60 transition-all duration-300 hover:bg-amber-500/20 hover:scale-110"
+                title="Settings"
               >
-                {isPaused ? (
-                  <Play className="w-4 h-4 md:w-5 md:h-5 text-amber-200" />
-                ) : (
-                  <Pause className="w-4 h-4 md:w-5 md:h-5 text-amber-200" />
-                )}
-              </button>
-              
-              {/* Video Audio Control */}
-              <button
-                onClick={toggleVideoMute}
-                className="p-2 rounded-lg bg-amber-500/10 border border-amber-500/30 hover:border-amber-500/60 transition-all duration-300 hover:bg-amber-500/20"
-                title={isMuted ? "Unmute video audio" : "Mute video audio"}
-              >
-                {isMuted ? (
-                  <VolumeX className="w-4 h-4 md:w-5 md:h-5 text-amber-200" />
-                ) : (
-                  <Volume2 className="w-4 h-4 md:w-5 md:h-5 text-amber-200" />
-                )}
+                <Settings className="w-5 h-5 text-amber-200" />
               </button>
             </div>
           </div>
@@ -318,10 +296,65 @@ const Portfolio = () => {
       {/* Social Media Icons - Responsive positioning and layout */}
       {!isInnerPage && (
         <SocialMediaIcons className="fixed bottom-4 right-4 md:bottom-6 md:right-6 lg:bottom-8 lg:right-8 z-30" />
+      )}      {/* Settings Mini Menu */}
+      {isSettingsOpen && !isInnerPage && (
+        <>
+          {/* Settings Overlay */}
+          <button 
+            className="fixed inset-0 bg-transparent z-50"
+            onClick={() => setIsSettingsOpen(false)}
+            aria-label="Close settings menu"
+            type="button"
+          />          {/* Small Settings Menu Above Button */}
+          <div className="fixed bottom-20 md:bottom-22 left-8 md:left-12 z-[60]">
+            <div className="bg-black/90 backdrop-blur-sm border border-amber-500/40 rounded-lg p-2 shadow-xl">
+              <div className="flex space-x-2">
+                {/* Theme Toggle */}
+                <button
+                  onClick={() => setWebsiteTheme(websiteTheme === 'dark' ? 'light' : 'dark')}
+                  className="p-2 rounded bg-amber-500/10 hover:bg-amber-500/20 transition-colors border border-amber-500/30 hover:border-amber-500/60"
+                  title={`Switch to ${websiteTheme === 'dark' ? 'light' : 'dark'} theme`}
+                >
+                  {websiteTheme === 'dark' ? (
+                    <Sun className="w-4 h-4 text-amber-200" />
+                  ) : (
+                    <Moon className="w-4 h-4 text-amber-200" />
+                  )}
+                </button>
+                
+                {/* Video Toggle */}
+                <button
+                  onClick={toggleVideoPlayback}
+                  className="p-2 rounded bg-amber-500/10 hover:bg-amber-500/20 transition-colors border border-amber-500/30 hover:border-amber-500/60"
+                  title={isPaused ? "Play background video" : "Pause background video"}
+                >
+                  {isPaused ? (
+                    <Play className="w-4 h-4 text-amber-200" />
+                  ) : (
+                    <Pause className="w-4 h-4 text-amber-200" />
+                  )}
+                </button>
+                
+                {/* Audio Toggle */}
+                <button
+                  onClick={toggleVideoMute}
+                  className="p-2 rounded bg-amber-500/10 hover:bg-amber-500/20 transition-colors border border-amber-500/30 hover:border-amber-500/60"
+                  title={isMuted ? "Unmute video audio" : "Mute video audio"}
+                >
+                  {isMuted ? (
+                    <VolumeX className="w-4 h-4 text-amber-200" />
+                  ) : (
+                    <Volume2 className="w-4 h-4 text-amber-200" />
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        </>
       )}
 
       {/* Main Content Area - Responsive margins and padding */}
-      <div className={`relative z-10 ${!isInnerPage ? 'lg:ml-72 xl:ml-80' : ''}`}>
+      <div className={`relative z-10 ${!isInnerPage ? 'lg:ml-[22rem] xl:ml-[28rem]' : ''}`}>
         <div className="min-h-screen flex items-start justify-center px-4 md:px-6 lg:px-8 pt-6 md:pt-8">
           {renderContent()}
         </div>
