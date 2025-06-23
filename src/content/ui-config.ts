@@ -36,6 +36,14 @@ export const navigationItems = [
     hierarchy: "secondary", // Medium - important sections
   },
   {
+    id: "contact",
+    label: "Contact",
+    section: "contact",
+    gameLabel: "Social",
+    hoverLabel: "Contact",
+    hierarchy: "secondary", // Medium - important sections
+  },
+  {
     id: "skills",
     label: "Skills & Tools",
     section: "skills",
@@ -50,14 +58,6 @@ export const navigationItems = [
     gameLabel: "Extras",
     hoverLabel: "Hobbies",
     hierarchy: "tertiary", // Smaller - less important
-  },
-  {
-    id: "contact",
-    label: "Contact",
-    section: "contact",
-    gameLabel: "Social",
-    hoverLabel: "Contact",
-    hierarchy: "secondary", // Medium - important sections
   },
   {
     id: "exit",

@@ -405,7 +405,8 @@ const Portfolio = () => {
               {" "}
               <button
                 onClick={() => setIsSettingsOpen(!isSettingsOpen)}
-                className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 hover:border-amber-500/60 transition-all duration-300 hover:bg-amber-500/20 hover:scale-110"
+                className="p-3 rounded-lg bg-amber-500/10 transition-all duration-300 hover:bg-amber-500/20 hover:scale-110"
+                // With border: "p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 hover:border-amber-500/60 transition-all duration-300 hover:bg-amber-500/20 hover:scale-110"
                 aria-label={
                   isSettingsOpen ? "Close settings menu" : "Open settings menu"
                 }
@@ -425,6 +426,13 @@ const Portfolio = () => {
       {/* Social Media Icons - Responsive positioning and layout */}
       {!isInnerPage && (
         <SocialMediaIcons className="fixed bottom-4 right-4 md:bottom-6 md:right-6 lg:bottom-8 lg:right-8 z-30" />
+      )}
+
+      {/* Game-style Build ID - Bottom left corner */}
+      {!isInnerPage && (
+        <div className="fixed bottom-4 left-4 md:bottom-6 md:left-6 z-20 text-gray-500 text-xs font-mono">
+          <span className="opacity-60">Build 2025.06.23.1</span>
+        </div>
       )}{" "}
       {/* Settings Mini Menu */}
       {isSettingsOpen && !isInnerPage && (
