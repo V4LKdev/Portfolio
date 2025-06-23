@@ -14,7 +14,7 @@ interface HomeSectionProps {
  */
 const HomeSection: React.FC<HomeSectionProps> = ({ onNavigateToProjects }) => {
   return (
-    <div className="text-left max-w-4xl pt-8 transition-all duration-500 animate-fade-in">
+    <div className="text-left max-w-4xl pt-8 transition-all duration-500 animate-fade-in no-select">
       {/* Content removed for clean video game menu aesthetic */}
     </div>
   );

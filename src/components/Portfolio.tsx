@@ -85,13 +85,90 @@ const Portfolio = () => {  // --- State Management ---
     setIsMuted(newMutedState);
     VideoPreferences.setMuted(newMutedState); // Save to cookies
   };
-
   // Auto-resume video when returning to home section (unless manually paused)
   React.useEffect(() => {
     if (currentSection === 'home' && !isManuallyPaused) {
       setIsPaused(false);
     }
   }, [currentSection, isManuallyPaused]);
+  // Sync settings UI with media keys and video state changes
+  React.useEffect(() => {
+    // Set up media session for hardware media keys
+    if ('mediaSession' in navigator) {
+      navigator.mediaSession.setActionHandler('play', () => {
+        if (isPaused) {
+          toggleVideoPlayback();
+        }
+      });
+
+      navigator.mediaSession.setActionHandler('pause', () => {
+        if (!isPaused) {
+          toggleVideoPlayback();
+        }
+      });
+    }    // Listen for keyboard media keys
+    const handleKeyDown = (event: KeyboardEvent) => {
+      // Check if we should handle this key event
+      const shouldHandleSpace = event.code === 'Space' && event.target === document.body;
+      const shouldHandleMediaKey = event.code === 'MediaPlayPause' || 
+                                   (event.code === 'MediaPlay' && isPaused) || 
+                                   (event.code === 'MediaPause' && !isPaused);
+      
+      if (shouldHandleSpace || shouldHandleMediaKey) {
+        event.preventDefault();
+        toggleVideoPlayback();
+      }
+    };// Listen for video element state changes to sync UI
+    const syncVideoState = () => {
+      const video = document.querySelector('video');
+      if (video) {
+        const handlePlay = () => {
+          if (isPaused) {
+            setIsPaused(false);
+            setIsManuallyPaused(false);
+          }
+        };
+
+        const handlePause = () => {
+          if (!isPaused) {
+            setIsPaused(true);
+            setIsManuallyPaused(true);
+          }
+        };
+
+        const handleVolumeChange = () => {
+          if (video.muted !== isMuted) {
+            setIsMuted(video.muted);
+          }
+        };
+
+        video.addEventListener('play', handlePlay);
+        video.addEventListener('pause', handlePause);
+        video.addEventListener('volumechange', handleVolumeChange);
+
+        return () => {
+          video.removeEventListener('play', handlePlay);
+          video.removeEventListener('pause', handlePause);
+          video.removeEventListener('volumechange', handleVolumeChange);
+        };
+      }
+    };
+
+    // Set up listeners
+    document.addEventListener('keydown', handleKeyDown);
+    const cleanupVideoSync = syncVideoState();
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      cleanupVideoSync?.();
+      
+      // Clear media session handlers
+      if ('mediaSession' in navigator) {
+        navigator.mediaSession.setActionHandler('play', null);
+        navigator.mediaSession.setActionHandler('pause', null);
+      }
+    };
+  }, [isPaused, isMuted, toggleVideoPlayback]);
 
   // --- Section Backgrounds ---
   // Returns a static background image for each section
@@ -241,24 +318,22 @@ const Portfolio = () => {  // --- State Management ---
         </button>
       )}      {/* Left Navigation Menu - Responsive Design */}
       {!isInnerPage && (
-        <nav className={`fixed left-0 top-0 h-full w-88 md:w-[28rem] z-40 transition-transform duration-300 lg:translate-x-0 ${
+        <nav className={`fixed left-0 top-0 h-full w-88 md:w-[28rem] z-40 transition-transform duration-300 lg:translate-x-0 no-select ${
           isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         }`}>
-          <div className="h-full bg-gradient-to-r from-black/95 via-black/70 via-black/30 to-transparent">{/* Game Logo Area - Responsive padding */}
-            <div className="pt-14 md:pt-20 pb-7 md:pb-10 px-8 md:px-12">
-              <h1 className="deadlock-title mb-1 text-3xl md:text-4xl lg:text-5xl">NICOLAS MARTIN</h1>
-              <p className="text-amber-200/80 text-base md:text-lg lg:text-xl tracking-wide font-medium" style={{ fontFamily: 'Good Timing, serif' }}>
+          <div className="h-full bg-gradient-to-r from-black/95 via-black/70 via-black/30 to-transparent no-select">            {/* Game Logo Area - Responsive padding */}
+            <div className="pt-14 md:pt-20 pb-7 md:pb-10 px-8 md:px-12 no-select">
+              <h1 className="deadlock-title mb-1 text-3xl md:text-4xl lg:text-5xl no-select">NICOLAS MARTIN</h1>
+              <p className="text-amber-200/80 text-base md:text-lg lg:text-xl tracking-wide font-medium no-select" style={{ fontFamily: 'Good Timing, serif' }}>
                 Game Programmer
               </p>
-            </div>
-
-            {/* Menu Items - Responsive spacing */}
-            <div className="px-6 md:px-8 space-y-4 md:space-y-6">
+            </div>            {/* Menu Items - Responsive spacing */}
+            <div className="px-6 md:px-8 space-y-4 md:space-y-6 no-select">
               {menuItems.map((item) => (
                 <button
                   key={item.id}
                   onClick={() => handleMenuClick(item.section)}
-                  className={`deadlock-menu-item group cursor-pointer transition-all duration-300 relative block w-full text-left text-sm md:text-base ${
+                  className={`deadlock-menu-item group menu-button transition-all duration-300 relative block w-full text-left text-sm md:text-base no-select ${
                     currentSection === item.section ? 'text-amber-100 text-shadow-glow' : ''
                   }`}
                   type="button"
@@ -266,10 +341,10 @@ const Portfolio = () => {  // --- State Management ---
                   aria-current={currentSection === item.section ? 'page' : undefined}
                 >
                   {/* Game-style text with hover effect - both texts occupy same space */}
-                  <span className="block group-hover:opacity-0 transition-opacity duration-300">
+                  <span className="block group-hover:opacity-0 transition-opacity duration-300 no-select">
                     {item.gameLabel}
                   </span>
-                  <span className="absolute top-0 left-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <span className="absolute top-0 left-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 no-select">
                     {item.hoverLabel}
                   </span>
                 </button>
@@ -351,12 +426,20 @@ const Portfolio = () => {  // --- State Management ---
             </div>
           </div>
         </>
-      )}
-
-      {/* Main Content Area - Responsive margins and padding */}
-      <div className={`relative z-10 ${!isInnerPage ? 'lg:ml-[22rem] xl:ml-[28rem]' : ''}`}>
-        <div className="min-h-screen flex items-start justify-center px-4 md:px-6 lg:px-8 pt-6 md:pt-8">
-          {renderContent()}
+      )}      {/* Main Content Area - Responsive margins and padding */}
+      <div className={`relative z-10 content-area ${!isInnerPage ? 'lg:ml-[22rem] xl:ml-[28rem]' : ''}`}>
+        <div className="min-h-screen px-4 md:px-6 lg:px-8 pt-6 md:pt-8 content-area">
+          <div className="w-full max-w-7xl mx-auto">
+            {renderContent()}
+            {/* Invisible focus anchor for cursor positioning */}
+            {!isInnerPage && (
+              <div
+                id="main-menu-cursor-anchor"
+                tabIndex={-1}
+                style={{ position: 'absolute', bottom: 0, left: 0, width: '1px', height: '1px', opacity: 0, pointerEvents: 'none' }}
+              />
+            )}
+          </div>
         </div>
       </div>
 
