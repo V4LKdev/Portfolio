@@ -34,6 +34,7 @@ A modern, game-inspired portfolio website built with React, TypeScript, and Tail
 - [ ] Add syntax highlighting for code snippets
 - [ ] Enhanced project writeups and additional links
 - [ ] Smooth subpage transitions with game-like animations
+- [ ] Add patchnotes element to the main menu
 
 ## Technical Stack
 - **Frontend**: React 18, TypeScript, Tailwind CSS

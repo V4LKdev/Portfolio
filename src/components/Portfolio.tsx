@@ -429,11 +429,10 @@ const Portfolio = () => {
         <SocialMediaIcons className="fixed bottom-4 right-4 md:bottom-6 md:right-6 lg:bottom-8 lg:right-8 z-30" />
       )}      {/* Game-style Build ID - Bottom left corner */}
       {!isInnerPage && (
-        <div className="fixed bottom-4 left-8 md:bottom-6 md:left-12 z-50 text-gray-400 text-xs font-mono select-none pointer-events-none">
+        <div className="fixed bottom-20 left-8 md:bottom-24 md:left-12 z-50 text-gray-400 text-xs font-mono select-none pointer-events-none">
           <span className="bg-black/60 px-2 py-1 rounded backdrop-blur-sm">v2025.07.1</span>
         </div>
-      )}{" "}
-      {/* Settings Mini Menu */}
+      )}{" "}      {/* Settings Mini Menu */}
       {isSettingsOpen && !isInnerPage && (
         <>
           {/* Settings Overlay */}
@@ -442,31 +441,30 @@ const Portfolio = () => {
             onClick={() => setIsSettingsOpen(false)}
             aria-label="Close settings menu"
             type="button"
-          />{" "}
-          {/* Small Settings Menu Above Button */}
-          <div className="fixed bottom-20 md:bottom-22 left-8 md:left-12 z-[60]">
+          />
+          {/* Horizontal Settings Menu Rolling Out to the Right */}
+          <div className="fixed bottom-6 md:bottom-8 left-20 md:left-24 z-[60]">
             <div className="bg-black/90 backdrop-blur-sm border border-amber-500/40 rounded-lg p-2 shadow-xl">
               <div className="flex space-x-2">
-                {" "}
                 {/* Theme Toggle */}
                 <button
                   onClick={() =>
                     setWebsiteTheme(websiteTheme === "dark" ? "light" : "dark")
                   }
-                  className="p-2 rounded bg-amber-500/10 hover:bg-amber-500/20 transition-colors border border-amber-500/30 hover:border-amber-500/60"
+                  className="p-3 transition-all duration-300 hover:scale-110"
                   aria-label={`Switch to ${websiteTheme === "dark" ? "light" : "dark"} theme`}
                   title={`Switch to ${websiteTheme === "dark" ? "light" : "dark"} theme`}
                 >
                   {websiteTheme === "dark" ? (
-                    <Sun className="w-4 h-4 text-amber-200" />
+                    <Sun className="w-5 h-5 text-amber-200" />
                   ) : (
-                    <Moon className="w-4 h-4 text-amber-200" />
+                    <Moon className="w-5 h-5 text-amber-200" />
                   )}
                 </button>
                 {/* Video Toggle */}
                 <button
                   onClick={toggleVideoPlayback}
-                  className="p-2 rounded bg-amber-500/10 hover:bg-amber-500/20 transition-colors border border-amber-500/30 hover:border-amber-500/60"
+                  className="p-3 transition-all duration-300 hover:scale-110"
                   aria-label={
                     isPaused
                       ? "Play background video"
@@ -479,24 +477,24 @@ const Portfolio = () => {
                   }
                 >
                   {isPaused ? (
-                    <Play className="w-4 h-4 text-amber-200" />
+                    <Play className="w-5 h-5 text-amber-200" />
                   ) : (
-                    <Pause className="w-4 h-4 text-amber-200" />
+                    <Pause className="w-5 h-5 text-amber-200" />
                   )}
                 </button>
                 {/* Audio Toggle */}
                 <button
                   onClick={toggleVideoMute}
-                  className="p-2 rounded bg-amber-500/10 hover:bg-amber-500/20 transition-colors border border-amber-500/30 hover:border-amber-500/60"
+                  className="p-3 transition-all duration-300 hover:scale-110"
                   aria-label={
                     isMuted ? "Unmute video audio" : "Mute video audio"
                   }
                   title={isMuted ? "Unmute video audio" : "Mute video audio"}
                 >
                   {isMuted ? (
-                    <VolumeX className="w-4 h-4 text-amber-200" />
+                    <VolumeX className="w-5 h-5 text-amber-200" />
                   ) : (
-                    <Volume2 className="w-4 h-4 text-amber-200" />
+                    <Volume2 className="w-5 h-5 text-amber-200" />
                   )}
                 </button>
               </div>
