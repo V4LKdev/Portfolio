@@ -33,7 +33,6 @@ import ContactSection from "./sections/ContactSection";
 import ProjectDetail from "./ProjectDetail";
 import { VideoPreferences } from "../lib/cookies";
 import { useTheme } from "../hooks/use-theme";
-import ThemeTester from "./ThemeTester"; // Temporary for testing
 import {
   backgroundImages,
   navigationItems,
@@ -41,9 +40,8 @@ import {
   type Project,
 } from "../content";
 
-const Portfolio = () => {
-  // --- Theme Management ---
-  const { currentThemeId, toggleTheme, isTheme } = useTheme();
+const Portfolio = () => {  // --- Theme Management ---
+  const { toggleTheme, isTheme } = useTheme();
   
   // --- State Management ---
   // Controls for video, menu, and navigation
@@ -103,13 +101,25 @@ const Portfolio = () => {
     const newMutedState = !isMuted;
     setIsMuted(newMutedState);
     VideoPreferences.setMuted(newMutedState); // Save to cookies
-  };
-  // Auto-resume video when returning to home section (unless manually paused)
+  };  // Auto-resume video when returning to home section (unless manually paused)
   React.useEffect(() => {
     if (currentSection === "home" && !isManuallyPaused) {
       setIsPaused(false);
     }
   }, [currentSection, isManuallyPaused]);
+
+  // Focus cursor to bottom-right when on home page
+  React.useEffect(() => {
+    if (currentSection === "home") {
+      // Small delay to ensure DOM is ready
+      setTimeout(() => {
+        const anchor = document.getElementById('main-menu-cursor-anchor');
+        if (anchor) {
+          anchor.focus({ preventScroll: true });
+        }
+      }, 100);
+    }
+  }, [currentSection]);
   // Sync settings UI with media keys and video state changes
   React.useEffect(() => {
     // Set up media session for hardware media keys
@@ -408,10 +418,15 @@ const Portfolio = () => {
               })}
             </div>{" "}            {/* Bottom Controls - Settings Button or Expanded Menu */}
             <div className="absolute bottom-12 md:bottom-14 left-8 md:left-12">              {!isSettingsOpen ? (
-                /* Settings Gear Button */
-                <button
+                /* Settings Gear Button */                <button
                   onClick={() => setIsSettingsOpen(true)}
-                  className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 hover:border-amber-500/60 transition-all duration-300 hover:bg-amber-500/20 hover:scale-110"
+                  className="p-3 rounded-lg backdrop-blur-sm transition-all duration-300 hover:scale-110"
+                  style={{
+                    backgroundColor: "var(--theme-settings-panel-bg, rgba(0, 0, 0, 0.8))",
+                    borderColor: "var(--theme-settings-panel-border, rgb(251 191 36 / 0.3))",
+                    borderWidth: "1px",
+                    borderStyle: "solid"
+                  }}
                   aria-label="Open settings menu"
                   aria-expanded={false}
                   aria-haspopup="true"
@@ -421,9 +436,15 @@ const Portfolio = () => {
                     style={{ color: "var(--theme-settings-icon, rgb(253 230 138))" }}
                   />
                 </button>
-              ) : (
-                /* Expanded Settings Menu - Same height as single button */
-                <div className="flex items-center space-x-1 rounded-lg bg-amber-500/10 border border-amber-500/30">{" "}
+              ) : (                /* Expanded Settings Menu - Same height as single button */                <div 
+                  className="flex items-center space-x-1 rounded-lg backdrop-blur-sm"
+                  style={{
+                    backgroundColor: "var(--theme-settings-panel-bg, rgba(0, 0, 0, 0.8))",
+                    borderColor: "var(--theme-settings-panel-border, rgb(251 191 36 / 0.3))",
+                    borderWidth: "1px",
+                    borderStyle: "solid"
+                  }}
+                >{" "}
                   {/* Collapse Button */}
                   <button
                     onClick={() => setIsSettingsOpen(false)}
@@ -431,9 +452,10 @@ const Portfolio = () => {
                     aria-label="Close settings menu"
                     title="Close settings menu"
                   >                    <ChevronLeft className="w-5 h-5 settings-panel-icon" />
-                  </button>
-                  {/* Separator Line */}
-                  <div className="w-px h-6 bg-amber-500/30"></div>                  {/* Theme Toggle */}
+                  </button>                  {/* Separator Line */}                  <div 
+                    className="w-px h-6" 
+                    style={{ backgroundColor: "var(--theme-settings-panel-border, rgb(251 191 36 / 0.3))" }}
+                  ></div>{/* Theme Toggle */}
                   <button
                     onClick={toggleTheme}
                     className="p-3 transition-all duration-300 hover:scale-110"
@@ -506,29 +528,26 @@ const Portfolio = () => {
         className={`relative z-10 content-area ${!isInnerPage ? "lg:ml-sidebar" : ""}`}
       >
         <div className="min-h-screen px-4 md:px-6 lg:px-8 pt-6 md:pt-8 content-area">
-          <div className="w-full max-w-7xl mx-auto">
-            {renderContent()}
-            {/* Invisible focus anchor for cursor positioning */}
+          <div className="w-full max-w-7xl mx-auto">            {renderContent()}
+            {/* Invisible focus anchor for cursor positioning - bottom right */}
             {!isInnerPage && (
               <div
                 id="main-menu-cursor-anchor"
                 tabIndex={-1}
                 style={{
-                  position: "absolute",
-                  bottom: 0,
-                  left: 0,
+                  position: "fixed",
+                  bottom: "20px",
+                  right: "20px",
                   width: "1px",
                   height: "1px",
                   opacity: 0,
                   pointerEvents: "none",
+                  zIndex: 1000,
                 }}
               />
-            )}
-          </div>
+            )}</div>
         </div>
       </div>
-      {/* Temporary Theme Tester - Remove after testing */}
-      <ThemeTester />
       
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && !isInnerPage && (

@@ -151,8 +151,7 @@ const ServerConnectionPanel: React.FC<ServerConnectionPanelProps> = ({
     }, 5000); // Update every 5 seconds
 
     return () => clearInterval(interval);
-  }, []);
-  return (
+  }, []);  return (
     <div
       className={`backdrop-blur-sm rounded-lg p-3 atmospheric-glow ${className}`}
       style={{
@@ -162,8 +161,7 @@ const ServerConnectionPanel: React.FC<ServerConnectionPanelProps> = ({
         borderStyle: "solid"
       }}
     >
-      {" "}
-      {/* Header with signal bars and server location */}
+      {" "}      {/* Header with signal bars and server location */}
       <div className="flex items-center gap-2 mb-2">
         <SignalBars ping={networkStats.ping} />
         <span 

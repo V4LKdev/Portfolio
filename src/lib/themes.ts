@@ -180,61 +180,8 @@ export const THEMES: Record<string, ThemeConfig> = {
       menuGlowColor: 'rgba(14, 165, 233, 0.8)', // sky-500 with strong glow
       titleColor: 'rgb(255 255 255)', // pure white for title
       titleGlowColor: 'rgba(14, 165, 233, 0.6)', // sky-500 with opacity
-      buildIdColor: 'rgb(148 163 184)', // slate-400
-        atmosphericGlow: 'rgba(14, 165, 233, 0.15)', // stronger blue glow
+      buildIdColor: 'rgb(148 163 184)', // slate-400      atmosphericGlow: 'rgba(14, 165, 233, 0.15)', // stronger blue glow
       videoOverlay: 'linear-gradient(45deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.4) 100%)', // neutral black overlay
-    }
-  },
-  
-  // Light theme (for future use)
-  light: {
-    id: 'light',
-    name: 'Professional Light',
-    description: 'Clean light theme for professional environments',
-    colors: {
-      background: '0 0% 98%',
-      foreground: '222.2 84% 4.9%',
-      
-      primary: '221.2 83.2% 53.3%',
-      primaryForeground: '210 40% 98%',
-      secondary: '210 40% 96%',
-      secondaryForeground: '222.2 84% 4.9%',
-      accent: '210 40% 96%',
-      accentForeground: '222.2 84% 4.9%',
-      
-      card: '0 0% 100%',
-      cardForeground: '222.2 84% 4.9%',
-      popover: '0 0% 100%',
-      popoverForeground: '222.2 84% 4.9%',
-      
-      input: '214.3 31.8% 91.4%',
-      border: '214.3 31.8% 91.4%',
-      ring: '221.2 83.2% 53.3%',
-      
-      muted: '210 40% 96%',
-      mutedForeground: '215.4 16.3% 46.9%',
-      destructive: '0 84.2% 60.2%',
-      destructiveForeground: '210 40% 98%',
-      
-      sidebarBackground: '0 0% 98%',
-      sidebarForeground: '222.2 84% 4.9%',
-      sidebarPrimary: '221.2 83.2% 53.3%',
-      sidebarPrimaryForeground: '210 40% 98%',
-      sidebarAccent: '210 40% 96%',
-      sidebarAccentForeground: '222.2 84% 4.9%',
-      sidebarBorder: '214.3 31.8% 91.4%',
-      sidebarRing: '221.2 83.2% 53.3%',
-    },
-    gameStyle: {
-      menuTextColor: 'rgb(37 99 235 / 0.9)', // blue-600/90
-      menuHoverColor: 'rgb(29 78 216)', // blue-700
-      menuGlowColor: 'rgba(37, 99, 235, 0.3)', // blue-600 with opacity
-      titleColor: 'rgb(29 78 216)', // blue-700
-      titleGlowColor: 'rgba(37, 99, 235, 0.3)', // blue-600 with opacity
-      buildIdColor: 'rgb(100 116 139)', // slate-500
-      
-      atmosphericGlow: 'rgba(37, 99, 235, 0.05)',
-      videoOverlay: 'linear-gradient(45deg, rgba(248, 250, 252, 0.8) 0%, rgba(248, 250, 252, 0.3) 50%, rgba(248, 250, 252, 0.6) 100%)',
     }
   }
 };
@@ -299,8 +246,7 @@ export function applyTheme(themeId: string): void {
   root.style.setProperty('--theme-build-id', theme.gameStyle.buildIdColor);
   root.style.setProperty('--theme-atmospheric-glow', theme.gameStyle.atmosphericGlow);
   root.style.setProperty('--theme-video-overlay', theme.gameStyle.videoOverlay);
-  
-  // Additional UI element colors
+    // Additional UI element colors
   root.style.setProperty('--theme-subtitle', theme.gameStyle.menuTextColor);
   root.style.setProperty('--theme-settings-icon', theme.gameStyle.menuTextColor);
   root.style.setProperty('--theme-social-icon', theme.gameStyle.menuTextColor);
@@ -309,19 +255,34 @@ export function applyTheme(themeId: string): void {
   root.style.setProperty('--theme-panel-text', theme.gameStyle.menuTextColor);
   root.style.setProperty('--theme-panel-border', theme.id === 'cool' ? 'rgb(59 130 246 / 0.3)' : 'rgb(251 191 36 / 0.3)');
   root.style.setProperty('--theme-panel-bg', theme.id === 'cool' ? 'rgba(15, 23, 42, 0.8)' : 'rgba(0, 0, 0, 0.8)');
-  
-  // Update data attribute for theme-specific styles
+  root.style.setProperty('--theme-settings-panel-border', theme.id === 'cool' ? 'rgb(59 130 246 / 0.3)' : 'rgb(251 191 36 / 0.3)');
+  root.style.setProperty('--theme-settings-panel-bg', theme.id === 'cool' ? 'rgba(15, 23, 42, 0.8)' : 'rgba(0, 0, 0, 0.8)');
+    // Update data attribute for theme-specific styles
   root.setAttribute('data-theme', themeId);
   
-  // Store theme preference
-  localStorage.setItem('portfolio-theme', themeId);
+  // Store theme preference in cookie (365 days)
+  document.cookie = `portfolio-theme=${themeId};expires=${new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toUTCString()};path=/;SameSite=Lax`;
 }
 
 /**
  * Get stored theme preference or default
  */
 export function getStoredTheme(): string {
-  return localStorage.getItem('portfolio-theme') || 'warm';
+  // Check cookie for theme preference
+  const nameEQ = 'portfolio-theme=';
+  const cookies = document.cookie.split(';');
+  
+  for (const cookie of cookies) {
+    let c = cookie;
+    while (c.startsWith(' ')) c = c.substring(1);
+    if (c.startsWith(nameEQ)) {
+      const value = c.substring(nameEQ.length);
+      // Validate that the theme exists
+      return THEMES[value] ? value : DEFAULT_THEME;
+    }
+  }
+  
+  return DEFAULT_THEME;
 }
 
 /**
@@ -381,4 +342,4 @@ export function createThemeVariant(
 // EXPORT DEFAULT THEME
 // ============================================================================
 
-export const DEFAULT_THEME = 'warm';
+export const DEFAULT_THEME = 'cool';
