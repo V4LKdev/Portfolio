@@ -37,6 +37,7 @@ A modern, game-inspired portfolio website built with React, TypeScript, and Tail
 - [ ] Enhanced project writeups and additional links
 - [ ] Smooth subpage transitions with game-like animations
 - [ ] Add patchnotes element to the main menu
+- [ ] Move the Fallback Image warning and others to the center bottom instead of the left bottom
 
 ## Technical Stack
 - **Frontend**: React 18, TypeScript, Tailwind CSS

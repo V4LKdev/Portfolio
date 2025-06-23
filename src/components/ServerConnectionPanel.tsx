@@ -152,21 +152,32 @@ const ServerConnectionPanel: React.FC<ServerConnectionPanelProps> = ({
 
     return () => clearInterval(interval);
   }, []);
-
   return (
     <div
-      className={`bg-black/80 backdrop-blur-sm border border-amber-500/30 rounded-lg p-3 atmospheric-glow ${className}`}
+      className={`backdrop-blur-sm rounded-lg p-3 atmospheric-glow ${className}`}
+      style={{
+        backgroundColor: "var(--theme-panel-bg, rgba(0, 0, 0, 0.8))",
+        borderColor: "var(--theme-panel-border, rgb(251 191 36 / 0.3))",
+        borderWidth: "1px",
+        borderStyle: "solid"
+      }}
     >
       {" "}
       {/* Header with signal bars and server location */}
       <div className="flex items-center gap-2 mb-2">
         <SignalBars ping={networkStats.ping} />
-        <span className="text-amber-100 font-mono text-xs font-medium">
+        <span 
+          className="font-mono text-xs font-medium"
+          style={{ color: "var(--theme-panel-text, rgb(254 243 199))" }}
+        >
           {networkStats.serverLocation}
         </span>
       </div>
       {/* Network stats on same line */}
-      <div className="flex items-center gap-4 text-xs font-mono text-amber-200/70">
+      <div 
+        className="flex items-center gap-4 text-xs font-mono"
+        style={{ color: "var(--theme-panel-text, rgb(253 230 138 / 0.7))" }}
+      >
         <span>
           PING{" "}
           <span
@@ -178,10 +189,9 @@ const ServerConnectionPanel: React.FC<ServerConnectionPanelProps> = ({
           >
             {Math.round(networkStats.ping)}ms
           </span>
-        </span>
-        <span>
+        </span>        <span>
           PKT{" "}
-          <span className="text-amber-200/60">
+          <span style={{ color: "var(--theme-panel-text, rgb(253 230 138 / 0.6))" }}>
             {networkStats.packetLoss.toFixed(1)}%
           </span>
         </span>

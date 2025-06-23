@@ -32,6 +32,8 @@ import SkillsSection from "./sections/SkillsSection";
 import ContactSection from "./sections/ContactSection";
 import ProjectDetail from "./ProjectDetail";
 import { VideoPreferences } from "../lib/cookies";
+import { useTheme } from "../hooks/use-theme";
+import ThemeTester from "./ThemeTester"; // Temporary for testing
 import {
   backgroundImages,
   navigationItems,
@@ -40,6 +42,9 @@ import {
 } from "../content";
 
 const Portfolio = () => {
+  // --- Theme Management ---
+  const { currentThemeId, toggleTheme, isTheme } = useTheme();
+  
   // --- State Management ---
   // Controls for video, menu, and navigation
   const [isMuted, setIsMuted] = useState(() => VideoPreferences.getMuted()); // Video mute from cookies
@@ -52,7 +57,6 @@ const Portfolio = () => {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null); // Selected project for detail view
   const [projectFilter, setProjectFilter] = useState("all"); // Project filter (all/team/solo/academic)
   const [isSettingsOpen, setIsSettingsOpen] = useState(false); // Settings panel state
-  const [websiteTheme, setWebsiteTheme] = useState<"dark" | "light">("dark"); // Website theme
 
   // --- Navigation Menu Items ---
   // Navigation items are now imported from content files
@@ -351,10 +355,12 @@ const Portfolio = () => {
             <div className="pt-14 md:pt-20 pb-12 md:pb-16 lg:pb-20 px-8 md:px-12 no-select">
               <h1 className="deadlock-title mb-1 text-3xl md:text-4xl lg:text-5xl no-select">
                 NICOLAS MARTIN
-              </h1>
-              <p
-                className="text-amber-200/80 text-base md:text-lg lg:text-xl tracking-wide font-medium no-select"
-                style={{ fontFamily: "Good Timing, serif" }}
+              </h1>              <p
+                className="text-base md:text-lg lg:text-xl tracking-wide font-medium no-select"
+                style={{ 
+                  fontFamily: "Good Timing, serif",
+                  color: "var(--theme-subtitle, rgb(253 230 138 / 0.8))"
+                }}
               >
                 Game Programmer
               </p>
@@ -410,7 +416,10 @@ const Portfolio = () => {
                   aria-expanded={false}
                   aria-haspopup="true"
                 >
-                  <Settings className="w-5 h-5 text-amber-200" />
+                  <Settings 
+                    className="w-5 h-5" 
+                    style={{ color: "var(--theme-settings-icon, rgb(253 230 138))" }}
+                  />
                 </button>
               ) : (
                 /* Expanded Settings Menu - Same height as single button */
@@ -421,24 +430,20 @@ const Portfolio = () => {
                     className="p-3 transition-all duration-300 hover:scale-110"
                     aria-label="Close settings menu"
                     title="Close settings menu"
-                  >
-                    <ChevronLeft className="w-5 h-5 text-amber-200" />
+                  >                    <ChevronLeft className="w-5 h-5 settings-panel-icon" />
                   </button>
                   {/* Separator Line */}
-                  <div className="w-px h-6 bg-amber-500/30"></div>
-                  {/* Theme Toggle */}
+                  <div className="w-px h-6 bg-amber-500/30"></div>                  {/* Theme Toggle */}
                   <button
-                    onClick={() =>
-                      setWebsiteTheme(websiteTheme === "dark" ? "light" : "dark")
-                    }
+                    onClick={toggleTheme}
                     className="p-3 transition-all duration-300 hover:scale-110"
-                    aria-label={`Switch to ${websiteTheme === "dark" ? "light" : "dark"} theme`}
-                    title={`Switch to ${websiteTheme === "dark" ? "light" : "dark"} theme`}
+                    aria-label={`Switch to ${isTheme('warm') ? 'cool' : 'warm'} theme`}
+                    title={`Switch to ${isTheme('warm') ? 'cool blue' : 'warm amber'} theme`}
                   >
-                    {websiteTheme === "dark" ? (
-                      <Sun className="w-5 h-5 text-amber-200" />
+                    {isTheme('cool') ? (
+                      <Moon className="w-5 h-5 settings-panel-icon" />
                     ) : (
-                      <Moon className="w-5 h-5 text-amber-200" />
+                      <Sun className="w-5 h-5 settings-panel-icon" />
                     )}
                   </button>
                   {/* Video Toggle */}
@@ -457,9 +462,9 @@ const Portfolio = () => {
                     }
                   >
                     {isPaused ? (
-                      <Play className="w-5 h-5 text-amber-200" />
+                      <Play className="w-5 h-5 settings-panel-icon" />
                     ) : (
-                      <Pause className="w-5 h-5 text-amber-200" />
+                      <Pause className="w-5 h-5 settings-panel-icon" />
                     )}
                   </button>
                   {/* Audio Toggle */}
@@ -472,9 +477,9 @@ const Portfolio = () => {
                     title={isMuted ? "Unmute video audio" : "Mute video audio"}
                   >
                     {isMuted ? (
-                      <VolumeX className="w-5 h-5 text-amber-200" />
+                      <VolumeX className="w-5 h-5 settings-panel-icon" />
                     ) : (
-                      <Volume2 className="w-5 h-5 text-amber-200" />
+                      <Volume2 className="w-5 h-5 settings-panel-icon" />
                     )}
                   </button>
                 </div>
@@ -492,7 +497,7 @@ const Portfolio = () => {
         <SocialMediaIcons className="fixed bottom-4 right-4 md:bottom-6 md:right-6 lg:bottom-8 lg:right-8 z-30" />
       )}      {/* Game-style Build ID - Bottom left corner */}
       {!isInnerPage && (
-        <div className="fixed bottom-4 left-8 md:bottom-6 md:left-12 z-50 text-gray-400 text-xs font-mono select-none pointer-events-none">
+        <div className="fixed bottom-4 left-8 md:bottom-6 md:left-12 z-50 build-id text-xs font-mono select-none pointer-events-none">
           <span className="bg-black/60 px-2 py-1 rounded backdrop-blur-sm">v2025.07_v01</span>
         </div>
       )}{" "}      {/* Settings Mini Menu - No overlay needed since buttons work inline */}{" "}
@@ -522,6 +527,9 @@ const Portfolio = () => {
           </div>
         </div>
       </div>
+      {/* Temporary Theme Tester - Remove after testing */}
+      <ThemeTester />
+      
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && !isInnerPage && (
         <button
