@@ -366,7 +366,7 @@ const Portfolio = () => {
                   if (item.hierarchy === 'quit') return 'mt-8 md:mt-12 mb-2 md:mb-3';
                   return 'mb-3 md:mb-4';
                 };
-                
+
                 return (
                   <button
                     key={item.id}
@@ -427,12 +427,10 @@ const Portfolio = () => {
       {/* Social Media Icons - Responsive positioning and layout */}
       {!isInnerPage && (
         <SocialMediaIcons className="fixed bottom-4 right-4 md:bottom-6 md:right-6 lg:bottom-8 lg:right-8 z-30" />
-      )}
-
-      {/* Game-style Build ID - Bottom left corner */}
+      )}      {/* Game-style Build ID - Bottom left corner */}
       {!isInnerPage && (
-        <div className="fixed bottom-4 left-4 md:bottom-6 md:left-6 z-50 text-gray-400 text-xs font-mono select-none pointer-events-none">
-          <span className="bg-black/60 px-2 py-1 rounded backdrop-blur-sm">v2.4.7.1893</span>
+        <div className="fixed bottom-4 left-8 md:bottom-6 md:left-12 z-50 text-gray-400 text-xs font-mono select-none pointer-events-none">
+          <span className="bg-black/60 px-2 py-1 rounded backdrop-blur-sm">v2025.07.1</span>
         </div>
       )}{" "}
       {/* Settings Mini Menu */}
