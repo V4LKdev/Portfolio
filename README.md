@@ -12,6 +12,8 @@ A modern, game-inspired portfolio website built with React, TypeScript, and Tail
 - **Game-Style Navigation**: Interactive menu with hover effects and smooth transitions
 - **Project Filtering**: Filter projects by type (All/Team/Solo/Academic)
 - **Mobile-Friendly**: Responsive navigation, touch-friendly controls, and optimized layout
+- **Video Game Main Menu Aesthetic**: Seamless sidebar gradient, prominent game title positioning, and clean menu interface
+- **Settings Panel**: Compact icon-based settings popup with theme, video, and audio controls
 
 ### 🔄 TODO
 
@@ -22,8 +24,8 @@ A modern, game-inspired portfolio website built with React, TypeScript, and Tail
 - [ ] [Future] Improve video quality and compression (AV1, adaptive streaming, higher bitrates)
 
 #### Style Enhancements
-- [ ] Implement Night/Day (warm/cool) color theme system
-- [ ] Enhanced game-style menu with custom fonts, sound effects, and hover animations
+- [ ] Implement Night/Day (warm/cool) color theme system  
+- [x] Enhanced game-style menu with seamless gradient background and prominent title positioning
 - [ ] Overwatch 2-style Projects page: Game Modes categorization system
 - [ ] More interactive project cards (hover, tilt, sound effects)
 
@@ -42,7 +44,7 @@ A modern, game-inspired portfolio website built with React, TypeScript, and Tail
 - **Responsive Design**: Mobile-first approach with Tailwind breakpoints
 
 ## Architecture
-- `src/components/ResponsivePortfolio.tsx` - Main responsive portfolio component
+- `src/components/Portfolio.tsx` - Main responsive portfolio component with video game aesthetics
 - `src/components/sections/` - Individual page sections (Home, Projects, About, etc.)
 - `src/components/ui/` - Reusable UI components
 - `src/content/` - Content configuration and data
