@@ -16,25 +16,23 @@ interface AboutSectionProps {
  */
 const AboutSection: React.FC<AboutSectionProps> = ({ onBack }) => {
   return (
-    <div className="max-w-4xl mx-auto">
-      <button
+    <div className="max-w-4xl mx-auto">      <button
         onClick={onBack}
-        className="mb-8 flex items-center space-x-2 text-amber-200 hover:text-amber-100 transition-colors"
+        className="mb-8 flex items-center space-x-2 theme-back-button"
       >
         <ArrowLeft className="w-5 h-5" />
         <span>Back to Home</span>
       </button>
 
-      <h2 className="text-5xl font-bold text-amber-100 mb-16 text-center deadlock-title">
+      <h2 className="text-5xl font-bold mb-16 text-center deadlock-title">
         ABOUT ME
       </h2>
 
-      <div className="bg-black/50 backdrop-blur-sm border border-amber-500/20 rounded-lg p-8 atmospheric-glow">
-        {/* Bio paragraphs */}
-        {aboutContent.intro.map((paragraph, index) => (
+      <div className="theme-card rounded-lg p-8 atmospheric-glow">        {/* Bio paragraphs */}
+        {aboutContent.intro.map((paragraph) => (
           <p
-            key={index}
-            className="text-lg text-amber-200/80 leading-relaxed mb-6"
+            key={paragraph.slice(0, 20)}
+            className="text-lg theme-text leading-relaxed mb-6"
           >
             {paragraph}
           </p>
@@ -44,13 +42,13 @@ const AboutSection: React.FC<AboutSectionProps> = ({ onBack }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
           <div>
             <h3
-              className="text-xl font-semibold text-amber-100 mb-3"
+              className="text-xl font-semibold theme-heading mb-3"
               style={{ fontFamily: "Good Timing, serif" }}
             >
               Education
             </h3>
-            {aboutContent.education.map((edu, index) => (
-              <p key={index} className="text-amber-200/70 text-sm mb-2">
+            {aboutContent.education.map((edu) => (
+              <p key={edu.institution} className="theme-text-muted text-sm mb-2">
                 <strong>{edu.institution}</strong> - {edu.degree}
                 <br />
                 {edu.period}
@@ -59,12 +57,12 @@ const AboutSection: React.FC<AboutSectionProps> = ({ onBack }) => {
           </div>
           <div>
             <h3
-              className="text-xl font-semibold text-amber-100 mb-3"
+              className="text-xl font-semibold theme-heading mb-3"
               style={{ fontFamily: "Good Timing, serif" }}
             >
               Experience
             </h3>
-            <p className="text-amber-200/70 text-sm">
+            <p className="theme-text-muted text-sm">
               {aboutContent.experience}
             </p>
           </div>

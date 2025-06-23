@@ -22,7 +22,7 @@ const BackButton: React.FC<BackButtonProps> = ({
   return (
     <button
       onClick={onClick}
-      className="mb-8 flex items-center space-x-2 text-amber-200 hover:text-amber-100 transition-colors"
+      className="mb-8 flex items-center space-x-2 theme-back-button"
     >
       <ArrowLeft className="w-5 h-5" />
       <span>{label}</span>

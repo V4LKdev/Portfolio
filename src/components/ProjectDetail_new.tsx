@@ -83,10 +83,10 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project, onBack }) => {
 
   // --- Helper Functions ---
   const getTeamDisplay = () => {
-    if (project.type === "team") return project.team ?? "Team Project";
+    if (project.type === "team") return project.team || "Team Project";
     if (project.type === "solo") return "Solo Project";
     if (project.type === "academic") return "Academic Project";
-    return project.team ?? "Team Project";
+    return project.team || "Team Project";
   };
 
   // --- Content Rendering Functions ---
@@ -95,8 +95,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project, onBack }) => {
       <div>
         <h3 className="text-2xl font-semibold theme-heading mb-4">
           Design Overview
-        </h3>
-        <p className="theme-text text-lg leading-relaxed mb-6">
+        </h3>        <p className="theme-text text-lg leading-relaxed mb-6">
           {project.design?.overview ?? "Design overview will be added here..."}
         </p>
       </div>
@@ -164,17 +163,17 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project, onBack }) => {
           Technical Implementation
         </h3>
         <p className="theme-text text-lg leading-relaxed mb-6">
-          {project.code?.architecture ?? "Technical details will be added here..."}
+          {project.code?.overview || "Technical details will be added here..."}
         </p>
       </div>
 
-      {project.code?.keyFeatures && project.code.keyFeatures.length > 0 && (
+      {project.code?.features && project.code.features.length > 0 && (
         <div>
           <h4 className="text-xl font-semibold theme-heading mb-3">
             Key Features
           </h4>
           <ul className="space-y-2">
-            {project.code.keyFeatures.map((feature) => (
+            {project.code.features.map((feature) => (
               <li key={feature.slice(0, 30)} className="theme-text flex items-start">
                 <span className="theme-icon-accent mr-2">▸</span>
                 {feature}
@@ -184,23 +183,23 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project, onBack }) => {
         </div>
       )}
 
-      {project.code?.codeSnippets && project.code.codeSnippets.length > 0 && (
+      {project.code?.technologies && project.code.technologies.length > 0 && (
         <div>
           <h4 className="text-xl font-semibold theme-heading mb-3">
-            Code Examples
+            Technologies Used
           </h4>
-          <div className="grid grid-cols-1 gap-4">
-            {project.code.codeSnippets.map((snippet) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {project.code.technologies.map((tech, index) => (
               <div
-                key={snippet.title}
+                key={tech.category || `tech-${index}`}
                 className="theme-card-static rounded-lg w-full"
               >
                 <div className="p-4">
                   <h5 className="theme-heading font-medium">
-                    {snippet.title}
+                    {tech.category}
                   </h5>
                   <span className="theme-text-muted text-sm">
-                    {snippet.language}
+                    {tech.items.join(", ")}
                   </span>
                 </div>
               </div>
@@ -212,14 +211,13 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project, onBack }) => {
       {project.code?.architecture && (
         <div className="theme-card-static p-6 rounded-lg w-full">
           <h4 className="text-xl font-semibold theme-heading mb-3">
-            Architecture Details
+            Architecture
           </h4>
           <p className="theme-text">{project.code.architecture}</p>
         </div>
       )}
     </div>
   );
-
   const renderImplementationContent = () => (
     <div className="space-y-8">
       <div>
@@ -346,19 +344,19 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project, onBack }) => {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 theme-card-static rounded-lg p-4">
             <div className="text-center">
               <div className="theme-heading font-semibold text-lg">
-                {project.year ?? "2024"}
+                {project.year || "2024"}
               </div>
               <div className="theme-text-muted text-sm">Year</div>
             </div>
             <div className="text-center">
               <div className="theme-heading font-semibold text-lg">
-                {project.duration ?? "N/A"}
+                {project.duration || "N/A"}
               </div>
               <div className="theme-text-muted text-sm">Duration</div>
             </div>
             <div className="text-center">
               <div className="theme-heading font-semibold text-lg">
-                {project.role ?? "Developer"}
+                {project.role || "Developer"}
               </div>
               <div className="theme-text-muted text-sm">Role</div>
             </div>

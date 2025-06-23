@@ -180,6 +180,280 @@
   }
 }
 
+@layer components {
+  /* ============================================================================ */
+  /* COMPREHENSIVE THEME-AWARE UTILITY CLASSES                                   */
+  /* ============================================================================ */
+  
+  /* Content & Text Classes */
+  .theme-text {
+    color: var(--theme-content-text);
+  }
+  
+  .theme-text-muted {
+    color: var(--theme-content-text-muted);
+  }
+  
+  .theme-text-subtle {
+    color: var(--theme-content-text-subtle);
+  }
+  
+  .theme-heading {
+    color: var(--theme-heading-text);
+  }
+  
+  /* Card & Container Classes */
+  .theme-card {
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-card-border);
+    backdrop-filter: blur(8px);
+    transition: all 0.3s ease;
+  }
+  
+  .theme-card:hover {
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-card-hover-border);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px var(--theme-card-hover-border);
+  }
+  
+  .theme-card-static {
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-card-border);
+    backdrop-filter: blur(8px);
+  }
+  
+  /* Button Classes */
+  .theme-button {
+    background: var(--theme-button-bg);
+    border: 1px solid var(--theme-button-border);
+    color: var(--theme-button-text);
+    backdrop-filter: blur(8px);
+    transition: all 0.3s ease;
+  }
+  
+  .theme-button:hover {
+    background: var(--theme-button-hover-bg);
+    border-color: var(--theme-button-hover-border);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px var(--theme-button-hover-border);
+  }
+  
+  .theme-button-outline {
+    background: transparent;
+    border: 1px solid var(--theme-button-border);
+    color: var(--theme-button-text);
+    transition: all 0.3s ease;
+  }
+  
+  .theme-button-outline:hover {
+    background: var(--theme-button-hover-bg);
+    border-color: var(--theme-button-hover-border);
+    color: var(--theme-button-text);
+  }
+  
+  /* Link & Interactive Classes */
+  .theme-link {
+    color: var(--theme-accent-color);
+    transition: all 0.3s ease;
+  }
+  
+  .theme-link:hover {
+    color: var(--theme-menu-hover);
+    text-shadow: 0 0 8px var(--theme-menu-glow);
+  }
+  
+  .theme-back-button {
+    color: var(--theme-back-button-text);
+    transition: all 0.3s ease;
+  }
+  
+  .theme-back-button:hover {
+    color: var(--theme-back-button-hover);
+    transform: translateX(-4px);
+  }
+  
+  /* Panel & Modal Classes */
+  .theme-panel {
+    background: var(--theme-panel-bg);
+    border: 1px solid var(--theme-panel-border);
+    color: var(--theme-panel-text);
+    backdrop-filter: blur(16px);
+  }
+  
+  .theme-settings-panel {
+    background: var(--theme-settings-panel-bg);
+    border: 1px solid var(--theme-settings-panel-border);
+    color: var(--theme-panel-text);
+    backdrop-filter: blur(16px);
+  }
+  
+  /* Input & Form Classes */
+  .theme-input {
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-card-border);
+    color: var(--theme-content-text);
+    backdrop-filter: blur(8px);
+    transition: all 0.3s ease;
+  }
+  
+  .theme-input:focus {
+    border-color: var(--theme-accent-color);
+    box-shadow: 0 0 0 2px var(--theme-accent-color, rgb(59 130 246 / 0.2));
+    outline: none;
+  }
+  
+  .theme-textarea {
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-card-border);
+    color: var(--theme-content-text);
+    backdrop-filter: blur(8px);
+    transition: all 0.3s ease;
+    resize: vertical;
+  }
+  
+  .theme-textarea:focus {
+    border-color: var(--theme-accent-color);
+    box-shadow: 0 0 0 2px var(--theme-accent-color, rgb(59 130 246 / 0.2));
+    outline: none;
+  }
+  
+  /* Badge & Tag Classes */
+  .theme-badge {
+    background: var(--theme-button-bg);
+    border: 1px solid var(--theme-button-border);
+    color: var(--theme-button-text);
+    backdrop-filter: blur(8px);
+  }
+  
+  .theme-badge-subtle {
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-card-border);
+    color: var(--theme-content-text-muted);
+  }
+  
+  /* Section & Layout Classes */
+  .theme-section {
+    color: var(--theme-content-text);
+  }
+  
+  .theme-section-bg {
+    background: var(--theme-card-bg);
+    backdrop-filter: blur(8px);
+  }
+  
+  .theme-divider {
+    border-color: var(--theme-card-border);
+  }
+  
+  /* Icon Classes */
+  .theme-icon {
+    color: var(--theme-content-text);
+  }
+  
+  .theme-icon-muted {
+    color: var(--theme-content-text-muted);
+  }
+  
+  .theme-icon-accent {
+    color: var(--theme-accent-color);
+  }
+  
+  /* Project & Portfolio Specific Classes */
+  .theme-project-card {
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-card-border);
+    backdrop-filter: blur(8px);
+    transition: all 0.3s ease;
+  }
+  
+  .theme-project-card:hover {
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-card-hover-border);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px var(--theme-card-hover-border);
+  }
+  
+  .theme-skill-tag {
+    background: var(--theme-button-bg);
+    border: 1px solid var(--theme-button-border);
+    color: var(--theme-button-text);
+    backdrop-filter: blur(8px);
+    transition: all 0.3s ease;
+  }
+  
+  .theme-skill-tag:hover {
+    background: var(--theme-button-hover-bg);
+    border-color: var(--theme-button-hover-border);
+    transform: scale(1.05);
+  }
+  
+  .theme-filter-button {
+    background: transparent;
+    border: 1px solid var(--theme-card-border);
+    color: var(--theme-content-text-muted);
+    transition: all 0.3s ease;
+  }
+  
+  .theme-filter-button:hover,
+  .theme-filter-button.active {
+    background: var(--theme-button-bg);
+    border-color: var(--theme-button-border);
+    color: var(--theme-button-text);
+  }
+  
+  /* Contact & Form Specific Classes */
+  .theme-contact-card {
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-card-border);
+    backdrop-filter: blur(12px);
+    transition: all 0.3s ease;
+  }
+  
+  .theme-contact-card:hover {
+    border-color: var(--theme-card-hover-border);
+    box-shadow: 0 8px 24px var(--theme-card-hover-border);
+  }
+  
+  /* Accessibility & State Classes */
+  .theme-focus:focus {
+    outline: 2px solid var(--theme-accent-color);
+    outline-offset: 2px;
+  }
+  
+  .theme-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .theme-loading {
+    opacity: 0.7;
+    pointer-events: none;
+  }
+  
+  /* Animation Classes */
+  .theme-glow {
+    box-shadow: 0 0 20px var(--theme-menu-glow);
+  }
+  
+  .theme-glow-subtle {
+    box-shadow: 0 0 10px var(--theme-menu-glow, rgba(59, 130, 246, 0.3));
+  }
+  
+  .theme-pulse {
+    animation: theme-pulse 2s infinite;
+  }
+  
+  @keyframes theme-pulse {
+    0%, 100% {
+      box-shadow: 0 0 10px var(--theme-menu-glow);
+    }
+    50% {
+      box-shadow: 0 0 20px var(--theme-menu-glow), 0 0 30px var(--theme-menu-glow);
+    }
+  }
+}
+
 @layer utilities {
   .text-shadow-glow {
     text-shadow: 0 0 10px rgba(251, 191, 36, 0.6);

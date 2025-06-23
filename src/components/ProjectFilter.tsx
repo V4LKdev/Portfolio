@@ -21,14 +21,13 @@ const ProjectFilter: React.FC<ProjectFilterProps> = ({
     <div className="flex flex-wrap justify-center gap-4 mb-12">
       {filters.map((filter) => {
         const IconComponent = filter.icon;
-        return (
-          <button
+        return (          <button
             key={filter.id}
             onClick={() => onFilterChange(filter.id)}
             className={`flex items-center space-x-2 px-6 py-3 rounded-lg border-2 transition-all duration-300 ${
               activeFilter === filter.id
-                ? "bg-amber-500/30 border-amber-500/80 text-amber-100 shadow-[0_0_20px_rgba(251,191,36,0.4)]"
-                : "bg-black/30 border-amber-500/30 text-amber-200/80 hover:border-amber-500/60 hover:bg-amber-500/20"
+                ? "theme-button active shadow-[0_0_20px_var(--theme-menu-glow)]"
+                : "theme-filter-button hover:theme-button"
             }`}
           >
             <IconComponent className="w-5 h-5" />

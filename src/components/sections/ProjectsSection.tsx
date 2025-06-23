@@ -37,20 +37,19 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({
   });
 
   return (
-    <div className="max-w-6xl mx-auto transition-all duration-500 animate-fade-in">
-      <button
+    <div className="max-w-6xl mx-auto transition-all duration-500 animate-fade-in">      <button
         onClick={onBack}
-        className="mb-8 flex items-center space-x-2 text-amber-200 hover:text-amber-100 transition-colors"
+        className="mb-8 flex items-center space-x-2 theme-back-button"
       >
         <ArrowLeft className="w-5 h-5" />
         <span>Back to Home</span>
       </button>
 
-      <h2 className="text-5xl font-bold text-amber-100 mb-8 text-center deadlock-title">
+      <h2 className="text-5xl font-bold mb-8 text-center deadlock-title">
         FEATURED PROJECTS
       </h2>
       <p
-        className="text-center text-amber-400 mb-12 text-lg"
+        className="text-center theme-text-muted mb-12 text-lg"
         style={{ fontFamily: "Good Timing, serif" }}
       >
         Portfolio of Game Development Work
@@ -62,11 +61,10 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({
       />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {filteredProjects.map((project) => (
-          <div
+        {filteredProjects.map((project) => (          <button
             key={project.id}
             onClick={() => onProjectClick(project)}
-            className="bg-black/50 backdrop-blur-sm border border-amber-500/20 rounded-lg overflow-hidden hover:border-amber-500/50 transition-all duration-300 atmospheric-glow hover:scale-105 cursor-pointer"
+            className="theme-project-card rounded-lg overflow-hidden cursor-pointer w-full text-left"
           >
             <img
               src={project.image}
@@ -78,24 +76,23 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({
                 {project.tags.slice(0, 3).map((tag) => (
                   <span
                     key={tag}
-                    className="px-2 py-1 bg-amber-500/20 text-amber-200 text-xs rounded-full"
+                    className="theme-skill-tag px-2 py-1 text-xs rounded-full"
                   >
                     {tag}
                   </span>
                 ))}
               </div>
               <h3
-                className="text-xl font-semibold text-amber-100 mb-2"
+                className="text-xl font-semibold theme-heading mb-2"
                 style={{ fontFamily: "Good Timing, serif" }}
               >
                 {project.title}
               </h3>
-              <p className="text-amber-200/70 text-sm mb-4 line-clamp-3">
+              <p className="theme-text-muted text-sm mb-4 line-clamp-3">
                 {project.description}
-              </p>
-              <div className="text-amber-400 text-xs">{project.details}</div>
+              </p>              <div className="theme-text-subtle text-xs">{project.details}</div>
             </div>
-          </div>
+          </button>
         ))}
       </div>
     </div>

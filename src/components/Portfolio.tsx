@@ -258,38 +258,35 @@ const Portfolio = () => {  // --- Theme Management ---
           <div className="max-w-4xl mx-auto">
             <button
               onClick={() => setCurrentSection("home")}
-              className="mb-8 flex items-center space-x-2 text-amber-200 hover:text-amber-100 transition-colors"
+              className="mb-8 flex items-center space-x-2 theme-back-button"
             >
               <ArrowLeft className="w-5 h-5" />
               <span>Back to Home</span>
-            </button>
-
-            <h2 className="text-3xl md:text-5xl font-bold text-amber-100 mb-8 md:mb-16 text-center deadlock-title">
+            </button>            <h2 className="text-3xl md:text-5xl font-bold mb-8 md:mb-16 text-center deadlock-title">
               ADDITIONAL CONTENT
             </h2>
-            <div className="bg-black/50 backdrop-blur-sm border border-amber-500/20 rounded-lg p-6 md:p-8 atmospheric-glow text-center">
-              <p className="text-lg md:text-xl text-amber-200/80 mb-6 md:mb-8">
+            <div className="theme-card rounded-lg p-6 md:p-8 atmospheric-glow text-center">
+              <p className="text-lg md:text-xl theme-text mb-6 md:mb-8">
                 This section is reserved for future content including music
                 career, creative projects, and other endeavors beyond
                 programming.
               </p>
-              <p className="text-amber-200/60">Coming soon...</p>
+              <p className="theme-text-muted">Coming soon...</p>
             </div>
           </div>
         );
 
       case "exit":
         return (
-          <div className="text-center max-w-4xl">
-            <h2 className="text-3xl md:text-5xl font-bold text-amber-100 mb-6 md:mb-8 deadlock-title">
+          <div className="text-center max-w-4xl">            <h2 className="text-3xl md:text-5xl font-bold mb-6 md:mb-8 deadlock-title">
               GOODBYE
             </h2>
-            <p className="text-lg md:text-xl text-amber-200/80 mb-6 md:mb-8">
+            <p className="text-lg md:text-xl theme-text mb-6 md:mb-8">
               Thanks for visiting my portfolio. May your games be legendary!
             </p>
             <button
               onClick={() => setCurrentSection("home")}
-              className="px-6 md:px-8 py-3 md:py-4 bg-amber-500/20 border-2 border-amber-500/50 rounded-lg text-amber-100 font-semibold hover:bg-amber-500/30 hover:border-amber-500/80 transition-all duration-300 hover:shadow-[0_0_20px_rgba(251,191,36,0.4)]"
+              className="theme-button px-6 md:px-8 py-3 md:py-4 rounded-lg font-semibold"
             >
               Return Home
             </button>
@@ -335,17 +332,16 @@ const Portfolio = () => {  // --- Theme Management ---
       {!isInnerPage && (
         <button
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="fixed top-4 left-4 md:top-6 md:left-6 z-50 lg:hidden bg-black/50 backdrop-blur-sm p-3 rounded-lg border border-amber-500/30 hover:border-amber-500/60 transition-all duration-300"
+          className="fixed top-4 left-4 md:top-6 md:left-6 z-50 lg:hidden theme-panel p-3 rounded-lg transition-all duration-300"
           aria-label={
             isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"
           }
           aria-expanded={isMobileMenuOpen}
           aria-controls="mobile-navigation"
-        >
-          {isMobileMenuOpen ? (
-            <X className="w-6 h-6 text-amber-100" />
+        >          {isMobileMenuOpen ? (
+            <X className="w-6 h-6 theme-icon" />
           ) : (
-            <Menu className="w-6 h-6 text-amber-100" />
+            <Menu className="w-6 h-6 theme-icon" />
           )}
         </button>
       )}{" "}

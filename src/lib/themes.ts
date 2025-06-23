@@ -173,14 +173,14 @@ export const THEMES: Record<string, ThemeConfig> = {
       sidebarAccentForeground: '210 20% 95%',
       sidebarBorder: '220 20% 22%',
       sidebarRing: '200 100% 70%',
-    },
-    gameStyle: {
+    },    gameStyle: {
       menuTextColor: 'rgb(248 250 252 / 0.95)', // slate-50/95 - bright white
       menuHoverColor: 'rgb(125 211 252)', // sky-300 - bright blue
       menuGlowColor: 'rgba(14, 165, 233, 0.8)', // sky-500 with strong glow
       titleColor: 'rgb(255 255 255)', // pure white for title
       titleGlowColor: 'rgba(14, 165, 233, 0.6)', // sky-500 with opacity
-      buildIdColor: 'rgb(148 163 184)', // slate-400      atmosphericGlow: 'rgba(14, 165, 233, 0.15)', // stronger blue glow
+      buildIdColor: 'rgb(148 163 184)', // slate-400
+      atmosphericGlow: 'rgba(14, 165, 233, 0.15)', // stronger blue glow
       videoOverlay: 'linear-gradient(45deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.4) 100%)', // neutral black overlay
     }
   }
@@ -246,7 +246,7 @@ export function applyTheme(themeId: string): void {
   root.style.setProperty('--theme-build-id', theme.gameStyle.buildIdColor);
   root.style.setProperty('--theme-atmospheric-glow', theme.gameStyle.atmosphericGlow);
   root.style.setProperty('--theme-video-overlay', theme.gameStyle.videoOverlay);
-    // Additional UI element colors
+  // Additional UI element colors
   root.style.setProperty('--theme-subtitle', theme.gameStyle.menuTextColor);
   root.style.setProperty('--theme-settings-icon', theme.gameStyle.menuTextColor);
   root.style.setProperty('--theme-social-icon', theme.gameStyle.menuTextColor);
@@ -257,6 +257,30 @@ export function applyTheme(themeId: string): void {
   root.style.setProperty('--theme-panel-bg', theme.id === 'cool' ? 'rgba(15, 23, 42, 0.8)' : 'rgba(0, 0, 0, 0.8)');
   root.style.setProperty('--theme-settings-panel-border', theme.id === 'cool' ? 'rgb(59 130 246 / 0.3)' : 'rgb(251 191 36 / 0.3)');
   root.style.setProperty('--theme-settings-panel-bg', theme.id === 'cool' ? 'rgba(15, 23, 42, 0.8)' : 'rgba(0, 0, 0, 0.8)');
+  
+  // Content-specific theme variables for sections and components
+  root.style.setProperty('--theme-content-text', theme.gameStyle.menuTextColor);
+  root.style.setProperty('--theme-content-text-muted', theme.id === 'cool' ? 'rgb(226 232 240 / 0.7)' : 'rgb(253 230 138 / 0.7)');
+  root.style.setProperty('--theme-content-text-subtle', theme.id === 'cool' ? 'rgb(226 232 240 / 0.6)' : 'rgb(253 230 138 / 0.6)');
+  root.style.setProperty('--theme-heading-text', theme.gameStyle.menuHoverColor);
+  
+  // Card and container styling
+  root.style.setProperty('--theme-card-bg', theme.id === 'cool' ? 'rgba(15, 23, 42, 0.5)' : 'rgba(0, 0, 0, 0.5)');
+  root.style.setProperty('--theme-card-border', theme.id === 'cool' ? 'rgb(59 130 246 / 0.2)' : 'rgb(251 191 36 / 0.2)');
+  root.style.setProperty('--theme-card-hover-bg', theme.id === 'cool' ? 'rgba(59, 130, 246, 0.1)' : 'rgba(251, 191, 36, 0.1)');
+  root.style.setProperty('--theme-card-hover-border', theme.id === 'cool' ? 'rgb(59 130 246 / 0.4)' : 'rgb(251 191 36 / 0.4)');
+  
+  // Button styling
+  root.style.setProperty('--theme-button-bg', theme.id === 'cool' ? 'rgba(59, 130, 246, 0.2)' : 'rgba(251, 191, 36, 0.2)');
+  root.style.setProperty('--theme-button-border', theme.id === 'cool' ? 'rgb(59 130 246 / 0.5)' : 'rgb(251 191 36 / 0.5)');
+  root.style.setProperty('--theme-button-hover-bg', theme.id === 'cool' ? 'rgba(59, 130, 246, 0.3)' : 'rgba(251, 191, 36, 0.3)');
+  root.style.setProperty('--theme-button-hover-border', theme.id === 'cool' ? 'rgb(59 130 246 / 0.8)' : 'rgb(251 191 36 / 0.8)');
+  root.style.setProperty('--theme-button-text', theme.gameStyle.menuTextColor);
+  
+  // Interactive element styling
+  root.style.setProperty('--theme-accent-color', theme.id === 'cool' ? 'rgb(59 130 246)' : 'rgb(251 191 36)');
+  root.style.setProperty('--theme-back-button-text', theme.id === 'cool' ? 'rgb(125 211 252)' : 'rgb(253 230 138)');
+  root.style.setProperty('--theme-back-button-hover', theme.gameStyle.menuHoverColor);
     // Update data attribute for theme-specific styles
   root.setAttribute('data-theme', themeId);
   
