@@ -32,7 +32,7 @@ export const navigationItems = [
     label: "About Me",
     section: "about",
     gameLabel: "Profile",
-    hoverLabel: "About Me",
+    hoverLabel: "About",
     hierarchy: "secondary", // Medium - important sections
   },
   {
