@@ -17,7 +17,7 @@ export const backgroundImages = {
 };
 
 // --- Navigation Menu Items ---
-// Game-style navigation with hover text changes
+// Game-style navigation with hover text changes and button hierarchy
 export const navigationItems = [
   {
     id: "projects",
@@ -25,6 +25,7 @@ export const navigationItems = [
     section: "projects",
     gameLabel: "Play",
     hoverLabel: "Projects",
+    hierarchy: "primary", // Largest - main action
   },
   {
     id: "about",
@@ -32,6 +33,7 @@ export const navigationItems = [
     section: "about",
     gameLabel: "Profile",
     hoverLabel: "About Me",
+    hierarchy: "secondary", // Medium - important sections
   },
   {
     id: "skills",
@@ -39,20 +41,23 @@ export const navigationItems = [
     section: "skills",
     gameLabel: "Achievements",
     hoverLabel: "Skills & CV",
+    hierarchy: "secondary", // Medium - important sections
   },
   {
     id: "additional",
     label: "Additional Content",
     section: "additional",
-    gameLabel: "DLC",
+    gameLabel: "Extras",
     hoverLabel: "Hobbies",
+    hierarchy: "tertiary", // Smaller - less important
   },
   {
     id: "contact",
     label: "Contact",
     section: "contact",
-    gameLabel: "Chat",
+    gameLabel: "Social",
     hoverLabel: "Contact",
+    hierarchy: "secondary", // Medium - important sections
   },
   {
     id: "exit",
@@ -60,6 +65,7 @@ export const navigationItems = [
     section: "exit",
     gameLabel: "Quit",
     hoverLabel: "Quit",
+    hierarchy: "quit", // Special styling - smallest and grey
   },
 ];
 

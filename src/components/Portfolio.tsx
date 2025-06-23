@@ -19,6 +19,7 @@ import {
   Settings,
   Sun,
   Moon,
+  LogOut,
 } from "lucide-react";
 import LocalVideoBackground from "./LocalVideoBackground";
 import ServerConnectionPanel from "./ServerConnectionPanel";
@@ -346,7 +347,7 @@ const Portfolio = () => {
           <div className="h-full bg-gradient-to-r from-black/95 via-black/70 via-black/30 to-transparent no-select">
             {" "}
             {/* Game Logo Area - Responsive padding */}
-            <div className="pt-14 md:pt-20 pb-7 md:pb-10 px-8 md:px-12 no-select">
+            <div className="pt-14 md:pt-20 pb-12 md:pb-16 lg:pb-20 px-8 md:px-12 no-select">
               <h1 className="deadlock-title mb-1 text-3xl md:text-4xl lg:text-5xl no-select">
                 NICOLAS MARTIN
               </h1>
@@ -357,32 +358,47 @@ const Portfolio = () => {
                 Game Programmer
               </p>
             </div>{" "}
-            {/* Menu Items - Responsive spacing */}
-            <div className="px-6 md:px-8 space-y-4 md:space-y-6 no-select">
-              {menuItems.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => handleMenuClick(item.section)}
-                  className={`deadlock-menu-item group menu-button transition-all duration-300 relative block w-full text-left text-sm md:text-base no-select ${
-                    currentSection === item.section
-                      ? "text-amber-100 text-shadow-glow"
-                      : ""
-                  }`}
-                  type="button"
-                  tabIndex={0}
-                  aria-current={
-                    currentSection === item.section ? "page" : undefined
-                  }
-                >
-                  {/* Game-style text with hover effect - both texts occupy same space */}
-                  <span className="block group-hover:opacity-0 transition-opacity duration-300 no-select">
-                    {item.gameLabel}
-                  </span>
-                  <span className="absolute top-0 left-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 no-select">
-                    {item.hoverLabel}
-                  </span>
+            {/* Menu Items - Consistent spacing with special handling for different button types */}
+            <div className="px-8 md:px-12 no-select">
+              {menuItems.map((item, index) => {
+                const getButtonSpacing = () => {
+                  if (item.hierarchy === 'primary') return 'mb-6 md:mb-8';
+                  if (item.hierarchy === 'quit') return 'mt-8 md:mt-12 mb-2 md:mb-3';
+                  return 'mb-3 md:mb-4';
+                };
+                
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => handleMenuClick(item.section)}
+                    className={`deadlock-menu-item menu-${item.hierarchy} group menu-button transition-all duration-300 relative block w-full text-left no-select ${
+                      currentSection === item.section
+                        ? "text-amber-100 text-shadow-glow"
+                        : ""
+                    } ${getButtonSpacing()}`}
+                    type="button"
+                    tabIndex={0}
+                    aria-current={
+                      currentSection === item.section ? "page" : undefined
+                    }
+                  >
+                  {/* Game-style text with hover effect - both texts in same container */}
+                  <div className="relative flex items-center gap-2">
+                    {item.hierarchy === 'quit' && (
+                      <LogOut className="w-4 h-4 md:w-5 md:h-5 text-gray-400 group-hover:text-gray-300 transition-colors duration-300" />
+                    )}
+                    <div className="relative">
+                      <span className="block group-hover:opacity-0 transition-opacity duration-300 no-select">
+                        {item.gameLabel}
+                      </span>
+                      <span className="absolute top-0 left-0 w-full group-hover:opacity-100 opacity-0 transition-opacity duration-300 no-select">
+                        {item.hoverLabel}
+                      </span>
+                    </div>
+                  </div>
                 </button>
-              ))}
+                );
+              })}
             </div>{" "}
             {/* Bottom Controls - Just Settings Button */}
             <div className="absolute bottom-6 md:bottom-8 left-8 md:left-12">

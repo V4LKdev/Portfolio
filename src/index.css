@@ -102,11 +102,41 @@
 
 @layer components {
   .deadlock-menu-item {
-    @apply text-2xl font-semibold text-amber-200/90 hover:text-amber-100 
+    @apply font-semibold text-amber-200/90 hover:text-amber-100 
            transition-all duration-300 ease-out cursor-pointer
            hover:drop-shadow-[0_0_10px_rgba(251,191,36,0.6)]
            hover:translate-x-1;
     font-family: 'Good Timing', serif;
+  }
+  
+  /* Game UI Hierarchy - Primary action (Play button) */
+  .deadlock-menu-item.menu-primary {
+    @apply text-4xl md:text-5xl lg:text-6xl font-bold;
+    letter-spacing: 0.05em;
+    line-height: 1.2;
+  }
+    /* Game UI Hierarchy - All other buttons (consistent size) */
+  .deadlock-menu-item.menu-secondary,
+  .deadlock-menu-item.menu-tertiary {
+    @apply text-2xl md:text-3xl font-semibold;
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+  }
+    /* Game UI Hierarchy - Quit button (smallest and grey) */
+  .deadlock-menu-item.menu-quit {
+    @apply text-lg md:text-xl font-medium text-gray-400 hover:text-gray-300;
+    letter-spacing: 0.01em;
+    line-height: 1.2;
+  }
+  
+  .deadlock-menu-item.menu-quit:hover {
+    text-shadow: 0 0 10px rgba(156, 163, 175, 0.4);
+    transform: translateX(0.25rem);
+  }
+  
+  /* Ensure quit button icon and text align properly */
+  .deadlock-menu-item.menu-quit svg {
+    flex-shrink: 0;
   }
   
   .deadlock-menu-item:hover {
