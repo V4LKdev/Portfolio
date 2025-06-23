@@ -22,12 +22,14 @@ A modern, game-inspired portfolio website built with React, TypeScript, and Tail
 - [ ] Add transition animations when opening subpages from the main menu
 - [ ] Add GitHub repo/download links on Project Details pages where available
 - [ ] [Future] Improve video quality and compression (AV1, adaptive streaming, higher bitrates)
+- [ ] Fake login screen that we can show as greeter and when clicking on QUIT (could be renamed to Logout)
 
 #### Style Enhancements
 - [ ] Implement Night/Day (warm/cool) color theme system  
 - [x] Enhanced game-style menu with seamless gradient background and prominent title positioning
 - [ ] Overwatch 2-style Projects page: Game Modes categorization system
 - [ ] More interactive project cards (hover, tilt, sound effects)
+- [ ] Clean UI Animations for extending settings, hovering buttons and clicking
 
 #### Content & Polish
 - [ ] Improve Project Details layout with better image/code/video alignment
