@@ -2,8 +2,8 @@
 // Efficient local video background with smart scaling, fallbacks, and memory management
 // Replaces YouTube iframe with native HTML5 video for better performance and control
 
-import * as React from 'react';
-import { useRef, useState, useEffect } from 'react';
+import * as React from "react";
+import { useRef, useState, useEffect } from "react";
 
 interface LocalVideoBackgroundProps {
   videoSrc: string;
@@ -33,7 +33,7 @@ const LocalVideoBackground: React.FC<LocalVideoBackgroundProps> = ({
   onLoadStart,
   onLoadComplete,
   onError,
-  className = ''
+  className = "",
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -59,9 +59,10 @@ const LocalVideoBackground: React.FC<LocalVideoBackgroundProps> = ({
       }
     };
 
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
-  }, [isPaused, hasError, wasPlayingBeforeHidden]);  // Handle play/pause state changes
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () =>
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+  }, [isPaused, hasError, wasPlayingBeforeHidden]); // Handle play/pause state changes
   useEffect(() => {
     const video = videoRef.current;
     if (!video || hasError) return;
@@ -73,7 +74,7 @@ const LocalVideoBackground: React.FC<LocalVideoBackgroundProps> = ({
       // Hide poster immediately when resuming
       setShowPoster(false);
       video.play().catch((error) => {
-        console.warn('Video autoplay failed:', error);
+        console.warn("Video autoplay failed:", error);
         setHasError(true);
         onError?.();
       });
@@ -105,7 +106,7 @@ const LocalVideoBackground: React.FC<LocalVideoBackgroundProps> = ({
     setHasError(true);
     setShowPoster(true);
     onError?.();
-    console.error('Video failed to load:', videoSrc);
+    console.error("Video failed to load:", videoSrc);
   };
 
   const handleLoadedData = () => {
@@ -116,8 +117,8 @@ const LocalVideoBackground: React.FC<LocalVideoBackgroundProps> = ({
 
   // Cleanup on unmount
   useEffect(() => {
+    const video = videoRef.current;
     return () => {
-      const video = videoRef.current;
       if (video) {
         video.pause();
         video.currentTime = 0;
@@ -126,7 +127,10 @@ const LocalVideoBackground: React.FC<LocalVideoBackgroundProps> = ({
   }, []);
 
   return (
-    <div className={`relative w-full h-full overflow-hidden ${className}`}>      {/* Video Element */}      <video
+    <div className={`relative w-full h-full overflow-hidden ${className}`}>
+      {" "}
+      {/* Video Element */}{" "}
+      <video
         ref={videoRef}
         className="absolute inset-0 w-full h-full object-cover"
         src={videoSrc}
@@ -143,25 +147,23 @@ const LocalVideoBackground: React.FC<LocalVideoBackgroundProps> = ({
         onError={handleError}
         onLoadedData={handleLoadedData}
         style={{
-          opacity: (isLoading || hasError || showPoster) ? 0 : 1,
-          transition: 'opacity 0.5s ease-in-out'
+          opacity: isLoading || hasError || showPoster ? 0 : 1,
+          transition: "opacity 0.5s ease-in-out",
         }}
       >
         {/* Accessibility track - empty for background video */}
         <track kind="captions" srcLang="en" label="No captions available" />
       </video>
-
       {/* Poster/Fallback Image */}
       {(isLoading || hasError || showPoster) && posterSrc && (
         <div
           className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
-          style={{ 
+          style={{
             backgroundImage: `url(${posterSrc})`,
-            transition: 'opacity 0.5s ease-in-out'
+            transition: "opacity 0.5s ease-in-out",
           }}
         />
       )}
-
       {/* Loading Indicator */}
       {isLoading && !hasError && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/20">
@@ -171,7 +173,6 @@ const LocalVideoBackground: React.FC<LocalVideoBackgroundProps> = ({
           </div>
         </div>
       )}
-
       {/* Error State */}
       {hasError && (
         <div className="absolute bottom-4 left-4 bg-red-900/80 backdrop-blur-sm border border-red-500/50 rounded-lg px-3 py-2">

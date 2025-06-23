@@ -5,36 +5,31 @@
 export const skillsContent = {
   // --- Software & Tools ---
   software: [
-    'Unreal Engine 4 & 5',
-    'Jetbrains Rider',
-    'Visual Studio',
-    'Unity',
-    'Perforce'
+    "Unreal Engine 4 & 5",
+    "Jetbrains Rider",
+    "Visual Studio",
+    "Unity",
+    "Perforce",
   ],
-  
+
   // --- Programming Languages ---
-  programmingLanguages: [
-    'C++ for Unreal Engine',
-    'C#',
-    'HLSL',
-    'JavaScript'
-  ],
-  
+  programmingLanguages: ["C++ for Unreal Engine", "C#", "HLSL", "JavaScript"],
+
   // --- Unreal Engine Specific Skills ---
   unrealEngine: [
-    'Slate',
-    'Plugin and Module creation',
-    'Editor extensions',
-    'Networking',
-    'Gameplay Ability System'
+    "Slate",
+    "Plugin and Module creation",
+    "Editor extensions",
+    "Networking",
+    "Gameplay Ability System",
   ],
-  
+
   // --- Soft Skills ---
   softSkills: [
-    'Problem-solving',
-    'Effective communication',
-    'Collaboration',
-    'Analytical thinking',
-    'Quick learner'
-  ]
+    "Problem-solving",
+    "Effective communication",
+    "Collaboration",
+    "Analytical thinking",
+    "Quick learner",
+  ],
 };

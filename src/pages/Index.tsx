@@ -1,4 +1,3 @@
-
 import Portfolio from "@/components/Portfolio";
 
 const Index = () => {

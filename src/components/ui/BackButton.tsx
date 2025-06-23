@@ -2,8 +2,8 @@
 // Reusable navigation button for returning to previous sections
 // Consistent styling and hover effects
 
-import React from 'react';
-import { ArrowLeft } from 'lucide-react';
+import React from "react";
+import { ArrowLeft } from "lucide-react";
 
 interface BackButtonProps {
   onClick: () => void;
@@ -15,9 +15,9 @@ interface BackButtonProps {
  * @param onClick - Callback function when button is clicked
  * @param label - Optional custom label (defaults to "Back to Home")
  */
-const BackButton: React.FC<BackButtonProps> = ({ 
-  onClick, 
-  label = "Back to Home" 
+const BackButton: React.FC<BackButtonProps> = ({
+  onClick,
+  label = "Back to Home",
 }) => {
   return (
     <button

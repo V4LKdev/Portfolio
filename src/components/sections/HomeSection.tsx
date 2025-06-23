@@ -2,7 +2,7 @@
 // Landing page content with hero text and call-to-action
 // Displays personal information and main navigation button
 
-import React from 'react';
+import React from "react";
 
 interface HomeSectionProps {
   onNavigateToProjects: () => void;

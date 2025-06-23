@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 interface MenuButtonProps {
   label: string;
@@ -8,7 +7,12 @@ interface MenuButtonProps {
   className?: string;
 }
 
-const MenuButton: React.FC<MenuButtonProps> = ({ label, hoverLabel, onClick, className = "" }) => {
+const MenuButton: React.FC<MenuButtonProps> = ({
+  label,
+  hoverLabel,
+  onClick,
+  className = "",
+}) => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
