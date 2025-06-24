@@ -355,7 +355,7 @@ const Portfolio = () => {  // --- Theme Management ---
               : "-translate-x-full lg:translate-x-0"
           }`}
         >
-          <div className="h-full bg-gradient-to-r from-black/95 via-black/70 via-black/30 to-transparent no-select">
+          <div className="h-full bg-gradient-to-r from-black/95 via-black/85 via-black/75 via-black/60 via-black/45 via-black/30 via-black/18 via-black/8 to-transparent no-select">
             {" "}
             {/* Game Logo Area - Responsive padding */}
             <div className="pt-14 md:pt-20 pb-12 md:pb-16 lg:pb-20 px-8 md:px-12 no-select">
