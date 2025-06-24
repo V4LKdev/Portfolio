@@ -10,7 +10,7 @@ import ServerConnectionPanel from "../ServerConnectionPanel";
 import SocialMediaIcons from "../SocialMediaIcons";
 import SettingsPanel from "../SettingsPanel";
 import { SectionProps } from "../../types/SharedProps";
-import { useVideoControls } from "../../hooks/use-video-controls";
+import { useVideoControls } from "../../hooks/useVideoControls";
 import { videoConfig } from "../../content";
 
 interface LayoutProps extends SectionProps {
