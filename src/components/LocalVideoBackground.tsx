@@ -106,7 +106,9 @@ const LocalVideoBackground: React.FC<LocalVideoBackgroundProps> = ({
     setHasError(true);
     setShowPoster(true);
     onError?.();
-    console.error("Video failed to load:", videoSrc);
+    if (process.env.NODE_ENV !== "production") {
+      console.error("Video failed to load:", videoSrc);
+    }
   };
 
   const handleLoadedData = () => {
