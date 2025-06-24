@@ -54,22 +54,22 @@ A modern, game-inspired portfolio website built with React, TypeScript, and Tail
 
 ## Architecture
 
-### 🏗️ **Modular Architecture (AI-Agent Friendly)**
+### 🏗️ **Clean Provider-Based Architecture**
 
-The portfolio is built with a modular architecture where each feature is completely isolated:
+The portfolio uses a modern React provider pattern with complete separation of concerns:
 
-- `src/components/PortfolioLayout.tsx` - Main layout with composition pattern (no business logic)
-- `src/components/VideoControlProvider.tsx` - Video state management (play/pause/mute/fullscreen)
-- `src/components/NavigationProvider.tsx` - Navigation and project selection state
+- `src/components/Portfolio.tsx` - Main component with provider composition (clean & focused)
+- `src/components/VideoControlProvider.tsx` - Video state management with cookie persistence
+- `src/components/NavigationProvider.tsx` - Navigation and project selection state management
 - `src/components/SettingsPanel.tsx` - UI settings and theme management
-- `src/components/ServerConnectionPanel.tsx` - Network stats and connection monitoring
+- `src/components/ServerConnectionPanel.tsx` - Network stats and connection monitoring  
 - `src/config/version.ts` - Single source of truth for build version display
 
-### ✅ **AI Agent Benefits**
+### ✅ **Developer Benefits**
 
 Each feature can be modified independently without risk of breaking others:
-- **Video features** → Only touch `VideoControlProvider.tsx`
-- **Navigation** → Only touch `NavigationProvider.tsx` 
+- **Video features** → Only touch `VideoControlProvider.tsx` and `useVideoControls` hook
+- **Navigation** → Only touch `NavigationProvider.tsx` and `useNavigation` hook
 - **Settings** → Only touch `SettingsPanel.tsx`
 - **Version updates** → Only touch `src/config/version.ts`
 
@@ -97,7 +97,7 @@ Each feature can be modified independently without risk of breaking others:
 ```
 src/
 ├── components/              # React components
-│   ├── PortfolioLayout.tsx # Main layout (composition only)
+│   ├── Portfolio.tsx       # Main component with provider composition
 │   ├── VideoControlProvider.tsx    # Video state management
 │   ├── NavigationProvider.tsx      # Navigation state management  
 │   ├── SettingsPanel.tsx          # Settings UI and logic
@@ -114,11 +114,12 @@ src/
 │   ├── ui-config.ts       # Navigation, backgrounds, UI config
 │   └── index.ts           # Central content exports
 ├── hooks/                 # Custom React hooks
-│   ├── use-navigation.ts  # Navigation hook
-│   ├── use-video-controls.ts # Video controls hook
+│   ├── use-navigation.ts  # Navigation hook with error handling
+│   ├── use-video-controls.ts # Video controls hook with error handling
 │   └── use-*.ts          # Other custom hooks
 ├── lib/                   # Utilities and helper functions
 │   ├── utils.ts           # General utilities (cn, etc.)
+│   ├── themes.ts          # Theme system configuration
 │   └── cookies.ts         # Video preference persistence
 └── pages/                 # Route components
 ```
@@ -133,7 +134,7 @@ src/
 #### Build & Release Process
 
 1. **Development**: Work on features in `main` branch
-2. **Update Version**: Edit `src/config/version.ts` with new version (e.g., `v2025.06_v03`)
+2. **Update Version**: Edit `src/config/version.ts` with new version (e.g., `v2025.06_v04`)
 3. **Build & Test**: `npm run build` and `npm run lint` to ensure everything works
 4. **Commit Changes**: Commit version update and any final changes to `main`
 5. **Create Release**: Build production files and commit to `releases` branch
@@ -142,7 +143,7 @@ src/
 #### Release Commands
 
 ```bash
-# 1. Update version in src/config/version.ts (e.g., v2025.06_v03)
+# 1. Update version in src/config/version.ts (e.g., v2025.06_v04)
 
 # 2. Test everything works
 npm run build
@@ -150,7 +151,7 @@ npm run lint
 
 # 3. Commit version update to main
 git add .
-git commit -m "chore: bump version to v2025.06_v03"
+git commit -m "chore: bump version to v2025.06_v04"
 git push origin main
 
 # 4. Create production release
@@ -159,10 +160,10 @@ git merge main
 npm run build
 cp -r dist/* .  # Copy built files to releases root
 git add index.html assets/
-git commit -m "build: production build v2025.06_v03"
-git tag -a v2025.06_v03 -m "Release v2025.06_v03: [Description]"
+git commit -m "build: production build v2025.06_v04"
+git tag -a v2025.06_v04 -m "Release v2025.06_v04: [Description]"
 git push origin releases
-git push origin v2025.06_v03
+git push origin v2025.06_v04
 
 # 5. Return to development
 git checkout main
@@ -187,11 +188,18 @@ git checkout main
 
 #### TypeScript
 
-- Strict mode disabled for flexibility during rapid development
+- Strict unused variable detection enabled for better code quality
 - Interface definitions in content files for data structures
 - Proper typing for component props and state
+- Comprehensive JSDoc documentation for all public APIs
 
-#### Styling
+#### Code Quality Standards
+
+- **ESLint**: Configured with React and TypeScript rules, unused variable detection
+- **Professional Documentation**: All components have detailed JSDoc with examples
+- **Error Handling**: Comprehensive error boundaries and context validation
+- **Clean Architecture**: Provider pattern with complete separation of concerns
+- **No Dead Code**: Regular cleanup of unused imports and components enforced by linting
 
 - **Tailwind CSS** for all styling with custom game-inspired classes
 - **CSS Custom Properties** for theme colors and dynamic values
@@ -205,12 +213,7 @@ git checkout main
 - **Asset Management**: Optimized images, efficient imports
 - **Build Optimization**: Vite bundling with tree-shaking
 
-#### Code Quality
-
-- **ESLint**: Configured with React and TypeScript rules
-- **Prettier**: Consistent code formatting
-- **Clean Code**: Descriptive variable names, commented complex logic
-- **No Unused Code**: Regular cleanup of unused imports and components
+#### Styling
 
 ### File Conventions
 
@@ -226,5 +229,32 @@ git checkout main
 - **Type Safety**: TypeScript interfaces for all data structures
 - **Easy Updates**: Modify content files without touching components
 - **Modular Exports**: Clean imports through `content/index.ts`
+
+## 🚀 **Extending the Portfolio**
+
+### Adding New Sections
+
+1. **Create Section Component**: Add new component in `src/components/sections/`
+2. **Update Navigation**: Add menu item to `src/content/ui-config.ts`
+3. **Add Content**: Create content file in `src/content/` directory
+4. **Import & Route**: Add section to main Portfolio component
+
+### Adding New Projects
+
+1. **Add Project Data**: Edit `src/content/projects.ts`
+2. **Follow Interface**: Use the `Project` interface for type safety
+3. **Add Assets**: Place images in public directory or use external URLs
+
+### Modifying Themes
+
+1. **Edit Theme Config**: Modify `src/lib/themes.ts`
+2. **CSS Properties**: Themes automatically generate CSS custom properties
+3. **Component Usage**: Use theme classes like `theme-card`, `theme-heading`
+
+### Adding New Providers
+
+1. **Create Provider**: Follow pattern in `VideoControlProvider.tsx`
+2. **Create Hook**: Add corresponding `use-*` hook with error handling
+3. **Wrap Component**: Add to main Portfolio component provider stack
 
 ---
