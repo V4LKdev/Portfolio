@@ -208,6 +208,26 @@ const Portfolio = () => {  // --- Theme Management ---
     };
   }, [isPaused, isMuted, isSettingsOpen, toggleVideoPlayback]);
 
+  // --- Professional: Resume video on tab focus if on home and not manually paused ---
+  React.useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden && currentSection === "home") {
+        // Use cookie as source of truth for paused state
+        const shouldBePaused = VideoPreferences.getPaused();
+        setIsPaused(shouldBePaused);
+        setIsManuallyPaused(shouldBePaused);
+        if (!shouldBePaused) {
+          // Try to play the video if needed
+          const video = document.querySelector("video");
+          if (video?.paused) {
+            video.play().catch(() => {});
+          }
+        }
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
+  }, [currentSection]);
   // --- Section Backgrounds ---
   // Returns a static background image for each section
   const getStaticBackground = (section: string) => {
