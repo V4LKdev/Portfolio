@@ -217,28 +217,59 @@ export function AppProviders({ children }: AppProvidersProps) {
   const [currentSection, setCurrentSection] = useState("home");
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [projectFilter, setProjectFilter] = useState("all");
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  // Track the user's pause state before navigation to restore it later
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);  // Track the user's pause state before navigation to restore it later
   const [pauseStateBeforeNavigation, setPauseStateBeforeNavigation] =
     React.useState<boolean | null>(null);
-  // Navigation Effects - Auto-pause when leaving home, auto-resume when returning
+  
+  // Use a ref to track the current manual pause state for capture
+  const manualPauseRef = React.useRef(isManuallyPaused);
+  React.useEffect(() => {
+    manualPauseRef.current = isManuallyPaused;
+  }, [isManuallyPaused]);
+  // Auto-pause when leaving home, auto-resume when returning
   useEffect(() => {
-    if (currentSection !== "home") {
-      // Store the current manual pause state before auto-pausing
-      setPauseStateBeforeNavigation(isManuallyPaused);
-      setIsPaused(true);
-      // Note: We don't call setManualPause here because this is auto-pause, not user intent
-    }
-  }, [currentSection, isManuallyPaused]);
-  // Auto-resume video when returning to home section, but respect manual pause intent
-  useEffect(() => {
-    if (currentSection === "home" && pauseStateBeforeNavigation !== null) {
-      // Restore the user's original pause intent from before navigation
-      setManualPause(pauseStateBeforeNavigation);
+    console.log("🔄 Navigation effect - currentSection:", currentSection, "pauseStateBeforeNavigation:", pauseStateBeforeNavigation);
+    
+    if (currentSection !== "home") {      // Only store the state if we haven't already (avoid overwriting on subsequent navigations)
+      if (pauseStateBeforeNavigation === null) {
+        const currentManualState = manualPauseRef.current;
+        console.log("🚀 Leaving home - storing pause state:", currentManualState);
+        setPauseStateBeforeNavigation(currentManualState);
+      }
+      // Auto-pause when leaving home (but don't update manual pause state)
+      if (!isPaused) {
+        console.log("⏸️ Auto-pausing video on navigation away from home");
+        setIsPaused(true);
+      }
+    } else if (currentSection === "home" && pauseStateBeforeNavigation !== null) {
+      // Restore the user's original pause intent when returning to home
+      const shouldResume = !pauseStateBeforeNavigation;
+      console.log("🏠 Returning to home - restoring pause state:", pauseStateBeforeNavigation, "shouldResume:", shouldResume);
+      
+      // Update all the states
+      setIsPaused(pauseStateBeforeNavigation);
+      setIsManuallyPaused(pauseStateBeforeNavigation);
+      VideoPreferences.setPaused(pauseStateBeforeNavigation);
+      
+      // Clear the stored state
       setPauseStateBeforeNavigation(null);
+      
+      // If we should resume, try to play the video element directly
+      if (shouldResume) {
+        // Use a small delay to ensure the video component has processed the state change
+        setTimeout(() => {
+          const video = document.querySelector("video");
+          console.log("🎥 Attempting to resume video, video element:", video, "paused:", video?.paused);
+          if (video?.paused) {
+            video.play().catch((error) => {
+              console.warn("🚫 Video resume failed:", error);
+            });
+          }
+        }, 200);
+      }
     }
-  }, [currentSection, pauseStateBeforeNavigation, setManualPause]);
+  }, [currentSection]); // eslint-disable-line react-hooks/exhaustive-deps
+  // Note: We intentionally omit pauseStateBeforeNavigation and isPaused from deps to avoid loops
 
   const handleMenuClick = useCallback((sectionId: string) => {
     setCurrentSection(sectionId);
