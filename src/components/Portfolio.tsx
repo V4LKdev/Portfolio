@@ -96,13 +96,6 @@ const PortfolioContent: React.FC = () => {
           <ServerConnectionPanel className="fixed top-6 md:top-8 right-6 md:right-8 z-30 hidden xl:block" />
           <SocialMediaIcons className="fixed bottom-4 right-4 md:bottom-6 md:right-6 lg:bottom-8 lg:right-8 z-30" />
           
-          {/* Build version overlay */}
-          <div className="fixed bottom-4 left-8 md:bottom-6 md:left-12 z-50 build-id text-xs font-mono select-none pointer-events-none">
-            <span className="bg-black/60 px-2 py-1 rounded backdrop-blur-sm">
-              {BUILD_VERSION}
-            </span>
-          </div>
-          
           {/* Focus anchor */}
           <div
             id="main-menu-cursor-anchor"
@@ -195,10 +188,13 @@ const PortfolioContent: React.FC = () => {
             <Menu className="w-6 h-6 theme-icon" />
           )}
         </button>
+      )}      {/* Render Content with Layout */}
+      {renderContent()}      {/* Build Version - only show on home page, positioned above navigation gradient */}
+      {currentSection === "home" && (
+        <div className="fixed bottom-4 left-8 md:bottom-6 md:left-12 z-50 build-id text-xs font-mono select-none pointer-events-none">
+          {BUILD_VERSION}
+        </div>
       )}
-
-      {/* Render Content with Layout */}
-      {renderContent()}
 
       {/* Mobile Menu Overlay for Home Page */}
       {isMobileMenuOpen && currentSection === "home" && (

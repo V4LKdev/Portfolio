@@ -40,12 +40,11 @@ const Layout: React.FC<LayoutProps> = ({
   isInnerPage = false,
 }) => {
   const { isPaused, isMuted } = useVideoControls();
-  
-  return (
+    return (
     <div 
-      className={`min-h-screen bg-black text-foreground overflow-x-hidden ${className || ""}`}
+      className={`h-screen bg-black text-foreground overflow-hidden ${className || ""}`}
       id={id}
-    >      {/* Background Video or Static Image */}
+    >{/* Background Video or Static Image */}
       {showVideoBackground && !backgroundImage && (
         <div className="fixed inset-0 z-0">
           <LocalVideoBackground 
@@ -81,10 +80,8 @@ const Layout: React.FC<LayoutProps> = ({
             <SettingsPanel className="absolute bottom-12 md:bottom-14 left-8 md:left-12" />
           )}
         </>
-      )}
-
-      {/* Main Content */}
-      <div className={`relative z-20 ${isInnerPage ? 'p-8' : 'p-4 md:p-8'}`}>
+      )}      {/* Main Content */}
+      <div className={`relative z-20 h-full ${isInnerPage ? 'p-8 overflow-y-auto' : 'p-4 md:p-8'}`}>
         {children}
       </div>
     </div>
