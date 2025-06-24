@@ -4,7 +4,7 @@
 
 import React from "react";
 import { aboutContent } from "../../content";
-import BackButton from "../ui/BackButton";
+import BackButton from "../ui/navigation/BackButton";
 
 interface AboutSectionProps {
   onBack: () => void;

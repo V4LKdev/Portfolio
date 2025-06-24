@@ -4,7 +4,7 @@
 
 import React from "react";
 import { skillsContent } from "../../content";
-import BackButton from "../ui/BackButton";
+import BackButton from "../ui/navigation/BackButton";
 
 interface SkillsSectionProps {
   onBack: () => void;

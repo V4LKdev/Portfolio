@@ -4,7 +4,7 @@
 
 import React from "react";
 import ProjectFilter from "../ProjectFilter";
-import BackButton from "../ui/BackButton";
+import BackButton from "../ui/navigation/BackButton";
 import { type Project } from "../../content";
 
 interface ProjectsSectionProps {
