@@ -3,7 +3,7 @@
 // Handles section switching, mobile menu, and project selection
 
 import * as React from "react";
-import { createContext, useContext, useState, useMemo } from "react";
+import { createContext, useState, useMemo, useCallback } from "react";
 import { type Project } from "../content";
 
 interface NavigationState {
@@ -25,18 +25,12 @@ interface NavigationActions {
 
 interface NavigationContextType extends NavigationState, NavigationActions {}
 
-const NavigationContext = createContext<NavigationContextType | null>(null);
-
-export const useNavigation = () => {
-  const context = useContext(NavigationContext);
-  if (!context) {
-    throw new Error("useNavigation must be used within NavigationProvider");
-  }
-  return context;
-};
+export const NavigationContext = createContext<NavigationContextType | null>(
+  null,
+);
 
 interface NavigationProviderProps {
-  children: React.ReactNode;
+  readonly children: React.ReactNode;
 }
 
 /**
@@ -47,54 +41,58 @@ interface NavigationProviderProps {
  * - Mobile menu state
  * - Smart back navigation
  */
-export const NavigationProvider: React.FC<NavigationProviderProps> = ({ children }) => {
+export function NavigationProvider({ children }: NavigationProviderProps) {
   // --- Navigation State ---
   const [currentSection, setCurrentSection] = useState("home");
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [projectFilter, setProjectFilter] = useState("all");
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  // --- Navigation Actions ---
-  const handleMenuClick = (sectionId: string) => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // --- Navigation Actions ---
+  const handleMenuClick = useCallback((sectionId: string) => {
     setCurrentSection(sectionId);
     setSelectedProject(null);
     setIsMobileMenuOpen(false);
-  };
+  }, []);
 
-  const handleProjectClick = (project: Project) => {
+  const handleProjectClick = useCallback((project: Project) => {
     setSelectedProject(project);
-  };
+  }, []);
 
-  const handleBackClick = () => {
+  const handleBackClick = useCallback(() => {
     if (selectedProject) {
       setSelectedProject(null);
     } else {
       setCurrentSection("home");
     }
-  };
+  }, [selectedProject]);
 
-  const value: NavigationContextType = useMemo(() => ({
-    currentSection,
-    selectedProject,
-    projectFilter,
-    isMobileMenuOpen,
-    setCurrentSection,
-    setSelectedProject,
-    setProjectFilter,
-    setIsMobileMenuOpen,
-    handleMenuClick,
-    handleProjectClick,
-    handleBackClick,
-  }), [
-    currentSection,
-    selectedProject,
-    projectFilter,
-    isMobileMenuOpen,
-  ]);
+  const value: NavigationContextType = useMemo(
+    () => ({
+      currentSection,
+      selectedProject,
+      projectFilter,
+      isMobileMenuOpen,
+      setCurrentSection,
+      setSelectedProject,
+      setProjectFilter,
+      setIsMobileMenuOpen,
+      handleMenuClick,
+      handleProjectClick,
+      handleBackClick,
+    }),
+    [
+      currentSection,
+      selectedProject,
+      projectFilter,
+      isMobileMenuOpen,
+      handleMenuClick,
+      handleProjectClick,
+      handleBackClick,
+    ],
+  );
 
   return (
     <NavigationContext.Provider value={value}>
       {children}
     </NavigationContext.Provider>
   );
-};
+}

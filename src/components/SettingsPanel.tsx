@@ -15,7 +15,7 @@ import {
   VolumeX,
 } from "lucide-react";
 import { useTheme } from "../hooks/use-theme";
-import { useVideoControls } from "./VideoControlProvider";
+import { useVideoControls } from "../hooks/use-video-controls";
 
 interface SettingsPanelProps {
   className?: string;
@@ -41,19 +41,19 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ className = "" }) => {
 
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Element;
-      const settingsPanel = document.querySelector('[data-settings-panel]');
+      const settingsPanel = document.querySelector("[data-settings-panel]");
       if (settingsPanel && !settingsPanel.contains(target)) {
         setIsSettingsOpen(false);
       }
     };
 
     const timeoutId = setTimeout(() => {
-      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
     }, 100);
 
     return () => {
       clearTimeout(timeoutId);
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isSettingsOpen]);
 
@@ -79,30 +79,34 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ className = "" }) => {
           className="p-3 rounded-lg backdrop-blur-sm transition-all duration-300 hover:scale-110"
           data-settings-panel
           style={{
-            backgroundColor: "var(--theme-settings-panel-bg, rgba(0, 0, 0, 0.8))",
-            borderColor: "var(--theme-settings-panel-border, rgb(251 191 36 / 0.3))",
+            backgroundColor:
+              "var(--theme-settings-panel-bg, rgba(0, 0, 0, 0.8))",
+            borderColor:
+              "var(--theme-settings-panel-border, rgb(251 191 36 / 0.3))",
             borderWidth: "1px",
-            borderStyle: "solid"
+            borderStyle: "solid",
           }}
           aria-label="Open settings menu"
           aria-expanded={false}
           aria-haspopup="true"
         >
-          <Settings 
-            className="w-5 h-5" 
+          <Settings
+            className="w-5 h-5"
             style={{ color: "var(--theme-settings-icon, rgb(253 230 138))" }}
           />
         </button>
       ) : (
         /* Expanded Settings Menu */
-        <div 
+        <div
           className="flex items-center space-x-1 rounded-lg backdrop-blur-sm"
           data-settings-panel
           style={{
-            backgroundColor: "var(--theme-settings-panel-bg, rgba(0, 0, 0, 0.8))",
-            borderColor: "var(--theme-settings-panel-border, rgb(251 191 36 / 0.3))",
+            backgroundColor:
+              "var(--theme-settings-panel-bg, rgba(0, 0, 0, 0.8))",
+            borderColor:
+              "var(--theme-settings-panel-border, rgb(251 191 36 / 0.3))",
             borderWidth: "1px",
-            borderStyle: "solid"
+            borderStyle: "solid",
           }}
         >
           {/* Collapse Button */}
@@ -116,19 +120,22 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ className = "" }) => {
           </button>
 
           {/* Separator Line */}
-          <div 
-            className="w-px h-6" 
-            style={{ backgroundColor: "var(--theme-settings-panel-border, rgb(251 191 36 / 0.3))" }}
+          <div
+            className="w-px h-6"
+            style={{
+              backgroundColor:
+                "var(--theme-settings-panel-border, rgb(251 191 36 / 0.3))",
+            }}
           />
 
           {/* Theme Toggle */}
           <button
             onClick={toggleTheme}
             className="p-3 transition-all duration-300 hover:scale-110"
-            aria-label={`Switch to ${isTheme('warm') ? 'cool' : 'warm'} theme`}
-            title={`Switch to ${isTheme('warm') ? 'cool blue' : 'warm amber'} theme`}
+            aria-label={`Switch to ${isTheme("warm") ? "cool" : "warm"} theme`}
+            title={`Switch to ${isTheme("warm") ? "cool blue" : "warm amber"} theme`}
           >
-            {isTheme('cool') ? (
+            {isTheme("cool") ? (
               <Moon className="w-5 h-5 settings-panel-icon" />
             ) : (
               <Sun className="w-5 h-5 settings-panel-icon" />
@@ -139,8 +146,12 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ className = "" }) => {
           <button
             onClick={togglePlayback}
             className="p-3 transition-all duration-300 hover:scale-110"
-            aria-label={isPaused ? "Play background video" : "Pause background video"}
-            title={isPaused ? "Play background video" : "Pause background video"}
+            aria-label={
+              isPaused ? "Play background video" : "Pause background video"
+            }
+            title={
+              isPaused ? "Play background video" : "Pause background video"
+            }
           >
             {isPaused ? (
               <Play className="w-5 h-5 settings-panel-icon" />

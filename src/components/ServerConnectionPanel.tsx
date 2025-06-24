@@ -6,11 +6,15 @@ import * as React from "react";
 import { useState, useEffect } from "react";
 
 interface ServerConnectionPanelProps {
-  className?: string;
+  readonly className?: string;
 }
 
 // Signal strength bars component
-const SignalBars: React.FC<{ ping: number }> = ({ ping }) => {
+interface SignalBarsProps {
+  readonly ping: number;
+}
+
+const SignalBars = ({ ping }: SignalBarsProps) => {
   const getConnectionQuality = (ping: number) => {
     if (ping <= 30) return { strength: 3, color: "green" };
     if (ping <= 60) return { strength: 2, color: "yellow" };
@@ -52,9 +56,9 @@ const SignalBars: React.FC<{ ping: number }> = ({ ping }) => {
  * Server connection panel component styled like a game networking UI
  * Shows real HTTP latency and estimated network quality metrics
  */
-const ServerConnectionPanel: React.FC<ServerConnectionPanelProps> = ({
+function ServerConnectionPanel({
   className = "",
-}) => {
+}: ServerConnectionPanelProps) {
   // Network stats state with real HTTP latency measurement
   const [networkStats, setNetworkStats] = useState({
     ping: 0,
@@ -151,20 +155,22 @@ const ServerConnectionPanel: React.FC<ServerConnectionPanelProps> = ({
     }, 5000); // Update every 5 seconds
 
     return () => clearInterval(interval);
-  }, []);  return (
+  }, []);
+  return (
     <div
       className={`backdrop-blur-sm rounded-lg p-3 atmospheric-glow ${className}`}
       style={{
         backgroundColor: "var(--theme-panel-bg, rgba(0, 0, 0, 0.8))",
         borderColor: "var(--theme-panel-border, rgb(251 191 36 / 0.3))",
         borderWidth: "1px",
-        borderStyle: "solid"
+        borderStyle: "solid",
       }}
     >
-      {" "}      {/* Header with signal bars and server location */}
+      {" "}
+      {/* Header with signal bars and server location */}
       <div className="flex items-center gap-2 mb-2">
         <SignalBars ping={networkStats.ping} />
-        <span 
+        <span
           className="font-mono text-xs font-medium"
           style={{ color: "var(--theme-panel-text, rgb(254 243 199))" }}
         >
@@ -172,7 +178,7 @@ const ServerConnectionPanel: React.FC<ServerConnectionPanelProps> = ({
         </span>
       </div>
       {/* Network stats on same line */}
-      <div 
+      <div
         className="flex items-center gap-4 text-xs font-mono"
         style={{ color: "var(--theme-panel-text, rgb(253 230 138 / 0.7))" }}
       >
@@ -187,9 +193,12 @@ const ServerConnectionPanel: React.FC<ServerConnectionPanelProps> = ({
           >
             {Math.round(networkStats.ping)}ms
           </span>
-        </span>        <span>
+        </span>{" "}
+        <span>
           PKT{" "}
-          <span style={{ color: "var(--theme-panel-text, rgb(253 230 138 / 0.6))" }}>
+          <span
+            style={{ color: "var(--theme-panel-text, rgb(253 230 138 / 0.6))" }}
+          >
             {networkStats.packetLoss.toFixed(1)}%
           </span>
         </span>

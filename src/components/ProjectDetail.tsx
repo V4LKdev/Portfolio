@@ -108,7 +108,10 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project, onBack }) => {
           </h4>
           <ul className="space-y-2">
             {project.design.challenges.map((challenge) => (
-              <li key={challenge.slice(0, 30)} className="theme-text flex items-start">
+              <li
+                key={challenge.slice(0, 30)}
+                className="theme-text flex items-start"
+              >
                 <span className="theme-icon-accent mr-2">•</span>
                 {challenge}
               </li>
@@ -124,7 +127,10 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project, onBack }) => {
           </h4>
           <ul className="space-y-2">
             {project.design.solutions.map((solution) => (
-              <li key={solution.slice(0, 30)} className="theme-text flex items-start">
+              <li
+                key={solution.slice(0, 30)}
+                className="theme-text flex items-start"
+              >
                 <span className="theme-icon-accent mr-2">▸</span>
                 {solution}
               </li>
@@ -140,7 +146,9 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project, onBack }) => {
           </h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <h5 className="theme-heading font-medium mb-2">User Experience</h5>
+              <h5 className="theme-heading font-medium mb-2">
+                User Experience
+              </h5>
               <p className="theme-text-muted text-sm">
                 Focus on intuitive navigation and seamless user interactions.
               </p>
@@ -164,7 +172,8 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project, onBack }) => {
           Technical Implementation
         </h3>
         <p className="theme-text text-lg leading-relaxed mb-6">
-          {project.code?.architecture ?? "Technical details will be added here..."}
+          {project.code?.architecture ??
+            "Technical details will be added here..."}
         </p>
       </div>
 
@@ -175,7 +184,10 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project, onBack }) => {
           </h4>
           <ul className="space-y-2">
             {project.code.keyFeatures.map((feature) => (
-              <li key={feature.slice(0, 30)} className="theme-text flex items-start">
+              <li
+                key={feature.slice(0, 30)}
+                className="theme-text flex items-start"
+              >
                 <span className="theme-icon-accent mr-2">▸</span>
                 {feature}
               </li>
@@ -196,9 +208,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project, onBack }) => {
                 className="theme-card-static rounded-lg w-full"
               >
                 <div className="p-4">
-                  <h5 className="theme-heading font-medium">
-                    {snippet.title}
-                  </h5>
+                  <h5 className="theme-heading font-medium">{snippet.title}</h5>
                   <span className="theme-text-muted text-sm">
                     {snippet.language}
                   </span>
@@ -227,7 +237,8 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project, onBack }) => {
           Implementation Details
         </h3>
         <p className="theme-text text-lg leading-relaxed mb-6">
-          {project.implementation?.process ?? "Implementation details will be added here..."}
+          {project.implementation?.process ??
+            "Implementation details will be added here..."}
         </p>
       </div>
 
@@ -245,9 +256,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project, onBack }) => {
                 <h5 className="theme-heading font-medium mb-2">
                   {step.phase ?? step.duration}
                 </h5>
-                <p className="theme-text-muted text-sm">
-                  {step.description}
-                </p>
+                <p className="theme-text-muted text-sm">{step.description}</p>
               </div>
             ))}
           </div>
@@ -261,7 +270,10 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project, onBack }) => {
           </h4>
           <ul className="space-y-2">
             {project.implementation.challenges.map((challenge) => (
-              <li key={challenge.slice(0, 30)} className="theme-text flex items-start">
+              <li
+                key={challenge.slice(0, 30)}
+                className="theme-text flex items-start"
+              >
                 <span className="theme-icon-accent mr-2">•</span>
                 {challenge}
               </li>
@@ -277,7 +289,10 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project, onBack }) => {
           </h4>
           <ul className="space-y-2">
             {project.implementation.results.map((result) => (
-              <li key={result.slice(0, 30)} className="theme-text flex items-start">
+              <li
+                key={result.slice(0, 30)}
+                className="theme-text flex items-start"
+              >
                 <span className="theme-icon-accent mr-2">★</span>
                 {result}
               </li>
@@ -338,9 +353,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project, onBack }) => {
           <h1 className="text-4xl font-bold theme-heading mb-4 deadlock-title">
             {project.title}
           </h1>
-          <p className="text-xl theme-text mb-6">
-            {project.description}
-          </p>
+          <p className="text-xl theme-text mb-6">{project.description}</p>
 
           {/* Project Metadata Overview */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 theme-card-static rounded-lg p-4">

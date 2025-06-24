@@ -1,6 +1,6 @@
-@import url('https://fonts.cdnfonts.com/css/good-timing');
-@import url('https://fonts.cdnfonts.com/css/toxigenesis');
-@import url('https://fonts.googleapis.com/css2?family=Expletus+Sans:wght@400;500;600;700&display=swap');
+@import url("https://fonts.cdnfonts.com/css/good-timing");
+@import url("https://fonts.cdnfonts.com/css/toxigenesis");
+@import url("https://fonts.googleapis.com/css2?family=Expletus+Sans:wght@400;500;600;700&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -49,27 +49,31 @@
     --sidebar-accent-foreground: 45 15% 85%;
     --sidebar-border: 20 15% 25%;
     --sidebar-ring: 45 85% 65%;
-    
+
     /* Theme transition timing */
     --theme-transition-duration: 0.3s;
   }
 
   /* Theme transitions for smooth color changes */
   * {
-    transition: background-color var(--theme-transition-duration) ease,
-                color var(--theme-transition-duration) ease,
-                border-color var(--theme-transition-duration) ease,
-                box-shadow var(--theme-transition-duration) ease;
+    transition:
+      background-color var(--theme-transition-duration) ease,
+      color var(--theme-transition-duration) ease,
+      border-color var(--theme-transition-duration) ease,
+      box-shadow var(--theme-transition-duration) ease;
   }
-  
+
   /* Preserve faster transitions for interactive elements */
-  button, a, [role="button"] {
-    transition: background-color var(--theme-transition-duration) ease,
-                color var(--theme-transition-duration) ease,
-                border-color var(--theme-transition-duration) ease,
-                box-shadow var(--theme-transition-duration) ease,
-                transform 0.15s ease,
-                opacity 0.15s ease;
+  button,
+  a,
+  [role="button"] {
+    transition:
+      background-color var(--theme-transition-duration) ease,
+      color var(--theme-transition-duration) ease,
+      border-color var(--theme-transition-duration) ease,
+      box-shadow var(--theme-transition-duration) ease,
+      transform 0.15s ease,
+      opacity 0.15s ease;
   }
 
   /* Legacy dark class support - now handled by theme system */
@@ -85,7 +89,7 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Expletus Sans', sans-serif;
+    font-family: "Expletus Sans", sans-serif;
   }
 }
 
@@ -94,79 +98,84 @@
   .deadlock-menu-item {
     /* Base menu item styles - colors now dynamic via theme system */
     @apply font-semibold transition-all duration-300 ease-out cursor-pointer;
-    font-family: 'Good Timing', serif;
+    font-family: "Good Timing", serif;
     white-space: nowrap;
-    
+
     /* Dynamic colors via CSS variables set by theme system */
     color: var(--theme-menu-text, rgb(253 230 138 / 0.9));
   }
-  
+
   .deadlock-menu-item:hover {
     color: var(--theme-menu-hover, rgb(254 243 199));
     text-shadow: 0 0 20px var(--theme-menu-glow, rgba(251, 191, 36, 0.8));
     transform: translateX(0.25rem);
-    filter: drop-shadow(0 0 10px var(--theme-menu-glow, rgba(251, 191, 36, 0.6)));
+    filter: drop-shadow(
+      0 0 10px var(--theme-menu-glow, rgba(251, 191, 36, 0.6))
+    );
   }
-  
+
   /* Theme-aware menu hierarchy */
   .deadlock-menu-item.menu-primary {
     @apply text-4xl md:text-5xl lg:text-6xl font-bold;
     letter-spacing: 0.05em;
     line-height: 1.2;
   }
-  
+
   .deadlock-menu-item.menu-secondary,
   .deadlock-menu-item.menu-tertiary {
     @apply text-2xl md:text-3xl font-semibold;
     letter-spacing: 0.02em;
     line-height: 1.2;
   }
-  
+
   .deadlock-menu-item.menu-quit {
     @apply text-lg md:text-xl font-medium;
     letter-spacing: 0.01em;
     line-height: 1.2;
     color: var(--theme-build-id, rgb(156 163 175));
   }
-    .deadlock-menu-item.menu-quit:hover {
+  .deadlock-menu-item.menu-quit:hover {
     color: var(--theme-menu-hover, rgb(254 243 199));
     text-shadow: 0 0 10px var(--theme-menu-glow, rgba(251, 191, 36, 0.4));
     transform: translateX(0.25rem);
   }
-  
+
   /* Ensure quit button icon and text align properly */
   .deadlock-menu-item.menu-quit svg {
     flex-shrink: 0;
     color: var(--theme-build-id, rgb(156 163 175));
   }
-  
+
   .deadlock-menu-item.menu-quit:hover svg {
     color: var(--theme-menu-hover, rgb(254 243 199));
   }
-  
+
   /* Theme-aware title styling */
   .deadlock-title {
-    font-family: 'Toxigenesis', 'Good Timing', serif;
+    font-family: "Toxigenesis", "Good Timing", serif;
     @apply text-4xl font-bold tracking-wider;
     color: var(--theme-title, rgb(254 243 199));
     text-shadow: 0 0 30px var(--theme-title-glow, rgba(251, 191, 36, 0.5));
   }
-  
+
   /* Theme-aware atmospheric effects */
   .atmospheric-glow {
-    box-shadow: 
+    box-shadow:
       0 0 20px var(--theme-atmospheric-glow, rgba(251, 191, 36, 0.1)),
       inset 0 0 20px rgba(0, 0, 0, 0.5);
   }
-  
+
   /* Theme-aware video overlay */
   .video-overlay {
-    background: var(--theme-video-overlay, linear-gradient(
-      45deg,
-      rgba(0, 0, 0, 0.8) 0%,
-      rgba(0, 0, 0, 0.3) 50%,
-      rgba(0, 0, 0, 0.6) 100%
-    ));
+    background: var(
+      --theme-video-overlay,
+      linear-gradient(
+        45deg,
+        rgba(0, 0, 0, 0.8) 0%,
+        rgba(0, 0, 0, 0.3) 50%,
+        rgba(0, 0, 0, 0.6) 100%
+      )
+    );
   }
 
   /* Theme-specific build ID styling */
@@ -184,24 +193,24 @@
   /* ============================================================================ */
   /* COMPREHENSIVE THEME-AWARE UTILITY CLASSES                                   */
   /* ============================================================================ */
-  
+
   /* Content & Text Classes */
   .theme-text {
     color: var(--theme-content-text);
   }
-  
+
   .theme-text-muted {
     color: var(--theme-content-text-muted);
   }
-  
+
   .theme-text-subtle {
     color: var(--theme-content-text-subtle);
   }
-  
+
   .theme-heading {
     color: var(--theme-heading-text);
   }
-  
+
   /* Card & Container Classes */
   .theme-card {
     background: var(--theme-card-bg);
@@ -209,20 +218,20 @@
     backdrop-filter: blur(8px);
     transition: all 0.3s ease;
   }
-  
+
   .theme-card:hover {
     background: var(--theme-card-hover-bg);
     border-color: var(--theme-card-hover-border);
     transform: translateY(-2px);
     box-shadow: 0 8px 32px var(--theme-card-hover-border);
   }
-  
+
   .theme-card-static {
     background: var(--theme-card-bg);
     border: 1px solid var(--theme-card-border);
     backdrop-filter: blur(8px);
   }
-  
+
   /* Button Classes */
   .theme-button {
     background: var(--theme-button-bg);
@@ -231,48 +240,48 @@
     backdrop-filter: blur(8px);
     transition: all 0.3s ease;
   }
-  
+
   .theme-button:hover {
     background: var(--theme-button-hover-bg);
     border-color: var(--theme-button-hover-border);
     transform: translateY(-1px);
     box-shadow: 0 4px 16px var(--theme-button-hover-border);
   }
-  
+
   .theme-button-outline {
     background: transparent;
     border: 1px solid var(--theme-button-border);
     color: var(--theme-button-text);
     transition: all 0.3s ease;
   }
-  
+
   .theme-button-outline:hover {
     background: var(--theme-button-hover-bg);
     border-color: var(--theme-button-hover-border);
     color: var(--theme-button-text);
   }
-  
+
   /* Link & Interactive Classes */
   .theme-link {
     color: var(--theme-accent-color);
     transition: all 0.3s ease;
   }
-  
+
   .theme-link:hover {
     color: var(--theme-menu-hover);
     text-shadow: 0 0 8px var(--theme-menu-glow);
   }
-  
+
   .theme-back-button {
     color: var(--theme-back-button-text);
     transition: all 0.3s ease;
   }
-  
+
   .theme-back-button:hover {
     color: var(--theme-back-button-hover);
     transform: translateX(-4px);
   }
-  
+
   /* Panel & Modal Classes */
   .theme-panel {
     background: var(--theme-panel-bg);
@@ -280,14 +289,14 @@
     color: var(--theme-panel-text);
     backdrop-filter: blur(16px);
   }
-  
+
   .theme-settings-panel {
     background: var(--theme-settings-panel-bg);
     border: 1px solid var(--theme-settings-panel-border);
     color: var(--theme-panel-text);
     backdrop-filter: blur(16px);
   }
-  
+
   /* Input & Form Classes */
   .theme-input {
     background: var(--theme-card-bg);
@@ -296,13 +305,13 @@
     backdrop-filter: blur(8px);
     transition: all 0.3s ease;
   }
-  
+
   .theme-input:focus {
     border-color: var(--theme-accent-color);
     box-shadow: 0 0 0 2px var(--theme-accent-color, rgb(59 130 246 / 0.2));
     outline: none;
   }
-  
+
   .theme-textarea {
     background: var(--theme-card-bg);
     border: 1px solid var(--theme-card-border);
@@ -311,13 +320,13 @@
     transition: all 0.3s ease;
     resize: vertical;
   }
-  
+
   .theme-textarea:focus {
     border-color: var(--theme-accent-color);
     box-shadow: 0 0 0 2px var(--theme-accent-color, rgb(59 130 246 / 0.2));
     outline: none;
   }
-  
+
   /* Badge & Tag Classes */
   .theme-badge {
     background: var(--theme-button-bg);
@@ -325,40 +334,40 @@
     color: var(--theme-button-text);
     backdrop-filter: blur(8px);
   }
-  
+
   .theme-badge-subtle {
     background: var(--theme-card-bg);
     border: 1px solid var(--theme-card-border);
     color: var(--theme-content-text-muted);
   }
-  
+
   /* Section & Layout Classes */
   .theme-section {
     color: var(--theme-content-text);
   }
-  
+
   .theme-section-bg {
     background: var(--theme-card-bg);
     backdrop-filter: blur(8px);
   }
-  
+
   .theme-divider {
     border-color: var(--theme-card-border);
   }
-  
+
   /* Icon Classes */
   .theme-icon {
     color: var(--theme-content-text);
   }
-  
+
   .theme-icon-muted {
     color: var(--theme-content-text-muted);
   }
-  
+
   .theme-icon-accent {
     color: var(--theme-accent-color);
   }
-  
+
   /* Project & Portfolio Specific Classes */
   .theme-project-card {
     background: var(--theme-card-bg);
@@ -366,14 +375,14 @@
     backdrop-filter: blur(8px);
     transition: all 0.3s ease;
   }
-  
+
   .theme-project-card:hover {
     background: var(--theme-card-hover-bg);
     border-color: var(--theme-card-hover-border);
     transform: translateY(-4px);
     box-shadow: 0 12px 40px var(--theme-card-hover-border);
   }
-  
+
   .theme-skill-tag {
     background: var(--theme-button-bg);
     border: 1px solid var(--theme-button-border);
@@ -381,27 +390,27 @@
     backdrop-filter: blur(8px);
     transition: all 0.3s ease;
   }
-  
+
   .theme-skill-tag:hover {
     background: var(--theme-button-hover-bg);
     border-color: var(--theme-button-hover-border);
     transform: scale(1.05);
   }
-  
+
   .theme-filter-button {
     background: transparent;
     border: 1px solid var(--theme-card-border);
     color: var(--theme-content-text-muted);
     transition: all 0.3s ease;
   }
-  
+
   .theme-filter-button:hover,
   .theme-filter-button.active {
     background: var(--theme-button-bg);
     border-color: var(--theme-button-border);
     color: var(--theme-button-text);
   }
-  
+
   /* Contact & Form Specific Classes */
   .theme-contact-card {
     background: var(--theme-card-bg);
@@ -409,47 +418,50 @@
     backdrop-filter: blur(12px);
     transition: all 0.3s ease;
   }
-  
+
   .theme-contact-card:hover {
     border-color: var(--theme-card-hover-border);
     box-shadow: 0 8px 24px var(--theme-card-hover-border);
   }
-  
+
   /* Accessibility & State Classes */
   .theme-focus:focus {
     outline: 2px solid var(--theme-accent-color);
     outline-offset: 2px;
   }
-  
+
   .theme-disabled {
     opacity: 0.5;
     cursor: not-allowed;
   }
-  
+
   .theme-loading {
     opacity: 0.7;
     pointer-events: none;
   }
-  
+
   /* Animation Classes */
   .theme-glow {
     box-shadow: 0 0 20px var(--theme-menu-glow);
   }
-  
+
   .theme-glow-subtle {
     box-shadow: 0 0 10px var(--theme-menu-glow, rgba(59, 130, 246, 0.3));
   }
-  
+
   .theme-pulse {
     animation: theme-pulse 2s infinite;
   }
-  
+
   @keyframes theme-pulse {
-    0%, 100% {
+    0%,
+    100% {
       box-shadow: 0 0 10px var(--theme-menu-glow);
     }
     50% {
-      box-shadow: 0 0 20px var(--theme-menu-glow), 0 0 30px var(--theme-menu-glow);
+      box-shadow:
+        0 0 20px var(--theme-menu-glow),
+        0 0 30px var(--theme-menu-glow);
     }
   }
 }

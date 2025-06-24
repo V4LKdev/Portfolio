@@ -40,9 +40,10 @@ import {
   type Project,
 } from "../content";
 
-const Portfolio = () => {  // --- Theme Management ---
+const Portfolio = () => {
+  // --- Theme Management ---
   const { toggleTheme, isTheme } = useTheme();
-  
+
   // --- State Management ---
   // Controls for video, menu, and navigation
   const [isMuted, setIsMuted] = useState(() => VideoPreferences.getMuted()); // Video mute from cookies
@@ -101,7 +102,7 @@ const Portfolio = () => {  // --- Theme Management ---
     const newMutedState = !isMuted;
     setIsMuted(newMutedState);
     VideoPreferences.setMuted(newMutedState); // Save to cookies
-  };  // Auto-resume video when returning to home section (unless manually paused)
+  }; // Auto-resume video when returning to home section (unless manually paused)
   React.useEffect(() => {
     if (currentSection === "home" && !isManuallyPaused) {
       setIsPaused(false);
@@ -113,13 +114,13 @@ const Portfolio = () => {  // --- Theme Management ---
     if (currentSection === "home") {
       // Small delay to ensure DOM is ready
       setTimeout(() => {
-        const anchor = document.getElementById('main-menu-cursor-anchor');
+        const anchor = document.getElementById("main-menu-cursor-anchor");
         if (anchor) {
           anchor.focus({ preventScroll: true });
         }
       }, 100);
     }
-  }, [currentSection]);  // Sync settings UI with media keys and video state changes
+  }, [currentSection]); // Sync settings UI with media keys and video state changes
   React.useEffect(() => {
     // Set up media session for hardware media keys
     if ("mediaSession" in navigator) {
@@ -213,9 +214,9 @@ const Portfolio = () => {  // --- Theme Management ---
 
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Element;
-      
+
       // Check if click is outside the settings panel
-      const settingsPanel = document.querySelector('[data-settings-panel]');
+      const settingsPanel = document.querySelector("[data-settings-panel]");
       if (settingsPanel && !settingsPanel.contains(target)) {
         setIsSettingsOpen(false);
       }
@@ -223,12 +224,12 @@ const Portfolio = () => {  // --- Theme Management ---
 
     // Add event listener with a small delay to avoid immediate closing
     const timeoutId = setTimeout(() => {
-      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
     }, 100);
 
     return () => {
       clearTimeout(timeoutId);
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isSettingsOpen]);
 
@@ -250,7 +251,8 @@ const Portfolio = () => {  // --- Theme Management ---
       }
     };
     document.addEventListener("visibilitychange", handleVisibilityChange);
-    return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
+    return () =>
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
   }, [currentSection]);
   // --- Section Backgrounds ---
   // Returns a static background image for each section
@@ -306,7 +308,8 @@ const Portfolio = () => {  // --- Theme Management ---
             >
               <ArrowLeft className="w-5 h-5" />
               <span>Back to Home</span>
-            </button>            <h2 className="text-3xl md:text-5xl font-bold mb-8 md:mb-16 text-center deadlock-title">
+            </button>{" "}
+            <h2 className="text-3xl md:text-5xl font-bold mb-8 md:mb-16 text-center deadlock-title">
               ADDITIONAL CONTENT
             </h2>
             <div className="theme-card rounded-lg p-6 md:p-8 atmospheric-glow text-center">
@@ -322,7 +325,9 @@ const Portfolio = () => {  // --- Theme Management ---
 
       case "exit":
         return (
-          <div className="text-center max-w-4xl">            <h2 className="text-3xl md:text-5xl font-bold mb-6 md:mb-8 deadlock-title">
+          <div className="text-center max-w-4xl">
+            {" "}
+            <h2 className="text-3xl md:text-5xl font-bold mb-6 md:mb-8 deadlock-title">
               GOODBYE
             </h2>
             <p className="text-lg md:text-xl theme-text mb-6 md:mb-8">
@@ -382,7 +387,9 @@ const Portfolio = () => {  // --- Theme Management ---
           }
           aria-expanded={isMobileMenuOpen}
           aria-controls="mobile-navigation"
-        >          {isMobileMenuOpen ? (
+        >
+          {" "}
+          {isMobileMenuOpen ? (
             <X className="w-6 h-6 theme-icon" />
           ) : (
             <Menu className="w-6 h-6 theme-icon" />
@@ -405,11 +412,12 @@ const Portfolio = () => {  // --- Theme Management ---
             <div className="pt-14 md:pt-20 pb-12 md:pb-16 lg:pb-20 px-8 md:px-12 no-select">
               <h1 className="deadlock-title mb-1 text-3xl md:text-4xl lg:text-5xl no-select">
                 NICOLAS MARTIN
-              </h1>              <p
+              </h1>{" "}
+              <p
                 className="text-base md:text-lg lg:text-xl tracking-wide font-medium no-select"
-                style={{ 
+                style={{
                   fontFamily: "Good Timing, serif",
-                  color: "var(--theme-subtitle, rgb(253 230 138 / 0.8))"
+                  color: "var(--theme-subtitle, rgb(253 230 138 / 0.8))",
                 }}
               >
                 Game Programmer
@@ -419,9 +427,10 @@ const Portfolio = () => {  // --- Theme Management ---
             <div className="px-8 md:px-12 no-select">
               {menuItems.map((item, index) => {
                 const getButtonSpacing = () => {
-                  if (item.hierarchy === 'primary') return 'mb-6 md:mb-8';
-                  if (item.hierarchy === 'quit') return 'mt-8 md:mt-12 mb-2 md:mb-3';
-                  return 'mb-3 md:mb-4';
+                  if (item.hierarchy === "primary") return "mb-6 md:mb-8";
+                  if (item.hierarchy === "quit")
+                    return "mt-8 md:mt-12 mb-2 md:mb-3";
+                  return "mb-3 md:mb-4";
                 };
 
                 return (
@@ -439,71 +448,91 @@ const Portfolio = () => {  // --- Theme Management ---
                       currentSection === item.section ? "page" : undefined
                     }
                   >
-                  {/* Game-style text with hover effect - both texts in same container */}
-                  <div className="relative flex items-center gap-2">
-                    {item.hierarchy === 'quit' && (
-                      <LogOut className="w-4 h-4 md:w-5 md:h-5 text-gray-400 group-hover:text-gray-300 transition-colors duration-300" />
-                    )}
-                    <div className="relative">
-                      <span className="block group-hover:opacity-0 transition-opacity duration-300 no-select">
-                        {item.gameLabel}
-                      </span>
-                      <span className="absolute top-0 left-0 w-full group-hover:opacity-100 opacity-0 transition-opacity duration-300 no-select">
-                        {item.hoverLabel}
-                      </span>
+                    {/* Game-style text with hover effect - both texts in same container */}
+                    <div className="relative flex items-center gap-2">
+                      {item.hierarchy === "quit" && (
+                        <LogOut className="w-4 h-4 md:w-5 md:h-5 text-gray-400 group-hover:text-gray-300 transition-colors duration-300" />
+                      )}
+                      <div className="relative">
+                        <span className="block group-hover:opacity-0 transition-opacity duration-300 no-select">
+                          {item.gameLabel}
+                        </span>
+                        <span className="absolute top-0 left-0 w-full group-hover:opacity-100 opacity-0 transition-opacity duration-300 no-select">
+                          {item.hoverLabel}
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                </button>
+                  </button>
                 );
               })}
-            </div>{" "}            {/* Bottom Controls - Settings Button or Expanded Menu */}
-            <div className="absolute bottom-12 md:bottom-14 left-8 md:left-12">              {!isSettingsOpen ? (
-                /* Settings Gear Button */                <button
+            </div>{" "}
+            {/* Bottom Controls - Settings Button or Expanded Menu */}
+            <div className="absolute bottom-12 md:bottom-14 left-8 md:left-12">
+              {" "}
+              {!isSettingsOpen ? (
+                /* Settings Gear Button */ <button
                   onClick={() => setIsSettingsOpen(true)}
                   className="p-3 rounded-lg backdrop-blur-sm transition-all duration-300 hover:scale-110"
                   data-settings-panel
                   style={{
-                    backgroundColor: "var(--theme-settings-panel-bg, rgba(0, 0, 0, 0.8))",
-                    borderColor: "var(--theme-settings-panel-border, rgb(251 191 36 / 0.3))",
+                    backgroundColor:
+                      "var(--theme-settings-panel-bg, rgba(0, 0, 0, 0.8))",
+                    borderColor:
+                      "var(--theme-settings-panel-border, rgb(251 191 36 / 0.3))",
                     borderWidth: "1px",
-                    borderStyle: "solid"
+                    borderStyle: "solid",
                   }}
                   aria-label="Open settings menu"
                   aria-expanded={false}
                   aria-haspopup="true"
                 >
-                  <Settings 
-                    className="w-5 h-5" 
-                    style={{ color: "var(--theme-settings-icon, rgb(253 230 138))" }}
+                  <Settings
+                    className="w-5 h-5"
+                    style={{
+                      color: "var(--theme-settings-icon, rgb(253 230 138))",
+                    }}
                   />
-                </button>              ) : (                /* Expanded Settings Menu - Same height as single button */                <div 
+                </button>
+              ) : (
+                /* Expanded Settings Menu - Same height as single button */ <div
                   className="flex items-center space-x-1 rounded-lg backdrop-blur-sm"
                   data-settings-panel
                   style={{
-                    backgroundColor: "var(--theme-settings-panel-bg, rgba(0, 0, 0, 0.8))",
-                    borderColor: "var(--theme-settings-panel-border, rgb(251 191 36 / 0.3))",
+                    backgroundColor:
+                      "var(--theme-settings-panel-bg, rgba(0, 0, 0, 0.8))",
+                    borderColor:
+                      "var(--theme-settings-panel-border, rgb(251 191 36 / 0.3))",
                     borderWidth: "1px",
-                    borderStyle: "solid"
+                    borderStyle: "solid",
                   }}
-                >{" "}
+                >
+                  {" "}
                   {/* Collapse Button */}
                   <button
                     onClick={() => setIsSettingsOpen(false)}
                     className="p-3 transition-all duration-300 hover:scale-110"
                     aria-label="Close settings menu"
                     title="Close settings menu"
-                  >                    <ChevronLeft className="w-5 h-5 settings-panel-icon" />
-                  </button>                  {/* Separator Line */}                  <div 
-                    className="w-px h-6" 
-                    style={{ backgroundColor: "var(--theme-settings-panel-border, rgb(251 191 36 / 0.3))" }}
-                  ></div>{/* Theme Toggle */}
+                  >
+                    {" "}
+                    <ChevronLeft className="w-5 h-5 settings-panel-icon" />
+                  </button>{" "}
+                  {/* Separator Line */}{" "}
+                  <div
+                    className="w-px h-6"
+                    style={{
+                      backgroundColor:
+                        "var(--theme-settings-panel-border, rgb(251 191 36 / 0.3))",
+                    }}
+                  ></div>
+                  {/* Theme Toggle */}
                   <button
                     onClick={toggleTheme}
                     className="p-3 transition-all duration-300 hover:scale-110"
-                    aria-label={`Switch to ${isTheme('warm') ? 'cool' : 'warm'} theme`}
-                    title={`Switch to ${isTheme('warm') ? 'cool blue' : 'warm amber'} theme`}
+                    aria-label={`Switch to ${isTheme("warm") ? "cool" : "warm"} theme`}
+                    title={`Switch to ${isTheme("warm") ? "cool blue" : "warm amber"} theme`}
                   >
-                    {isTheme('cool') ? (
+                    {isTheme("cool") ? (
                       <Moon className="w-5 h-5 settings-panel-icon" />
                     ) : (
                       <Sun className="w-5 h-5 settings-panel-icon" />
@@ -558,18 +587,24 @@ const Portfolio = () => {  // --- Theme Management ---
       {/* Social Media Icons - Responsive positioning and layout */}
       {!isInnerPage && (
         <SocialMediaIcons className="fixed bottom-4 right-4 md:bottom-6 md:right-6 lg:bottom-8 lg:right-8 z-30" />
-      )}      {/* Game-style Build ID - Bottom left corner */}
+      )}{" "}
+      {/* Game-style Build ID - Bottom left corner */}
       {!isInnerPage && (
         <div className="fixed bottom-4 left-8 md:bottom-6 md:left-12 z-50 build-id text-xs font-mono select-none pointer-events-none">
-          <span className="bg-black/60 px-2 py-1 rounded backdrop-blur-sm">v2025.07_v01</span>
+          <span className="bg-black/60 px-2 py-1 rounded backdrop-blur-sm">
+            v2025.07_v01
+          </span>
         </div>
-      )}{" "}      {/* Settings Mini Menu - No overlay needed since buttons work inline */}{" "}
+      )}{" "}
+      {/* Settings Mini Menu - No overlay needed since buttons work inline */}{" "}
       {/* Main Content Area - Responsive margins and padding */}
       <div
         className={`relative z-10 content-area ${!isInnerPage ? "lg:ml-sidebar" : ""}`}
       >
         <div className="min-h-screen px-4 md:px-6 lg:px-8 pt-6 md:pt-8 content-area">
-          <div className="w-full max-w-7xl mx-auto">            {renderContent()}
+          <div className="w-full max-w-7xl mx-auto">
+            {" "}
+            {renderContent()}
             {/* Invisible focus anchor for cursor positioning - bottom right */}
             {!isInnerPage && (
               <div
@@ -586,10 +621,10 @@ const Portfolio = () => {  // --- Theme Management ---
                   zIndex: 1000,
                 }}
               />
-            )}</div>
+            )}
+          </div>
         </div>
       </div>
-      
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && !isInnerPage && (
         <button

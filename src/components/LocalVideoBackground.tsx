@@ -163,7 +163,8 @@ const LocalVideoBackground: React.FC<LocalVideoBackgroundProps> = ({
             transition: "opacity 0.5s ease-in-out",
           }}
         />
-      )}      {/* Loading Indicator - Centered for better UX */}
+      )}{" "}
+      {/* Loading Indicator - Centered for better UX */}
       {isLoading && !hasError && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/20">
           <div className="flex items-center space-x-3 text-amber-200 bg-black/60 backdrop-blur-sm rounded-lg px-4 py-3">
@@ -171,7 +172,8 @@ const LocalVideoBackground: React.FC<LocalVideoBackgroundProps> = ({
             <span className="text-sm font-medium">Loading video...</span>
           </div>
         </div>
-      )}      {/* Error State - Centered bottom for better visibility */}
+      )}{" "}
+      {/* Error State - Centered bottom for better visibility */}
       {hasError && (
         <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 bg-red-900/90 backdrop-blur-sm border border-red-500/50 rounded-lg px-4 py-2 shadow-lg">
           <p className="text-red-200 text-sm font-medium">

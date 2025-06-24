@@ -37,14 +37,15 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({
   });
 
   return (
-    <div className="max-w-6xl mx-auto transition-all duration-500 animate-fade-in">      <button
+    <div className="max-w-6xl mx-auto transition-all duration-500 animate-fade-in">
+      {" "}
+      <button
         onClick={onBack}
         className="mb-8 flex items-center space-x-2 theme-back-button"
       >
         <ArrowLeft className="w-5 h-5" />
         <span>Back to Home</span>
       </button>
-
       <h2 className="text-5xl font-bold mb-8 text-center deadlock-title">
         FEATURED PROJECTS
       </h2>
@@ -54,14 +55,13 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({
       >
         Portfolio of Game Development Work
       </p>
-
       <ProjectFilter
         activeFilter={projectFilter}
         onFilterChange={onFilterChange}
       />
-
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {filteredProjects.map((project) => (          <button
+        {filteredProjects.map((project) => (
+          <button
             key={project.id}
             onClick={() => onProjectClick(project)}
             className="theme-project-card rounded-lg overflow-hidden cursor-pointer w-full text-left"
@@ -90,7 +90,8 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({
               </h3>
               <p className="theme-text-muted text-sm mb-4 line-clamp-3">
                 {project.description}
-              </p>              <div className="theme-text-subtle text-xs">{project.details}</div>
+              </p>{" "}
+              <div className="theme-text-subtle text-xs">{project.details}</div>
             </div>
           </button>
         ))}

@@ -3,7 +3,13 @@
 // Separates video logic from main Portfolio component for better maintainability
 
 import * as React from "react";
-import { createContext, useContext, useState, useCallback, useEffect, useMemo } from "react";
+import {
+  createContext,
+  useState,
+  useCallback,
+  useEffect,
+  useMemo,
+} from "react";
 import { VideoPreferences } from "../lib/cookies";
 
 interface VideoState {
@@ -20,18 +26,11 @@ interface VideoActions {
 
 interface VideoControlContextType extends VideoState, VideoActions {}
 
-const VideoControlContext = createContext<VideoControlContextType | null>(null);
-
-export const useVideoControls = () => {
-  const context = useContext(VideoControlContext);
-  if (!context) {
-    throw new Error("useVideoControls must be used within VideoControlProvider");
-  }
-  return context;
-};
+export const VideoControlContext =
+  createContext<VideoControlContextType | null>(null);
 
 interface VideoControlProviderProps {
-  children: React.ReactNode;
+  readonly children: React.ReactNode;
 }
 
 /**
@@ -42,11 +41,13 @@ interface VideoControlProviderProps {
  * - Media session integration
  * - Tab visibility handling
  */
-export const VideoControlProvider: React.FC<VideoControlProviderProps> = ({ children }) => {
+export function VideoControlProvider({ children }: VideoControlProviderProps) {
   // --- Video State from Cookies ---
   const [isPaused, setIsPaused] = useState(() => VideoPreferences.getPaused());
   const [isMuted, setIsMuted] = useState(() => VideoPreferences.getMuted());
-  const [isManuallyPaused, setIsManuallyPaused] = useState(() => VideoPreferences.getPaused());
+  const [isManuallyPaused, setIsManuallyPaused] = useState(() =>
+    VideoPreferences.getPaused(),
+  );
 
   // --- Video Control Actions ---
   const togglePlayback = useCallback(() => {
@@ -88,8 +89,9 @@ export const VideoControlProvider: React.FC<VideoControlProviderProps> = ({ chil
   // --- Keyboard Controls ---
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      const shouldHandleSpace = event.code === "Space" && event.target === document.body;
-      const shouldHandleMediaKey = 
+      const shouldHandleSpace =
+        event.code === "Space" && event.target === document.body;
+      const shouldHandleMediaKey =
         event.code === "MediaPlayPause" ||
         (event.code === "MediaPlay" && isPaused) ||
         (event.code === "MediaPause" && !isPaused);
@@ -147,7 +149,7 @@ export const VideoControlProvider: React.FC<VideoControlProviderProps> = ({ chil
         const shouldBePaused = VideoPreferences.getPaused();
         setIsPaused(shouldBePaused);
         setIsManuallyPaused(shouldBePaused);
-        
+
         if (!shouldBePaused) {
           const video = document.querySelector("video");
           if (video?.paused) {
@@ -158,20 +160,31 @@ export const VideoControlProvider: React.FC<VideoControlProviderProps> = ({ chil
     };
 
     document.addEventListener("visibilitychange", handleVisibilityChange);
-    return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
+    return () =>
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
   }, []);
-  const value: VideoControlContextType = useMemo(() => ({
-    isPaused,
-    isMuted,
-    isManuallyPaused,
-    togglePlayback,
-    toggleMute,
-    setManualPause,
-  }), [isPaused, isMuted, isManuallyPaused, togglePlayback, toggleMute, setManualPause]);
+  const value: VideoControlContextType = useMemo(
+    () => ({
+      isPaused,
+      isMuted,
+      isManuallyPaused,
+      togglePlayback,
+      toggleMute,
+      setManualPause,
+    }),
+    [
+      isPaused,
+      isMuted,
+      isManuallyPaused,
+      togglePlayback,
+      toggleMute,
+      setManualPause,
+    ],
+  );
 
   return (
     <VideoControlContext.Provider value={value}>
       {children}
     </VideoControlContext.Provider>
   );
-};
+}

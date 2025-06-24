@@ -21,7 +21,8 @@ const ProjectFilter: React.FC<ProjectFilterProps> = ({
     <div className="flex flex-wrap justify-center gap-4 mb-12">
       {filters.map((filter) => {
         const IconComponent = filter.icon;
-        return (          <button
+        return (
+          <button
             key={filter.id}
             onClick={() => onFilterChange(filter.id)}
             className={`flex items-center space-x-2 px-6 py-3 rounded-lg border-2 transition-all duration-300 ${

@@ -16,19 +16,21 @@ interface AboutSectionProps {
  */
 const AboutSection: React.FC<AboutSectionProps> = ({ onBack }) => {
   return (
-    <div className="max-w-4xl mx-auto">      <button
+    <div className="max-w-4xl mx-auto">
+      {" "}
+      <button
         onClick={onBack}
         className="mb-8 flex items-center space-x-2 theme-back-button"
       >
         <ArrowLeft className="w-5 h-5" />
         <span>Back to Home</span>
       </button>
-
       <h2 className="text-5xl font-bold mb-16 text-center deadlock-title">
         ABOUT ME
       </h2>
-
-      <div className="theme-card rounded-lg p-8 atmospheric-glow">        {/* Bio paragraphs */}
+      <div className="theme-card rounded-lg p-8 atmospheric-glow">
+        {" "}
+        {/* Bio paragraphs */}
         {aboutContent.intro.map((paragraph) => (
           <p
             key={paragraph.slice(0, 20)}
@@ -37,7 +39,6 @@ const AboutSection: React.FC<AboutSectionProps> = ({ onBack }) => {
             {paragraph}
           </p>
         ))}
-
         {/* Education and Experience grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
           <div>
@@ -48,7 +49,10 @@ const AboutSection: React.FC<AboutSectionProps> = ({ onBack }) => {
               Education
             </h3>
             {aboutContent.education.map((edu) => (
-              <p key={edu.institution} className="theme-text-muted text-sm mb-2">
+              <p
+                key={edu.institution}
+                className="theme-text-muted text-sm mb-2"
+              >
                 <strong>{edu.institution}</strong> - {edu.degree}
                 <br />
                 {edu.period}
