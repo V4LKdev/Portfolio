@@ -21,6 +21,7 @@ import { NavigationProvider } from "./NavigationProvider";
 import { useVideoControls } from "../hooks/use-video-controls";
 import { useNavigation } from "../hooks/use-navigation";
 import { backgroundImages, navigationItems, videoConfig } from "../content";
+import { projects } from "../content/projects";
 
 /**
  * Main portfolio layout component
@@ -92,6 +93,7 @@ const PortfolioContent: React.FC = () => {
       case "projects":
         return (
           <ProjectsSection
+            projects={projects}
             onBack={() => handleMenuClick("home")}
             onProjectClick={handleProjectClick}
             projectFilter={projectFilter}

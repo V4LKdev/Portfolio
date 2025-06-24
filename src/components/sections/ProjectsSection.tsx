@@ -4,10 +4,11 @@
 
 import React from "react";
 import { ArrowLeft } from "lucide-react";
-import { projects, type Project } from "../../content";
 import ProjectFilter from "../ProjectFilter";
+import { type Project } from "../../content";
 
 interface ProjectsSectionProps {
+  projects: Project[];
   onBack: () => void;
   onProjectClick: (project: Project) => void;
   projectFilter: string;
@@ -22,6 +23,7 @@ interface ProjectsSectionProps {
  * @param onFilterChange - Callback to change project filter
  */
 const ProjectsSection: React.FC<ProjectsSectionProps> = ({
+  projects,
   onBack,
   onProjectClick,
   projectFilter,
