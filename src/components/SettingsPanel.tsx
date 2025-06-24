@@ -11,11 +11,10 @@ import {
   Moon,
   Play,
   Pause,
-  Volume2,
-  VolumeX,
+  Volume2,  VolumeX,
 } from "lucide-react";
-import { useTheme } from "../hooks/use-theme";
-import { useVideoControls } from "../hooks/use-video-controls";
+import { useTheme } from "../hooks/useTheme";
+import { useVideoControls } from "../hooks/useVideoControls";
 
 interface SettingsPanelProps {
   className?: string;

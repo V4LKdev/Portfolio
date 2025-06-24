@@ -2,14 +2,13 @@
 // Displays portfolio projects with filtering and navigation
 // Handles project grid view and individual project selection
 
-import React from "react";
 import ProjectFilter from "../ProjectFilter";
 import { BackButton } from "../ui/navigation";
 import { type Project } from "../../content";
+import { NavigableSectionComponent } from "../../types/SharedProps";
 
-interface ProjectsSectionProps {
+interface AdditionalProjectsProps {
   projects: Project[];
-  onBack: () => void;
   onProjectClick: (project: Project) => void;
   projectFilter: string;
   onFilterChange: (filter: string) => void;
@@ -22,12 +21,14 @@ interface ProjectsSectionProps {
  * @param projectFilter - Current active filter (all/team/solo/academic)
  * @param onFilterChange - Callback to change project filter
  */
-const ProjectsSection: React.FC<ProjectsSectionProps> = ({
+const ProjectsSection: NavigableSectionComponent<AdditionalProjectsProps> = ({
   projects,
   onBack,
   onProjectClick,
   projectFilter,
   onFilterChange,
+  className,
+  id,
 }) => {
   // Filter projects based on selected filter
   const filteredProjects = projects.filter((project) => {
@@ -39,7 +40,7 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({
   });
 
   return (
-    <div className="max-w-6xl mx-auto transition-all duration-500 animate-fade-in">
+    <div className={`max-w-6xl mx-auto transition-all duration-500 animate-fade-in ${className ?? ""}`} id={id}>
       <BackButton onClick={onBack} label="Back to Home" />
       <h2 className="text-5xl font-bold mb-8 text-center deadlock-title">
         Featured Projects

@@ -1,26 +1,28 @@
-// Portfolio.tsx
-// Main portfolio component - clean and focused
-// Uses providers for state management and separation of concerns
+/**
+ * Portfolio.tsx
+ * Main portfolio component - refactored to use layout system
+ * Uses providers for state management and new layout components for consistency
+ */
 
 import * as React from "react";
 import { useEffect } from "react";
 import { Menu, X, LogOut } from "lucide-react";
-import LocalVideoBackground from "./LocalVideoBackground";
+import { HomeLayout, SectionLayout } from "./layout";
 import ServerConnectionPanel from "./ServerConnectionPanel";
 import SocialMediaIcons from "./SocialMediaIcons";
-import SettingsPanel from "./SettingsPanel";
 import HomeSection from "./sections/HomeSection";
 import ProjectsSection from "./sections/ProjectsSection";
 import AboutSection from "./sections/AboutSection";
 import SkillsSection from "./sections/SkillsSection";
 import ContactSection from "./sections/ContactSection";
 import ProjectDetail from "./ProjectDetail";
+import SettingsPanel from "./SettingsPanel";
 import BUILD_VERSION from "../config/version";
 import { VideoControlProvider } from "./VideoControlProvider";
 import { NavigationProvider } from "./NavigationProvider";
-import { useVideoControls } from "../hooks/use-video-controls";
-import { useNavigation } from "../hooks/use-navigation";
-import { backgroundImages, navigationItems, videoConfig } from "../content";
+import { useVideoControls } from "../hooks/useVideoControls";
+import { useNavigation } from "../hooks/useNavigation";
+import { navigationItems } from "../content";
 import { projects } from "../content/projects";
 
 /**
@@ -28,7 +30,7 @@ import { projects } from "../content/projects";
  * Now focused purely on layout and rendering, with state managed by providers
  */
 const PortfolioContent: React.FC = () => {
-  const { isPaused, isMuted, setManualPause } = useVideoControls();
+  const { setManualPause } = useVideoControls();
   const {
     currentSection,
     selectedProject,
@@ -67,83 +69,110 @@ const PortfolioContent: React.FC = () => {
       }, 100);
     }
   }, [currentSection]);
-
-  // --- Helper Functions ---
-  const getStaticBackground = (section: string) => {
-    return (
-      backgroundImages[section as keyof typeof backgroundImages] ??
-      backgroundImages.projects
-    );
-  };
-
+  // --- Content Rendering ---
   const renderContent = () => {
+    // Project detail page (overlay-style)
     if (selectedProject) {
       return (
-        <ProjectDetail project={selectedProject} onBack={handleBackClick} />
+        <SectionLayout section="projects" className="fixed inset-0 z-50">
+          <ProjectDetail project={selectedProject} onBack={handleBackClick} />
+        </SectionLayout>
       );
-    }
-
-    switch (currentSection) {
-      case "home":
-        return (
+    }    // Home page with video background and navigation
+    if (currentSection === "home") {
+      return (
+        <HomeLayout 
+          menu={<NavigationMenu 
+            isOpen={isMobileMenuOpen}
+            currentSection={currentSection}
+            onMenuClick={handleMenuClick}
+          />}
+        >
           <HomeSection
             onNavigateToProjects={() => handleMenuClick("projects")}
           />
-        );
+          
+          {/* Additional home page elements */}
+          <ServerConnectionPanel className="fixed top-6 md:top-8 right-6 md:right-8 z-30 hidden xl:block" />
+          <SocialMediaIcons className="fixed bottom-4 right-4 md:bottom-6 md:right-6 lg:bottom-8 lg:right-8 z-30" />
+          
+          {/* Focus anchor */}
+          <div
+            id="main-menu-cursor-anchor"
+            tabIndex={-1}
+            style={{
+              position: "fixed",
+              bottom: "20px",
+              right: "20px",
+              width: "1px",
+              height: "1px",
+              opacity: 0,
+              pointerEvents: "none",
+              zIndex: 1000,
+            }}
+          />
+        </HomeLayout>
+      );
+    }
+
+    // Section pages with static backgrounds
+    switch (currentSection) {
       case "projects":
         return (
-          <ProjectsSection
-            projects={projects}
-            onBack={() => handleMenuClick("home")}
-            onProjectClick={handleProjectClick}
-            projectFilter={projectFilter}
-            onFilterChange={setProjectFilter}
-          />
+          <SectionLayout section="projects">
+            <ProjectsSection
+              projects={projects}
+              onBack={() => handleMenuClick("home")}
+              onProjectClick={handleProjectClick}
+              projectFilter={projectFilter}
+              onFilterChange={setProjectFilter}
+            />
+          </SectionLayout>
         );
       case "about":
-        return <AboutSection onBack={() => handleMenuClick("home")} />;
+        return (
+          <SectionLayout section="about">
+            <AboutSection onBack={() => handleMenuClick("home")} />
+          </SectionLayout>
+        );
       case "skills":
-        return <SkillsSection onBack={() => handleMenuClick("home")} />;
+        return (
+          <SectionLayout section="skills">
+            <SkillsSection onBack={() => handleMenuClick("home")} />
+          </SectionLayout>
+        );
       case "contact":
-        return <ContactSection onBack={() => handleMenuClick("home")} />;
+        return (
+          <SectionLayout section="contact">
+            <ContactSection onBack={() => handleMenuClick("home")} />
+          </SectionLayout>
+        );
       case "additional":
-        return <AdditionalSection onBack={() => handleMenuClick("home")} />;
+        return (
+          <SectionLayout section="projects">
+            <AdditionalSection onBack={() => handleMenuClick("home")} />
+          </SectionLayout>
+        );
       case "exit":
-        return <ExitSection onBack={() => handleMenuClick("home")} />;
+        return (
+          <SectionLayout section="projects">
+            <ExitSection onBack={() => handleMenuClick("home")} />
+          </SectionLayout>
+        );
       default:
-        return null;
+        return (
+          <HomeLayout>
+            <HomeSection
+              onNavigateToProjects={() => handleMenuClick("projects")}
+            />
+          </HomeLayout>
+        );
     }
   };
-
-  const isInnerPage = currentSection !== "home";
-
   return (
     <div className="min-h-screen bg-black text-foreground overflow-x-hidden">
-      {/* Background Video or Static Image */}
-      {!isInnerPage ? (
-        <div className="fixed inset-0 z-0">
-          <LocalVideoBackground
-            videoSrc={videoConfig.localVideoSrc}
-            posterSrc={videoConfig.posterSrc}
-            isPaused={isPaused}
-            isMuted={isMuted}
-            className="video-responsive"
-          />
-          <div className="absolute inset-0 video-overlay" />
-        </div>
-      ) : (
-        <div
-          className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat transition-all duration-500"
-          style={{
-            backgroundImage: `url(${getStaticBackground(currentSection)})`,
-          }}
-        >
-          <div className="absolute inset-0 video-overlay" />
-        </div>
-      )}
-
-      {/* Mobile Menu Button */}
-      {!isInnerPage && (
+      {/* Mobile Menu Button for Home Page */}
+      {currentSection === "home" && (
         <button
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           className="fixed top-4 left-4 md:top-6 md:left-6 z-50 lg:hidden theme-panel p-3 rounded-lg transition-all duration-300"
@@ -159,59 +188,16 @@ const PortfolioContent: React.FC = () => {
             <Menu className="w-6 h-6 theme-icon" />
           )}
         </button>
-      )}
-
-      {/* Left Navigation Menu */}
-      {!isInnerPage && (
-        <NavigationMenu
-          isOpen={isMobileMenuOpen}
-          currentSection={currentSection}
-          onMenuClick={handleMenuClick}
-        />
-      )}
-
-      {/* Fixed UI Elements */}
-      {!isInnerPage && (
-        <>
-          <ServerConnectionPanel className="fixed top-6 md:top-8 right-6 md:right-8 z-30 hidden xl:block" />
-          <SocialMediaIcons className="fixed bottom-4 right-4 md:bottom-6 md:right-6 lg:bottom-8 lg:right-8 z-30" />          <div className="fixed bottom-4 left-8 md:bottom-6 md:left-12 z-50 build-id text-xs font-mono select-none pointer-events-none">
-            <span className="bg-black/60 px-2 py-1 rounded backdrop-blur-sm">
-              {BUILD_VERSION}
-            </span>
-          </div>
-        </>
-      )}
-
-      {/* Main Content Area */}
-      <div
-        className={`relative z-10 content-area ${!isInnerPage ? "lg:ml-sidebar" : ""}`}
-      >
-        <div className="min-h-screen px-4 md:px-6 lg:px-8 pt-6 md:pt-8 content-area">
-          <div className="w-full max-w-7xl mx-auto">
-            {renderContent()}
-            {/* Focus anchor */}
-            {!isInnerPage && (
-              <div
-                id="main-menu-cursor-anchor"
-                tabIndex={-1}
-                style={{
-                  position: "fixed",
-                  bottom: "20px",
-                  right: "20px",
-                  width: "1px",
-                  height: "1px",
-                  opacity: 0,
-                  pointerEvents: "none",
-                  zIndex: 1000,
-                }}
-              />
-            )}
-          </div>
+      )}      {/* Render Content with Layout */}
+      {renderContent()}      {/* Build Version - only show on home page, positioned above navigation gradient */}
+      {currentSection === "home" && (
+        <div className="fixed bottom-4 left-8 md:bottom-6 md:left-12 z-50 build-id text-xs font-mono select-none pointer-events-none">
+          {BUILD_VERSION}
         </div>
-      </div>
+      )}
 
-      {/* Mobile Menu Overlay */}
-      {isMobileMenuOpen && !isInnerPage && (
+      {/* Mobile Menu Overlay for Home Page */}
+      {isMobileMenuOpen && currentSection === "home" && (
         <button
           className="fixed inset-0 bg-black/50 z-30 lg:hidden"
           onClick={() => setIsMobileMenuOpen(false)}

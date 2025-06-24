@@ -2,7 +2,7 @@
 // Renders toast notifications from the useToast hook
 // Handles positioning, animation, and lifecycle
 
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks/useToast";
 import {
   Toast,
   ToastClose,
