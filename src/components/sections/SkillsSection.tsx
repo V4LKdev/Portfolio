@@ -11,7 +11,11 @@ import { NavigableSectionComponent } from "../../types/SharedProps";
  * Skills section component - displays technical and soft skills
  * @param onBack - Callback to navigate back to home
  */
-const SkillsSection: NavigableSectionComponent = ({ onBack, className, id }) => {
+const SkillsSection: NavigableSectionComponent = ({
+  onBack,
+  className,
+  id,
+}) => {
   return (
     <div className={`max-w-6xl mx-auto ${className || ""}`} id={id}>
       <BackButton onClick={onBack} label="Back to Home" />

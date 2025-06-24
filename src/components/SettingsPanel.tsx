@@ -11,7 +11,8 @@ import {
   Moon,
   Play,
   Pause,
-  Volume2,  VolumeX,
+  Volume2,
+  VolumeX,
 } from "lucide-react";
 import { useTheme } from "../hooks/useTheme";
 import { useVideoControls } from "../hooks/useVideoControls";

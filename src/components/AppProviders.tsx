@@ -1,7 +1,13 @@
 // AppProviders.tsx
 // Consolidated global providers for navigation and video state
 
-import React, { createContext, useState, useCallback, useEffect, useMemo } from "react";
+import React, {
+  createContext,
+  useState,
+  useCallback,
+  useEffect,
+  useMemo,
+} from "react";
 import { type Project } from "../content";
 import { VideoPreferences } from "../lib/cookies";
 
@@ -21,7 +27,8 @@ interface VideoActions {
 
 export interface VideoControlContextType extends VideoState, VideoActions {}
 
-export const VideoControlContext = createContext<VideoControlContextType | null>(null);
+export const VideoControlContext =
+  createContext<VideoControlContextType | null>(null);
 
 // -------------------- Navigation Context & Provider --------------------
 
@@ -42,9 +49,13 @@ interface NavigationActions {
   handleBackClick: () => void;
 }
 
-export interface NavigationContextType extends NavigationState, NavigationActions {}
+export interface NavigationContextType
+  extends NavigationState,
+    NavigationActions {}
 
-export const NavigationContext = createContext<NavigationContextType | null>(null);
+export const NavigationContext = createContext<NavigationContextType | null>(
+  null,
+);
 
 // -------------------- AppProviders Component --------------------
 
@@ -54,14 +65,34 @@ interface AppProvidersProps {
 
 /**
  * AppProviders
- * Wraps children with both VideoControl and Navigation providers.
- * Keeps all global state logic in one place for simplicity.
+ *
+ * Consolidated global providers for navigation and video state management.
+ * Provides all context needed for the portfolio application:
+ *
+ * Video Features:
+ * - Cookie-based preference persistence (remembers user settings across sessions)
+ * - Auto-pause when navigating away from home (for performance)
+ * - Auto-resume when returning to home (respects user's manual pause intent)
+ * - Tab visibility handling (auto-resumes when tab becomes visible)
+ * - Media session integration (responds to hardware media keys)
+ * - Keyboard controls (space bar, media keys)
+ * - Video element synchronization
+ *
+ * Navigation Features:
+ * - Section navigation (home, projects, about, skills, contact)
+ * - Project detail navigation
+ * - Mobile menu state management
+ * - Project filtering
+ *
+ * @param children - Child components that need access to global state
  */
 export function AppProviders({ children }: AppProvidersProps) {
   // --- Video State ---
   const [isPaused, setIsPaused] = useState(() => VideoPreferences.getPaused());
   const [isMuted, setIsMuted] = useState(() => VideoPreferences.getMuted());
-  const [isManuallyPaused, setIsManuallyPaused] = useState(() => VideoPreferences.getPaused());
+  const [isManuallyPaused, setIsManuallyPaused] = useState(() =>
+    VideoPreferences.getPaused(),
+  );
 
   const togglePlayback = useCallback(() => {
     const newPausedState = !isPaused;
@@ -75,8 +106,8 @@ export function AppProviders({ children }: AppProvidersProps) {
     setIsMuted(newMutedState);
     VideoPreferences.setMuted(newMutedState);
   }, [isMuted]);
-
   const setManualPause = useCallback((paused: boolean) => {
+    setIsPaused(paused);
     setIsManuallyPaused(paused);
     VideoPreferences.setPaused(paused);
   }, []);
@@ -100,7 +131,8 @@ export function AppProviders({ children }: AppProvidersProps) {
   // Keyboard Controls
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      const shouldHandleSpace = event.code === "Space" && event.target === document.body;
+      const shouldHandleSpace =
+        event.code === "Space" && event.target === document.body;
       const shouldHandleMediaKey =
         event.code === "MediaPlayPause" ||
         (event.code === "MediaPlay" && isPaused) ||
@@ -143,9 +175,7 @@ export function AppProviders({ children }: AppProvidersProps) {
       video.removeEventListener("pause", handlePause);
       video.removeEventListener("volumechange", handleVolumeChange);
     };
-  }, [isPaused, isMuted]);
-
-  // Tab Visibility Resume Logic
+  }, [isPaused, isMuted]); // Tab Visibility Resume Logic
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (!document.hidden) {
@@ -161,7 +191,8 @@ export function AppProviders({ children }: AppProvidersProps) {
       }
     };
     document.addEventListener("visibilitychange", handleVisibilityChange);
-    return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
+    return () =>
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
   }, []);
 
   const videoValue = useMemo<VideoControlContextType>(
@@ -173,14 +204,41 @@ export function AppProviders({ children }: AppProvidersProps) {
       toggleMute,
       setManualPause,
     }),
-    [isPaused, isMuted, isManuallyPaused, togglePlayback, toggleMute, setManualPause]
+    [
+      isPaused,
+      isMuted,
+      isManuallyPaused,
+      togglePlayback,
+      toggleMute,
+      setManualPause,
+    ],
   );
-
   // --- Navigation State ---
   const [currentSection, setCurrentSection] = useState("home");
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [projectFilter, setProjectFilter] = useState("all");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Track the user's pause state before navigation to restore it later
+  const [pauseStateBeforeNavigation, setPauseStateBeforeNavigation] =
+    React.useState<boolean | null>(null);
+  // Navigation Effects - Auto-pause when leaving home, auto-resume when returning
+  useEffect(() => {
+    if (currentSection !== "home") {
+      // Store the current manual pause state before auto-pausing
+      setPauseStateBeforeNavigation(isManuallyPaused);
+      setIsPaused(true);
+      // Note: We don't call setManualPause here because this is auto-pause, not user intent
+    }
+  }, [currentSection, isManuallyPaused]);
+  // Auto-resume video when returning to home section, but respect manual pause intent
+  useEffect(() => {
+    if (currentSection === "home" && pauseStateBeforeNavigation !== null) {
+      // Restore the user's original pause intent from before navigation
+      setManualPause(pauseStateBeforeNavigation);
+      setPauseStateBeforeNavigation(null);
+    }
+  }, [currentSection, pauseStateBeforeNavigation, setManualPause]);
 
   const handleMenuClick = useCallback((sectionId: string) => {
     setCurrentSection(sectionId);
@@ -214,7 +272,15 @@ export function AppProviders({ children }: AppProvidersProps) {
       handleProjectClick,
       handleBackClick,
     }),
-    [currentSection, selectedProject, projectFilter, isMobileMenuOpen, handleMenuClick, handleProjectClick, handleBackClick]
+    [
+      currentSection,
+      selectedProject,
+      projectFilter,
+      isMobileMenuOpen,
+      handleMenuClick,
+      handleProjectClick,
+      handleBackClick,
+    ],
   );
 
   return (

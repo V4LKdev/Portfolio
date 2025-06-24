@@ -11,7 +11,11 @@ import { NavigableSectionComponent } from "../../types/SharedProps";
  * Contact section component - displays contact information in game-style format
  * @param onBack - Callback to navigate back to home
  */
-const ContactSection: NavigableSectionComponent = ({ onBack, className, id }) => {
+const ContactSection: NavigableSectionComponent = ({
+  onBack,
+  className,
+  id,
+}) => {
   return (
     <div className={`max-w-4xl mx-auto ${className || ""}`} id={id}>
       <BackButton onClick={onBack} label="Back to Home" />

@@ -170,7 +170,10 @@ const LocalVideoBackground: React.FC<LocalVideoBackgroundProps> = ({
       )}
       {/* Loading Indicator - Centered for better UX */}
       {isLoading && !hasError && (
-        <output className="absolute inset-0 flex items-center justify-center bg-black/20" aria-live="polite">
+        <output
+          className="absolute inset-0 flex items-center justify-center bg-black/20"
+          aria-live="polite"
+        >
           <div className="flex items-center space-x-3 text-amber-200 bg-black/60 backdrop-blur-sm rounded-lg px-4 py-3">
             <div className="animate-spin rounded-full h-6 w-6 border-2 border-amber-200 border-t-transparent"></div>
             <span className="text-sm font-medium">Loading video...</span>
@@ -179,7 +182,10 @@ const LocalVideoBackground: React.FC<LocalVideoBackgroundProps> = ({
       )}
       {/* Error State - Centered bottom for better visibility */}
       {hasError && (
-        <output className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 bg-red-900/90 backdrop-blur-sm border border-red-500/50 rounded-lg px-4 py-2 shadow-lg" aria-live="assertive">
+        <output
+          className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 bg-red-900/90 backdrop-blur-sm border border-red-500/50 rounded-lg px-4 py-2 shadow-lg"
+          aria-live="assertive"
+        >
           <p className="text-red-200 text-sm font-medium">
             ⚠️ Video unavailable - showing fallback image
           </p>

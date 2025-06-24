@@ -40,14 +40,15 @@ const Layout: React.FC<LayoutProps> = ({
   isInnerPage = false,
 }) => {
   const { isPaused, isMuted } = useVideoControls();
-    return (
-    <div 
+  return (
+    <div
       className={`h-screen bg-black text-foreground overflow-hidden ${className || ""}`}
       id={id}
-    >{/* Background Video or Static Image */}
+    >
+      {/* Background Video or Static Image */}
       {showVideoBackground && !backgroundImage && (
         <div className="fixed inset-0 z-0">
-          <LocalVideoBackground 
+          <LocalVideoBackground
             videoSrc={videoConfig.localVideoSrc}
             posterSrc={videoConfig.posterSrc}
             isPaused={isPaused}
@@ -57,7 +58,6 @@ const Layout: React.FC<LayoutProps> = ({
           <div className="absolute inset-0 video-overlay" />
         </div>
       )}
-      
       {/* Static Background Image */}
       {backgroundImage && (
         <div
@@ -66,22 +66,26 @@ const Layout: React.FC<LayoutProps> = ({
         >
           <div className="absolute inset-0 video-overlay" />
         </div>
-      )}{/* Side Panels - positioned like the original design */}
+      )}
+      {/* Side Panels - positioned like the original design */}
       {showSidePanels && (
         <>
           {/* Server Connection Panel - Top Right */}
           <ServerConnectionPanel className="fixed top-6 md:top-8 right-6 md:right-8 z-30 hidden xl:block" />
-          
+
           {/* Social Media Icons - Bottom Right */}
           <SocialMediaIcons className="fixed bottom-4 right-4 md:bottom-6 md:right-6 lg:bottom-8 lg:right-8 z-30" />
-          
+
           {/* Settings Panel - moved to navigation for home, or bottom left for others */}
           {!isInnerPage && (
             <SettingsPanel className="absolute bottom-12 md:bottom-14 left-8 md:left-12" />
           )}
         </>
-      )}      {/* Main Content */}
-      <div className={`relative z-20 h-full ${isInnerPage ? 'p-8 overflow-y-auto' : 'p-4 md:p-8'}`}>
+      )}{" "}
+      {/* Main Content */}
+      <div
+        className={`relative z-20 h-full ${isInnerPage ? "p-8 overflow-y-auto" : "p-4 md:p-8"}`}
+      >
         {children}
       </div>
     </div>

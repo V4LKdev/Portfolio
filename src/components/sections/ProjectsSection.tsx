@@ -40,7 +40,10 @@ const ProjectsSection: NavigableSectionComponent<AdditionalProjectsProps> = ({
   });
 
   return (
-    <div className={`max-w-6xl mx-auto transition-all duration-500 animate-fade-in ${className ?? ""}`} id={id}>
+    <div
+      className={`max-w-6xl mx-auto transition-all duration-500 animate-fade-in ${className ?? ""}`}
+      id={id}
+    >
       <BackButton onClick={onBack} label="Back to Home" />
       <h2 className="text-5xl font-bold mb-8 text-center deadlock-title">
         Featured Projects

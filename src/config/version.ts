@@ -1,7 +1,7 @@
 /**
  * Build version configuration
  * Single source of truth for the website version displayed on the main page
- * 
+ *
  * Update this file when creating a new release
  */
 

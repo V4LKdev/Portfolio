@@ -18,9 +18,7 @@ import ContactSection from "./sections/ContactSection";
 import ProjectDetail from "./ProjectDetail";
 import SettingsPanel from "./SettingsPanel";
 import BUILD_VERSION from "../config/version";
-import { VideoControlProvider } from "./VideoControlProvider";
-import { NavigationProvider } from "./NavigationProvider";
-import { useVideoControls } from "../hooks/useVideoControls";
+import { AppProviders } from "./AppProviders";
 import { useNavigation } from "../hooks/useNavigation";
 import { navigationItems } from "../content";
 import { projects } from "../content/projects";
@@ -30,7 +28,6 @@ import { projects } from "../content/projects";
  * Now focused purely on layout and rendering, with state managed by providers
  */
 const PortfolioContent: React.FC = () => {
-  const { setManualPause } = useVideoControls();
   const {
     currentSection,
     selectedProject,
@@ -42,21 +39,6 @@ const PortfolioContent: React.FC = () => {
     handleProjectClick,
     handleBackClick,
   } = useNavigation();
-
-  // --- Navigation Effects ---
-  useEffect(() => {
-    // Auto-pause video when navigating away from home for memory optimization
-    if (currentSection !== "home") {
-      setManualPause(true);
-    }
-  }, [currentSection, setManualPause]);
-
-  // Auto-resume video when returning to home section
-  useEffect(() => {
-    if (currentSection === "home") {
-      setManualPause(false);
-    }
-  }, [currentSection, setManualPause]);
 
   // Focus cursor to bottom-right when on home page
   useEffect(() => {
@@ -78,24 +60,26 @@ const PortfolioContent: React.FC = () => {
           <ProjectDetail project={selectedProject} onBack={handleBackClick} />
         </SectionLayout>
       );
-    }    // Home page with video background and navigation
+    } // Home page with video background and navigation
     if (currentSection === "home") {
       return (
-        <HomeLayout 
-          menu={<NavigationMenu 
-            isOpen={isMobileMenuOpen}
-            currentSection={currentSection}
-            onMenuClick={handleMenuClick}
-          />}
+        <HomeLayout
+          menu={
+            <NavigationMenu
+              isOpen={isMobileMenuOpen}
+              currentSection={currentSection}
+              onMenuClick={handleMenuClick}
+            />
+          }
         >
           <HomeSection
             onNavigateToProjects={() => handleMenuClick("projects")}
           />
-          
+
           {/* Additional home page elements */}
           <ServerConnectionPanel className="fixed top-6 md:top-8 right-6 md:right-8 z-30 hidden xl:block" />
           <SocialMediaIcons className="fixed bottom-4 right-4 md:bottom-6 md:right-6 lg:bottom-8 lg:right-8 z-30" />
-          
+
           {/* Focus anchor */}
           <div
             id="main-menu-cursor-anchor"
@@ -188,14 +172,15 @@ const PortfolioContent: React.FC = () => {
             <Menu className="w-6 h-6 theme-icon" />
           )}
         </button>
-      )}      {/* Render Content with Layout */}
-      {renderContent()}      {/* Build Version - only show on home page, positioned above navigation gradient */}
+      )}{" "}
+      {/* Render Content with Layout */}
+      {renderContent()}{" "}
+      {/* Build Version - only show on home page, positioned above navigation gradient */}
       {currentSection === "home" && (
         <div className="fixed bottom-4 left-8 md:bottom-6 md:left-12 z-50 build-id text-xs font-mono select-none pointer-events-none">
           {BUILD_VERSION}
         </div>
       )}
-
       {/* Mobile Menu Overlay for Home Page */}
       {isMobileMenuOpen && currentSection === "home" && (
         <button
@@ -339,11 +324,9 @@ const ExitSection: React.FC<{ onBack: () => void }> = ({ onBack }) => (
  * Renders the complete portfolio application with proper state management
  */
 const Portfolio: React.FC = () => (
-  <VideoControlProvider>
-    <NavigationProvider>
-      <PortfolioContent />
-    </NavigationProvider>
-  </VideoControlProvider>
+  <AppProviders>
+    <PortfolioContent />
+  </AppProviders>
 );
 
 export default Portfolio;
