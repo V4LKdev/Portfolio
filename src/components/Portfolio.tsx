@@ -20,8 +20,8 @@ import SettingsPanel from "./SettingsPanel";
 import BUILD_VERSION from "../config/version";
 import { VideoControlProvider } from "./VideoControlProvider";
 import { NavigationProvider } from "./NavigationProvider";
-import { useVideoControls } from "../hooks/use-video-controls";
-import { useNavigation } from "../hooks/use-navigation";
+import { useVideoControls } from "../hooks/useVideoControls";
+import { useNavigation } from "../hooks/useNavigation";
 import { navigationItems } from "../content";
 import { projects } from "../content/projects";
 

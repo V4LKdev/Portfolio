@@ -14,7 +14,7 @@ import {
   Volume2,  VolumeX,
 } from "lucide-react";
 import { useTheme } from "../hooks/useTheme";
-import { useVideoControls } from "../hooks/use-video-controls";
+import { useVideoControls } from "../hooks/useVideoControls";
 
 interface SettingsPanelProps {
   className?: string;
