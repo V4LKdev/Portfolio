@@ -1,0 +1,541 @@
+// Portfolio.tsx
+// Main portfolio component for Nicolas Martin's website
+// Uses modern responsive design principles with Tailwind CSS breakpoints
+// Optimized for mobile, tablet, and desktop viewing experiences
+//
+// Sections: Home, Projects, About, Skills, Contact, Additional, Exit
+// Features: Responsive navigation, video background, server stats, social icons
+
+import * as React from "react";
+import { useState, useCallback } from "react";
+import {
+  Menu,
+  X,
+  ArrowLeft,
+  ChevronLeft,
+  Pause,
+  Play,
+  Volume2,
+  VolumeX,
+  Settings,
+  Sun,
+  Moon,
+  LogOut,
+} from "lucide-react";
+import BUILD_VERSION from "../config/version";
+import LocalVideoBackground from "./LocalVideoBackground";
+import ServerConnectionPanel from "./ServerConnectionPanel";
+import SocialMediaIcons from "./SocialMediaIcons";
+import HomeSection from "./sections/HomeSection";
+import ProjectsSection from "./sections/ProjectsSection";
+import AboutSection from "./sections/AboutSection";
+import SkillsSection from "./sections/SkillsSection";
+import ContactSection from "./sections/ContactSection";
+import ProjectDetail from "./ProjectDetail";
+import { VideoPreferences } from "../lib/cookies";
+import {
+  backgroundImages,
+  navigationItems,
+  videoConfig,
+  type Project,
+} from "../content";
+
+const Portfolio = () => {
+  // --- State Management ---
+  // Controls for video, menu, and navigation
+  const [isMuted, setIsMuted] = useState(() => VideoPreferences.getMuted()); // Video mute from cookies
+  const [isPaused, setIsPaused] = useState(() => VideoPreferences.getPaused()); // Video pause from cookies
+  const [isManuallyPaused, setIsManuallyPaused] = useState(() =>
+    VideoPreferences.getPaused(),
+  ); // Track manual pause from cookies
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // Mobile nav menu
+  const [currentSection, setCurrentSection] = useState("home"); // Current visible section
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null); // Selected project for detail view
+  const [projectFilter, setProjectFilter] = useState("all"); // Project filter (all/team/solo/academic)
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false); // Settings panel state
+  const [websiteTheme, setWebsiteTheme] = useState<"dark" | "light">("dark"); // Website theme
+
+  // --- Navigation Menu Items ---
+  // Navigation items are now imported from content files
+  const menuItems = navigationItems;
+
+  // --- Navigation Handlers ---
+  // Handles section switching and project selection
+  const handleMenuClick = (sectionId: string) => {
+    setCurrentSection(sectionId);
+    setSelectedProject(null);
+    setIsMobileMenuOpen(false);
+
+    // Pause video when navigating away from home for memory optimization
+    if (sectionId !== "home") {
+      setIsPaused(true);
+    }
+  };
+
+  const handleProjectClick = (project: Project) => {
+    setSelectedProject(project);
+  };
+
+  const handleBackClick = () => {
+    if (selectedProject) {
+      setSelectedProject(null);
+    } else {
+      setCurrentSection("home");
+      // Always resume video when returning to home, unless user manually paused it
+      if (!isManuallyPaused) {
+        setTimeout(() => setIsPaused(false), 100); // Small delay to ensure component is ready
+      }
+    }
+  };
+  // --- Video Controls ---
+  // Controls for video playback and muting
+  const toggleVideoPlayback = useCallback(() => {
+    const newPausedState = !isPaused;
+    setIsPaused(newPausedState);
+    setIsManuallyPaused(newPausedState);
+    VideoPreferences.setPaused(newPausedState); // Save to cookies
+  }, [isPaused]);
+
+  const toggleVideoMute = () => {
+    const newMutedState = !isMuted;
+    setIsMuted(newMutedState);
+    VideoPreferences.setMuted(newMutedState); // Save to cookies
+  };
+  // Auto-resume video when returning to home section (unless manually paused)
+  React.useEffect(() => {
+    if (currentSection === "home" && !isManuallyPaused) {
+      setIsPaused(false);
+    }
+  }, [currentSection, isManuallyPaused]);
+  // Sync settings UI with media keys and video state changes
+  React.useEffect(() => {
+    // Set up media session for hardware media keys
+    if ("mediaSession" in navigator) {
+      navigator.mediaSession.setActionHandler("play", () => {
+        if (isPaused) {
+          toggleVideoPlayback();
+        }
+      });
+
+      navigator.mediaSession.setActionHandler("pause", () => {
+        if (!isPaused) {
+          toggleVideoPlayback();
+        }
+      });
+    } // Listen for keyboard media keys
+    const handleKeyDown = (event: KeyboardEvent) => {
+      // Handle Escape key to close settings popup
+      if (event.code === "Escape" && isSettingsOpen) {
+        event.preventDefault();
+        setIsSettingsOpen(false);
+        return;
+      }
+
+      // Check if we should handle this key event
+      const shouldHandleSpace =
+        event.code === "Space" && event.target === document.body;
+      const shouldHandleMediaKey =
+        event.code === "MediaPlayPause" ||
+        (event.code === "MediaPlay" && isPaused) ||
+        (event.code === "MediaPause" && !isPaused);
+
+      if (shouldHandleSpace || shouldHandleMediaKey) {
+        event.preventDefault();
+        toggleVideoPlayback();
+      }
+    }; // Listen for video element state changes to sync UI
+    const syncVideoState = () => {
+      const video = document.querySelector("video");
+      if (video) {
+        const handlePlay = () => {
+          if (isPaused) {
+            setIsPaused(false);
+            setIsManuallyPaused(false);
+          }
+        };
+
+        const handlePause = () => {
+          if (!isPaused) {
+            setIsPaused(true);
+            setIsManuallyPaused(true);
+          }
+        };
+
+        const handleVolumeChange = () => {
+          if (video.muted !== isMuted) {
+            setIsMuted(video.muted);
+          }
+        };
+
+        video.addEventListener("play", handlePlay);
+        video.addEventListener("pause", handlePause);
+        video.addEventListener("volumechange", handleVolumeChange);
+
+        return () => {
+          video.removeEventListener("play", handlePlay);
+          video.removeEventListener("pause", handlePause);
+          video.removeEventListener("volumechange", handleVolumeChange);
+        };
+      }
+    };
+
+    // Set up listeners
+    document.addEventListener("keydown", handleKeyDown);
+    const cleanupVideoSync = syncVideoState();
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      cleanupVideoSync?.();
+
+      // Clear media session handlers
+      if ("mediaSession" in navigator) {
+        navigator.mediaSession.setActionHandler("play", null);
+        navigator.mediaSession.setActionHandler("pause", null);
+      }
+    };
+  }, [isPaused, isMuted, isSettingsOpen, toggleVideoPlayback]);
+
+  // --- Section Backgrounds ---
+  // Returns a static background image for each section
+  const getStaticBackground = (section: string) => {
+    return (
+      backgroundImages[section as keyof typeof backgroundImages] ??
+      backgroundImages.projects
+    );
+  };
+
+  // --- Main Content Renderer ---
+  // Renders the main content area based on current section or selected project
+  const renderContent = () => {
+    if (selectedProject) {
+      return (
+        <ProjectDetail project={selectedProject} onBack={handleBackClick} />
+      );
+    }
+
+    switch (currentSection) {
+      case "home":
+        return (
+          <HomeSection
+            onNavigateToProjects={() => setCurrentSection("projects")}
+          />
+        );
+
+      case "projects":
+        return (
+          <ProjectsSection
+            onBack={() => setCurrentSection("home")}
+            onProjectClick={handleProjectClick}
+            projectFilter={projectFilter}
+            onFilterChange={setProjectFilter}
+          />
+        );
+
+      case "about":
+        return <AboutSection onBack={() => setCurrentSection("home")} />;
+
+      case "skills":
+        return <SkillsSection onBack={() => setCurrentSection("home")} />;
+
+      case "contact":
+        return <ContactSection onBack={() => setCurrentSection("home")} />;
+
+      case "additional":
+        return (
+          <div className="max-w-4xl mx-auto">
+            <button
+              onClick={() => setCurrentSection("home")}
+              className="mb-8 flex items-center space-x-2 text-amber-200 hover:text-amber-100 transition-colors"
+            >
+              <ArrowLeft className="w-5 h-5" />
+              <span>Back to Home</span>
+            </button>
+
+            <h2 className="text-3xl md:text-5xl font-bold text-amber-100 mb-8 md:mb-16 text-center deadlock-title">
+              ADDITIONAL CONTENT
+            </h2>
+            <div className="bg-black/50 backdrop-blur-sm border border-amber-500/20 rounded-lg p-6 md:p-8 atmospheric-glow text-center">
+              <p className="text-lg md:text-xl text-amber-200/80 mb-6 md:mb-8">
+                This section is reserved for future content including music
+                career, creative projects, and other endeavors beyond
+                programming.
+              </p>
+              <p className="text-amber-200/60">Coming soon...</p>
+            </div>
+          </div>
+        );
+
+      case "exit":
+        return (
+          <div className="text-center max-w-4xl">
+            <h2 className="text-3xl md:text-5xl font-bold text-amber-100 mb-6 md:mb-8 deadlock-title">
+              GOODBYE
+            </h2>
+            <p className="text-lg md:text-xl text-amber-200/80 mb-6 md:mb-8">
+              Thanks for visiting my portfolio. May your games be legendary!
+            </p>
+            <button
+              onClick={() => setCurrentSection("home")}
+              className="px-6 md:px-8 py-3 md:py-4 bg-amber-500/20 border-2 border-amber-500/50 rounded-lg text-amber-100 font-semibold hover:bg-amber-500/30 hover:border-amber-500/80 transition-all duration-300 hover:shadow-[0_0_20px_rgba(251,191,36,0.4)]"
+            >
+              Return Home
+            </button>
+          </div>
+        );
+
+      default:
+        return null;
+    }
+  };
+
+  // --- Layout Logic ---
+  // Determines if we are on a subpage (not home)
+  const isInnerPage = currentSection !== "home";
+
+  // --- Main Render ---
+  return (
+    <div className="min-h-screen bg-black text-foreground overflow-x-hidden">
+      {/* Background Video or Static Image */}
+      {/* Shows local video on home, static image on other sections */}
+      {!isInnerPage ? (
+        <div className="fixed inset-0 z-0">
+          <LocalVideoBackground
+            videoSrc={videoConfig.localVideoSrc}
+            posterSrc={videoConfig.posterSrc}
+            isPaused={isPaused}
+            isMuted={isMuted}
+            className="video-responsive"
+          />
+          <div className="absolute inset-0 video-overlay" />
+        </div>
+      ) : (
+        <div
+          className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat transition-all duration-500"
+          style={{
+            backgroundImage: `url(${getStaticBackground(currentSection)})`,
+          }}
+        >
+          <div className="absolute inset-0 video-overlay" />
+        </div>
+      )}{" "}
+      {/* Mobile Menu Button */}
+      {!isInnerPage && (
+        <button
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          className="fixed top-4 left-4 md:top-6 md:left-6 z-50 lg:hidden bg-black/50 backdrop-blur-sm p-3 rounded-lg border border-amber-500/30 hover:border-amber-500/60 transition-all duration-300"
+          aria-label={
+            isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"
+          }
+          aria-expanded={isMobileMenuOpen}
+          aria-controls="mobile-navigation"
+        >
+          {isMobileMenuOpen ? (
+            <X className="w-6 h-6 text-amber-100" />
+          ) : (
+            <Menu className="w-6 h-6 text-amber-100" />
+          )}
+        </button>
+      )}{" "}
+      {/* Left Navigation Menu - Responsive Design */}
+      {!isInnerPage && (
+        <nav
+          id="mobile-navigation"
+          className={`fixed left-0 top-0 h-full w-sidebar z-40 transition-transform duration-300 lg:translate-x-0 no-select ${
+            isMobileMenuOpen
+              ? "translate-x-0"
+              : "-translate-x-full lg:translate-x-0"
+          }`}
+        >
+          <div className="h-full bg-gradient-to-r from-black/95 via-black/70 via-black/30 to-transparent no-select">
+            {" "}
+            {/* Game Logo Area - Responsive padding */}
+            <div className="pt-14 md:pt-20 pb-12 md:pb-16 lg:pb-20 px-8 md:px-12 no-select">
+              <h1 className="deadlock-title mb-1 text-3xl md:text-4xl lg:text-5xl no-select">
+                NICOLAS MARTIN
+              </h1>
+              <p
+                className="text-amber-200/80 text-base md:text-lg lg:text-xl tracking-wide font-medium no-select"
+                style={{ fontFamily: "Good Timing, serif" }}
+              >
+                Game Programmer
+              </p>
+            </div>{" "}
+            {/* Menu Items - Consistent spacing with special handling for different button types */}
+            <div className="px-8 md:px-12 no-select">
+              {menuItems.map((item, index) => {
+                const getButtonSpacing = () => {
+                  if (item.hierarchy === 'primary') return 'mb-6 md:mb-8';
+                  if (item.hierarchy === 'quit') return 'mt-8 md:mt-12 mb-2 md:mb-3';
+                  return 'mb-3 md:mb-4';
+                };
+
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => handleMenuClick(item.section)}
+                    className={`deadlock-menu-item menu-${item.hierarchy} group menu-button transition-all duration-300 relative block w-full text-left no-select ${
+                      currentSection === item.section
+                        ? "text-amber-100 text-shadow-glow"
+                        : ""
+                    } ${getButtonSpacing()}`}
+                    type="button"
+                    tabIndex={0}
+                    aria-current={
+                      currentSection === item.section ? "page" : undefined
+                    }
+                  >
+                  {/* Game-style text with hover effect - both texts in same container */}
+                  <div className="relative flex items-center gap-2">
+                    {item.hierarchy === 'quit' && (
+                      <LogOut className="w-4 h-4 md:w-5 md:h-5 text-gray-400 group-hover:text-gray-300 transition-colors duration-300" />
+                    )}
+                    <div className="relative">
+                      <span className="block group-hover:opacity-0 transition-opacity duration-300 no-select">
+                        {item.gameLabel}
+                      </span>
+                      <span className="absolute top-0 left-0 w-full group-hover:opacity-100 opacity-0 transition-opacity duration-300 no-select">
+                        {item.hoverLabel}
+                      </span>
+                    </div>
+                  </div>
+                </button>
+                );
+              })}
+            </div>{" "}            {/* Bottom Controls - Settings Button or Expanded Menu */}
+            <div className="absolute bottom-12 md:bottom-14 left-8 md:left-12">              {!isSettingsOpen ? (
+                /* Settings Gear Button */
+                <button
+                  onClick={() => setIsSettingsOpen(true)}
+                  className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 hover:border-amber-500/60 transition-all duration-300 hover:bg-amber-500/20 hover:scale-110"
+                  aria-label="Open settings menu"
+                  aria-expanded={false}
+                  aria-haspopup="true"
+                >
+                  <Settings className="w-5 h-5 text-amber-200" />
+                </button>
+              ) : (
+                /* Expanded Settings Menu - Same height as single button */
+                <div className="flex items-center space-x-1 rounded-lg bg-amber-500/10 border border-amber-500/30">{" "}
+                  {/* Collapse Button */}
+                  <button
+                    onClick={() => setIsSettingsOpen(false)}
+                    className="p-3 transition-all duration-300 hover:scale-110"
+                    aria-label="Close settings menu"
+                    title="Close settings menu"
+                  >
+                    <ChevronLeft className="w-5 h-5 text-amber-200" />
+                  </button>
+                  {/* Separator Line */}
+                  <div className="w-px h-6 bg-amber-500/30"></div>
+                  {/* Theme Toggle */}
+                  <button
+                    onClick={() =>
+                      setWebsiteTheme(websiteTheme === "dark" ? "light" : "dark")
+                    }
+                    className="p-3 transition-all duration-300 hover:scale-110"
+                    aria-label={`Switch to ${websiteTheme === "dark" ? "light" : "dark"} theme`}
+                    title={`Switch to ${websiteTheme === "dark" ? "light" : "dark"} theme`}
+                  >
+                    {websiteTheme === "dark" ? (
+                      <Sun className="w-5 h-5 text-amber-200" />
+                    ) : (
+                      <Moon className="w-5 h-5 text-amber-200" />
+                    )}
+                  </button>
+                  {/* Video Toggle */}
+                  <button
+                    onClick={toggleVideoPlayback}
+                    className="p-3 transition-all duration-300 hover:scale-110"
+                    aria-label={
+                      isPaused
+                        ? "Play background video"
+                        : "Pause background video"
+                    }
+                    title={
+                      isPaused
+                        ? "Play background video"
+                        : "Pause background video"
+                    }
+                  >
+                    {isPaused ? (
+                      <Play className="w-5 h-5 text-amber-200" />
+                    ) : (
+                      <Pause className="w-5 h-5 text-amber-200" />
+                    )}
+                  </button>
+                  {/* Audio Toggle */}
+                  <button
+                    onClick={toggleVideoMute}
+                    className="p-3 transition-all duration-300 hover:scale-110"
+                    aria-label={
+                      isMuted ? "Unmute video audio" : "Mute video audio"
+                    }
+                    title={isMuted ? "Unmute video audio" : "Mute video audio"}
+                  >
+                    {isMuted ? (
+                      <VolumeX className="w-5 h-5 text-amber-200" />
+                    ) : (
+                      <Volume2 className="w-5 h-5 text-amber-200" />
+                    )}
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </nav>
+      )}
+      {/* Server Connection Panel - Hidden on mobile and tablets, visible on desktop */}
+      {!isInnerPage && (
+        <ServerConnectionPanel className="fixed top-6 md:top-8 right-6 md:right-8 z-30 hidden xl:block" />
+      )}
+      {/* Social Media Icons - Responsive positioning and layout */}
+      {!isInnerPage && (
+        <SocialMediaIcons className="fixed bottom-4 right-4 md:bottom-6 md:right-6 lg:bottom-8 lg:right-8 z-30" />
+      )}      {/* Game-style Build ID - Bottom left corner */}
+      {!isInnerPage && (
+        <div className="fixed bottom-4 left-8 md:bottom-6 md:left-12 z-50 text-gray-400 text-xs font-mono select-none pointer-events-none">
+          <span className="bg-black/60 px-2 py-1 rounded backdrop-blur-sm">{BUILD_VERSION}</span>
+        </div>
+      )}{" "}      {/* Settings Mini Menu - No overlay needed since buttons work inline */}{" "}
+      {/* Main Content Area - Responsive margins and padding */}
+      <div
+        className={`relative z-10 content-area ${!isInnerPage ? "lg:ml-sidebar" : ""}`}
+      >
+        <div className="min-h-screen px-4 md:px-6 lg:px-8 pt-6 md:pt-8 content-area">
+          <div className="w-full max-w-7xl mx-auto">
+            {renderContent()}
+            {/* Invisible focus anchor for cursor positioning */}
+            {!isInnerPage && (
+              <div
+                id="main-menu-cursor-anchor"
+                tabIndex={-1}
+                style={{
+                  position: "absolute",
+                  bottom: 0,
+                  left: 0,
+                  width: "1px",
+                  height: "1px",
+                  opacity: 0,
+                  pointerEvents: "none",
+                }}
+              />
+            )}
+          </div>
+        </div>
+      </div>
+      {/* Mobile Menu Overlay */}
+      {isMobileMenuOpen && !isInnerPage && (
+        <button
+          className="fixed inset-0 bg-black/50 z-30 lg:hidden"
+          onClick={() => setIsMobileMenuOpen(false)}
+          aria-label="Close mobile menu overlay"
+          tabIndex={0}
+          type="button"
+          style={{ cursor: "pointer" }}
+        />
+      )}
+    </div>
+  );
+};
+
+export default Portfolio;

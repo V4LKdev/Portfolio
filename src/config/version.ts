@@ -5,6 +5,6 @@
  * Update this file when creating a new release
  */
 
-export const BUILD_VERSION = "v2025.12_v02";
+export const BUILD_VERSION = "v2025.06_v02";
 
 export default BUILD_VERSION;
