@@ -3,8 +3,8 @@
 // Shows bio, academic background, and professional experience
 
 import React from "react";
-import { ArrowLeft } from "lucide-react";
 import { aboutContent } from "../../content";
+import BackButton from "../ui/BackButton";
 
 interface AboutSectionProps {
   onBack: () => void;
@@ -17,16 +17,9 @@ interface AboutSectionProps {
 const AboutSection: React.FC<AboutSectionProps> = ({ onBack }) => {
   return (
     <div className="max-w-4xl mx-auto">
-      {" "}
-      <button
-        onClick={onBack}
-        className="mb-8 flex items-center space-x-2 theme-back-button"
-      >
-        <ArrowLeft className="w-5 h-5" />
-        <span>Back to Home</span>
-      </button>
+      <BackButton onClick={onBack} label="Back to Home" />
       <h2 className="text-5xl font-bold mb-16 text-center deadlock-title">
-        ABOUT ME
+        About Me
       </h2>
       <div className="theme-card rounded-lg p-8 atmospheric-glow">
         {" "}

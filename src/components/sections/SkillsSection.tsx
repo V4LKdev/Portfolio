@@ -3,8 +3,8 @@
 // Organized in a grid layout with different categories
 
 import React from "react";
-import { ArrowLeft } from "lucide-react";
 import { skillsContent } from "../../content";
+import BackButton from "../ui/BackButton";
 
 interface SkillsSectionProps {
   onBack: () => void;
@@ -17,16 +17,9 @@ interface SkillsSectionProps {
 const SkillsSection: React.FC<SkillsSectionProps> = ({ onBack }) => {
   return (
     <div className="max-w-6xl mx-auto">
-      {" "}
-      <button
-        onClick={onBack}
-        className="mb-8 flex items-center space-x-2 theme-back-button"
-      >
-        <ArrowLeft className="w-5 h-5" />
-        <span>Back to Home</span>
-      </button>
+      <BackButton onClick={onBack} label="Back to Home" />
       <h2 className="text-5xl font-bold mb-16 text-center deadlock-title">
-        SKILLS & TOOLS
+        Skills & Tools
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {/* Software & Tools */}

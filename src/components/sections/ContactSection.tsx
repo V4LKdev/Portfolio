@@ -3,8 +3,8 @@
 // Shows email, phone, GitHub, and location information
 
 import React from "react";
-import { ArrowLeft } from "lucide-react";
 import { personalInfo } from "../../content";
+import BackButton from "../ui/BackButton";
 
 interface ContactSectionProps {
   onBack: () => void;
@@ -17,16 +17,9 @@ interface ContactSectionProps {
 const ContactSection: React.FC<ContactSectionProps> = ({ onBack }) => {
   return (
     <div className="max-w-4xl mx-auto">
-      {" "}
-      <button
-        onClick={onBack}
-        className="mb-8 flex items-center space-x-2 theme-back-button"
-      >
-        <ArrowLeft className="w-5 h-5" />
-        <span>Back to Home</span>
-      </button>
+      <BackButton onClick={onBack} label="Back to Home" />
       <h2 className="text-5xl font-bold mb-16 text-center deadlock-title">
-        GLOBAL CHAT
+        Global Chat
       </h2>
       <div className="theme-card rounded-lg p-8 atmospheric-glow">
         {/* User status header */}

@@ -3,8 +3,8 @@
 // Handles project grid view and individual project selection
 
 import React from "react";
-import { ArrowLeft } from "lucide-react";
 import ProjectFilter from "../ProjectFilter";
+import BackButton from "../ui/BackButton";
 import { type Project } from "../../content";
 
 interface ProjectsSectionProps {
@@ -40,16 +40,9 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({
 
   return (
     <div className="max-w-6xl mx-auto transition-all duration-500 animate-fade-in">
-      {" "}
-      <button
-        onClick={onBack}
-        className="mb-8 flex items-center space-x-2 theme-back-button"
-      >
-        <ArrowLeft className="w-5 h-5" />
-        <span>Back to Home</span>
-      </button>
+      <BackButton onClick={onBack} label="Back to Home" />
       <h2 className="text-5xl font-bold mb-8 text-center deadlock-title">
-        FEATURED PROJECTS
+        Featured Projects
       </h2>
       <p
         className="text-center theme-text-muted mb-12 text-lg"
