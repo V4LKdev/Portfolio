@@ -54,9 +54,30 @@ A modern, game-inspired portfolio website built with React, TypeScript, and Tail
 
 ## Architecture
 
-- `src/components/Portfolio.tsx` - Main responsive portfolio component with video game aesthetics
+### 🏗️ **Modular Architecture (AI-Agent Friendly)**
+
+The portfolio is built with a modular architecture where each feature is completely isolated:
+
+- `src/components/PortfolioLayout.tsx` - Main layout with composition pattern (no business logic)
+- `src/components/VideoControlProvider.tsx` - Video state management (play/pause/mute/fullscreen)
+- `src/components/NavigationProvider.tsx` - Navigation and project selection state
+- `src/components/SettingsPanel.tsx` - UI settings and theme management
+- `src/components/ServerConnectionPanel.tsx` - Network stats and connection monitoring
+- `src/config/version.ts` - Single source of truth for build version display
+
+### ✅ **AI Agent Benefits**
+
+Each feature can be modified independently without risk of breaking others:
+- **Video features** → Only touch `VideoControlProvider.tsx`
+- **Navigation** → Only touch `NavigationProvider.tsx` 
+- **Settings** → Only touch `SettingsPanel.tsx`
+- **Version updates** → Only touch `src/config/version.ts`
+
+### 📁 **Directory Structure**
+
 - `src/components/sections/` - Individual page sections (Home, Projects, About, etc.)
-- `src/components/ui/` - Reusable UI components
+- `src/components/ui/` - Reusable UI components (shadcn/ui)
+- `src/hooks/` - Custom React hooks (use-navigation.ts, use-video-controls.ts)
 - `src/content/` - Content configuration and data
 - `src/lib/` - Utilities and helper functions
 
@@ -75,23 +96,31 @@ A modern, game-inspired portfolio website built with React, TypeScript, and Tail
 
 ```
 src/
-├── components/           # React components
-│   ├── Portfolio.tsx    # Main container component
-│   ├── sections/        # Page sections (Home, Projects, etc.)
-│   ├── ui/             # Reusable UI components (shadcn/ui)
-│   └── *.tsx           # Feature components
-├── content/            # Content configuration & data
-│   ├── projects.ts     # Project data and interfaces
-│   ├── skills.ts       # Skills and tools data
-│   ├── about.ts        # About page content
-│   ├── personal.ts     # Personal info and contacts
-│   ├── ui-config.ts    # Navigation, backgrounds, UI config
-│   └── index.ts        # Central content exports
-├── hooks/              # Custom React hooks
-├── lib/                # Utilities and helper functions
-│   ├── utils.ts        # General utilities (cn, etc.)
-│   └── cookies.ts      # Video preference persistence
-└── pages/              # Route components
+├── components/              # React components
+│   ├── PortfolioLayout.tsx # Main layout (composition only)
+│   ├── VideoControlProvider.tsx    # Video state management
+│   ├── NavigationProvider.tsx      # Navigation state management  
+│   ├── SettingsPanel.tsx          # Settings UI and logic
+│   ├── ServerConnectionPanel.tsx  # Network monitoring
+│   ├── sections/           # Page sections (Home, Projects, etc.)
+│   └── ui/                # Reusable UI components (shadcn/ui)
+├── config/                 # Configuration files
+│   └── version.ts         # Build version (single source of truth)
+├── content/               # Content configuration & data
+│   ├── projects.ts        # Project data and interfaces
+│   ├── skills.ts          # Skills and tools data
+│   ├── about.ts           # About page content
+│   ├── personal.ts        # Personal info and contacts
+│   ├── ui-config.ts       # Navigation, backgrounds, UI config
+│   └── index.ts           # Central content exports
+├── hooks/                 # Custom React hooks
+│   ├── use-navigation.ts  # Navigation hook
+│   ├── use-video-controls.ts # Video controls hook
+│   └── use-*.ts          # Other custom hooks
+├── lib/                   # Utilities and helper functions
+│   ├── utils.ts           # General utilities (cn, etc.)
+│   └── cookies.ts         # Video preference persistence
+└── pages/                 # Route components
 ```
 
 ### Git Workflow & Version Management
@@ -104,33 +133,43 @@ src/
 #### Build & Release Process
 
 1. **Development**: Work on features in `main` branch
-2. **Build**: `npm run build` creates production files in `dist/`
-3. **Release**: Production builds are committed to `releases` branch with version tags
-4. **Deploy**: Deploy from `releases` branch with traceable build IDs
+2. **Update Version**: Edit `src/config/version.ts` with new version (e.g., `v2025.12_v03`)
+3. **Build & Test**: `npm run build` and `npm run lint` to ensure everything works
+4. **Commit Changes**: Commit version update and any final changes to `main`
+5. **Create Release**: Merge `main` → `releases` and create version tag
+6. **Deploy**: Deploy from `releases` branch with traceable build IDs
 
-#### Commands
+#### Release Commands
 
 ```bash
-# Development
-npm run dev          # Start development server
-npm run lint         # Run ESLint checks
-npm run build        # Create production build
+# 1. Update version in src/config/version.ts (e.g., v2025.12_v03)
 
-# Release Process
-npm run build                           # Create production build
-git checkout releases                   # Switch to releases branch
-# Copy dist/ contents to releases branch root
-git add . && git commit -m "build: production build vX.XX.XX_vXX"
-git push origin releases               # Push release to GitHub
-git checkout main                      # Return to development
+# 2. Test everything works
+npm run build
+npm run lint
+
+# 3. Commit version update
+git add .
+git commit -m "chore: bump version to v2025.12_v03"
+git push origin main
+
+# 4. Create release
+git checkout releases
+git merge main
+git tag -a v2025.12_v03 -m "Release v2025.12_v03: [Description]"
+git push origin releases
+git push origin v2025.12_v03
+
+# 5. Return to development
+git checkout main
 ```
 
-### Build ID System
+#### Version Management
 
-- **Format**: `v2025.07_v01` (year.month_version)
-- **Location**: Displayed in bottom-left corner of main menu
-- **Purpose**: Match deployed versions to git commits in `releases` branch
-- **Updates**: Increment for each production release
+- **Source of Truth**: `src/config/version.ts` - single file to update for new releases
+- **Format**: `v2025.12_v02` (year.month_version)
+- **Display**: Automatically shown in bottom-left corner of website
+- **Git Tags**: Each release gets a corresponding git tag for traceability
 
 ### Development Guidelines
 
