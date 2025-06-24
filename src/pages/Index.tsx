@@ -1,4 +1,4 @@
-import Portfolio from "@/components/PortfolioLayout";
+import Portfolio from "@/components/Portfolio";
 
 const Index = () => {
   return <Portfolio />;

@@ -1,5 +1,7 @@
 {
-  "name": "vite_react_shadcn_ts",
+  "name": "nicolas-martin-portfolio",
+  "description": "Professional portfolio website for Nicolas Martin - Game Programmer",
+  "author": "Nicolas Martin <nico@martin.li>",
   "private": true,
   "version": "1.0.0",
   "type": "module",
