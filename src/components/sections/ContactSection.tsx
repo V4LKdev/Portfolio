@@ -4,7 +4,7 @@
 
 import React from "react";
 import { personalInfo } from "../../content";
-import BackButton from "../ui/navigation/BackButton";
+import { BackButton } from "../ui/navigation";
 
 interface ContactSectionProps {
   onBack: () => void;

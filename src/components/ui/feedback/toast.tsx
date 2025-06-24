@@ -1,3 +1,7 @@
+// Toast System Components
+// React toast notification system using Radix UI primitives
+// Provides Toast, ToastProvider, and related components
+
 import * as React from "react";
 import * as ToastPrimitives from "@radix-ui/react-toast";
 import { cva, type VariantProps } from "class-variance-authority";

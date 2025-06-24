@@ -1,3 +1,7 @@
+// Toast Container Component
+// Renders toast notifications from the useToast hook
+// Handles positioning, animation, and lifecycle
+
 import { useToast } from "@/hooks/use-toast";
 import {
   Toast,
