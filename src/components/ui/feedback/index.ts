@@ -3,4 +3,4 @@
 
 export * from "./toast";
 export { Toaster } from "./toaster";
-export { useToast, toast } from "./use-toast";
+export { useToast, toast } from "../../../hooks/useToast";
