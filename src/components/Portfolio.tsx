@@ -590,13 +590,6 @@ const Portfolio = () => {  // --- Theme Management ---
         </div>
       </div>
       
-      {/* Debug message for testing - always visible in center bottom */}
-      <div className="fixed bottom-12 left-1/2 transform -translate-x-1/2 z-50 bg-blue-900/90 backdrop-blur-sm border border-blue-500/50 rounded-lg px-4 py-2 shadow-lg">
-        <p className="text-blue-200 text-sm font-medium">
-          🔧 Debug Mode: Settings & Warning Messages Active
-        </p>
-      </div>
-
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && !isInnerPage && (
         <button
