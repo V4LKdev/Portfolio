@@ -119,8 +119,7 @@ const Portfolio = () => {  // --- Theme Management ---
         }
       }, 100);
     }
-  }, [currentSection]);
-  // Sync settings UI with media keys and video state changes
+  }, [currentSection]);  // Sync settings UI with media keys and video state changes
   React.useEffect(() => {
     // Set up media session for hardware media keys
     if ("mediaSession" in navigator) {
@@ -207,6 +206,31 @@ const Portfolio = () => {  // --- Theme Management ---
       }
     };
   }, [isPaused, isMuted, isSettingsOpen, toggleVideoPlayback]);
+
+  // --- Professional: Close settings when clicking outside ---
+  React.useEffect(() => {
+    if (!isSettingsOpen) return;
+
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+      
+      // Check if click is outside the settings panel
+      const settingsPanel = document.querySelector('[data-settings-panel]');
+      if (settingsPanel && !settingsPanel.contains(target)) {
+        setIsSettingsOpen(false);
+      }
+    };
+
+    // Add event listener with a small delay to avoid immediate closing
+    const timeoutId = setTimeout(() => {
+      document.addEventListener('mousedown', handleClickOutside);
+    }, 100);
+
+    return () => {
+      clearTimeout(timeoutId);
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isSettingsOpen]);
 
   // --- Professional: Resume video on tab focus if on home and not manually paused ---
   React.useEffect(() => {
@@ -437,6 +461,7 @@ const Portfolio = () => {  // --- Theme Management ---
                 /* Settings Gear Button */                <button
                   onClick={() => setIsSettingsOpen(true)}
                   className="p-3 rounded-lg backdrop-blur-sm transition-all duration-300 hover:scale-110"
+                  data-settings-panel
                   style={{
                     backgroundColor: "var(--theme-settings-panel-bg, rgba(0, 0, 0, 0.8))",
                     borderColor: "var(--theme-settings-panel-border, rgb(251 191 36 / 0.3))",
@@ -451,9 +476,9 @@ const Portfolio = () => {  // --- Theme Management ---
                     className="w-5 h-5" 
                     style={{ color: "var(--theme-settings-icon, rgb(253 230 138))" }}
                   />
-                </button>
-              ) : (                /* Expanded Settings Menu - Same height as single button */                <div 
+                </button>              ) : (                /* Expanded Settings Menu - Same height as single button */                <div 
                   className="flex items-center space-x-1 rounded-lg backdrop-blur-sm"
+                  data-settings-panel
                   style={{
                     backgroundColor: "var(--theme-settings-panel-bg, rgba(0, 0, 0, 0.8))",
                     borderColor: "var(--theme-settings-panel-border, rgb(251 191 36 / 0.3))",
