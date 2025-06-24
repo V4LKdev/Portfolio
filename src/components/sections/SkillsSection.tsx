@@ -5,13 +5,13 @@
 import React from "react";
 import { skillsContent } from "../../content";
 import { BackButton } from "../ui/navigation";
-import { NavigableSectionProps } from "../../types/SharedProps";
+import { NavigableSectionComponent } from "../../types/SharedProps";
 
 /**
  * Skills section component - displays technical and soft skills
  * @param onBack - Callback to navigate back to home
  */
-const SkillsSection: React.FC<NavigableSectionProps> = ({ onBack, className, id }) => {
+const SkillsSection: NavigableSectionComponent = ({ onBack, className, id }) => {
   return (
     <div className={`max-w-6xl mx-auto ${className || ""}`} id={id}>
       <BackButton onClick={onBack} label="Back to Home" />
