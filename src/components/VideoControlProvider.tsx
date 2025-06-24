@@ -34,12 +34,26 @@ interface VideoControlProviderProps {
 }
 
 /**
- * Provides centralized video control state management
+ * Video Control Provider
+ * 
+ * Provides centralized video control state management with persistent user preferences.
+ * This provider manages all video-related state and actions throughout the application.
+ * 
  * Features:
- * - Cookie-based preference persistence
- * - Manual pause tracking
- * - Media session integration
- * - Tab visibility handling
+ * - Cookie-based preference persistence (remembers user settings across sessions)
+ * - Manual pause tracking (distinguishes user actions from automatic pauses)
+ * - Media session integration (responds to hardware media keys)
+ * - Tab visibility handling (auto-resumes based on preferences when tab becomes visible)
+ * - Keyboard controls (space bar, media keys)
+ * 
+ * @param children - Child components that need access to video controls
+ * 
+ * @example
+ * ```tsx
+ * <VideoControlProvider>
+ *   <App />
+ * </VideoControlProvider>
+ * ```
  */
 export function VideoControlProvider({ children }: VideoControlProviderProps) {
   // --- Video State from Cookies ---
