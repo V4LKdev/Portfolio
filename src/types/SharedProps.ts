@@ -35,13 +35,13 @@ export interface HomeSectionProps extends SectionProps {
  * Generic section component type for extensibility
  * @template P - Additional props extending SectionProps
  */
-export type SectionComponent<P = {}> = React.FC<SectionProps & P>;
+export type SectionComponent<P = object> = React.FC<SectionProps & P>;
 
 /**
  * Generic navigable section component type
  * @template P - Additional props extending NavigableSectionProps
  */
-export type NavigableSectionComponent<P = {}> = React.FC<
+export type NavigableSectionComponent<P = object> = React.FC<
   NavigableSectionProps & P
 >;
 
@@ -49,4 +49,4 @@ export type NavigableSectionComponent<P = {}> = React.FC<
  * Generic home section component type
  * @template P - Additional props extending HomeSectionProps
  */
-export type HomeSectionComponent<P = {}> = React.FC<HomeSectionProps & P>;
+export type HomeSectionComponent<P = object> = React.FC<HomeSectionProps & P>;
