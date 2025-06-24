@@ -6,10 +6,10 @@ import React from "react";
 import ProjectFilter from "../ProjectFilter";
 import { BackButton } from "../ui/navigation";
 import { type Project } from "../../content";
+import { NavigableSectionProps } from "../../types/SharedProps";
 
-interface ProjectsSectionProps {
+interface ProjectsSectionProps extends NavigableSectionProps {
   projects: Project[];
-  onBack: () => void;
   onProjectClick: (project: Project) => void;
   projectFilter: string;
   onFilterChange: (filter: string) => void;
@@ -28,6 +28,8 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({
   onProjectClick,
   projectFilter,
   onFilterChange,
+  className,
+  id,
 }) => {
   // Filter projects based on selected filter
   const filteredProjects = projects.filter((project) => {
@@ -39,7 +41,7 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({
   });
 
   return (
-    <div className="max-w-6xl mx-auto transition-all duration-500 animate-fade-in">
+    <div className={`max-w-6xl mx-auto transition-all duration-500 animate-fade-in ${className || ""}`} id={id}>
       <BackButton onClick={onBack} label="Back to Home" />
       <h2 className="text-5xl font-bold mb-8 text-center deadlock-title">
         Featured Projects

@@ -5,18 +5,17 @@
 import React from "react";
 import { aboutContent } from "../../content";
 import { BackButton } from "../ui/navigation";
+import { NavigableSectionProps } from "../../types/SharedProps";
 
-interface AboutSectionProps {
-  onBack: () => void;
-}
+interface AboutSectionProps extends NavigableSectionProps {}
 
 /**
  * About section component - displays personal information and background
  * @param onBack - Callback to navigate back to home
  */
-const AboutSection: React.FC<AboutSectionProps> = ({ onBack }) => {
+const AboutSection: React.FC<AboutSectionProps> = ({ onBack, className, id }) => {
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className={`max-w-4xl mx-auto ${className || ""}`} id={id}>
       <BackButton onClick={onBack} label="Back to Home" />
       <h2 className="text-5xl font-bold mb-16 text-center deadlock-title">
         About Me
