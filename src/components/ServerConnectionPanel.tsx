@@ -56,9 +56,7 @@ const SignalBars = ({ ping }: SignalBarsProps) => {
  * Server connection panel component styled like a game networking UI
  * Shows real HTTP latency and estimated network quality metrics
  */
-function ServerConnectionPanel({
-  className = "",
-}: ServerConnectionPanelProps) {
+function ServerConnectionPanel({ className = "" }: ServerConnectionPanelProps) {
   // Network stats state with real HTTP latency measurement
   const [networkStats, setNetworkStats] = useState({
     ping: 0,
@@ -205,6 +203,6 @@ function ServerConnectionPanel({
       </div>
     </div>
   );
-};
+}
 
 export default ServerConnectionPanel;

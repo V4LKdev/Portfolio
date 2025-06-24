@@ -1,4 +1,4 @@
-// Feedback UI Components  
+// Feedback UI Components
 // Re-exports all feedback/notification-related UI components
 
 export * from "./toast";

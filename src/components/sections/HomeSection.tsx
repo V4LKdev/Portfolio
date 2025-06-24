@@ -9,9 +9,16 @@ import { HomeSectionComponent } from "../../types/SharedProps";
  * Home section component - main landing page content
  * @param onNavigateToProjects - Callback to navigate to projects section (unused in current design)
  */
-const HomeSection: HomeSectionComponent = ({ onNavigateToProjects: _onNavigateToProjects, className, id }) => {
+const HomeSection: HomeSectionComponent = ({
+  onNavigateToProjects: _onNavigateToProjects,
+  className,
+  id,
+}) => {
   return (
-    <div className={`text-left max-w-4xl pt-8 transition-all duration-500 animate-fade-in no-select ${className || ""}`} id={id}>
+    <div
+      className={`text-left max-w-4xl pt-8 transition-all duration-500 animate-fade-in no-select ${className || ""}`}
+      id={id}
+    >
       {/* Content removed for clean video game menu aesthetic */}
     </div>
   );

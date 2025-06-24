@@ -41,7 +41,9 @@ export type SectionComponent<P = {}> = React.FC<SectionProps & P>;
  * Generic navigable section component type
  * @template P - Additional props extending NavigableSectionProps
  */
-export type NavigableSectionComponent<P = {}> = React.FC<NavigableSectionProps & P>;
+export type NavigableSectionComponent<P = {}> = React.FC<
+  NavigableSectionProps & P
+>;
 
 /**
  * Generic home section component type

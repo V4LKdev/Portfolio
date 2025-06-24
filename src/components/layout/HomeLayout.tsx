@@ -28,19 +28,18 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({
   return (
     <Layout
       showVideoBackground={true}
-      showSidePanels={false}  // We'll handle side panels differently for home
+      showSidePanels={false} // We'll handle side panels differently for home
       isInnerPage={false}
       className={className}
       id={id}
-    >      {/* Left Side Navigation Menu */}
+    >
+      {" "}
+      {/* Left Side Navigation Menu */}
       {menu}
-
       {/* Main Content Area */}
       <div className="relative z-10 content-area lg:ml-sidebar h-full">
         <div className="h-full px-4 md:px-6 lg:px-8 pt-6 md:pt-8 content-area flex items-center">
-          <div className="w-full max-w-7xl mx-auto">
-            {children}
-          </div>
+          <div className="w-full max-w-7xl mx-auto">{children}</div>
         </div>
       </div>
     </Layout>
