@@ -171,14 +171,12 @@ const LocalVideoBackground: React.FC<LocalVideoBackgroundProps> = ({
             <span className="text-sm font-medium">Loading video...</span>
           </div>
         </div>
-      )}{/* Error State - Centered bottom for better visibility */}
-      {hasError && (
-        <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 bg-red-900/90 backdrop-blur-sm border border-red-500/50 rounded-lg px-4 py-2 shadow-lg">
-          <p className="text-red-200 text-sm font-medium">
-            ⚠️ Video unavailable - showing fallback image
-          </p>
-        </div>
-      )}
+      )}      {/* Error State - Centered bottom for better visibility - FORCED FOR DEBUG */}
+      <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 bg-red-900/90 backdrop-blur-sm border border-red-500/50 rounded-lg px-4 py-2 shadow-lg">
+        <p className="text-red-200 text-sm font-medium">
+          ⚠️ {hasError ? 'Video unavailable - showing fallback image' : 'DEBUG: Error message position test'}
+        </p>
+      </div>
     </div>
   );
 };
