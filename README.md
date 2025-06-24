@@ -127,49 +127,61 @@ src/
 
 #### Branch Structure
 
-- **`main`**: Production-ready source code
-- **`releases`**: Production build artifacts for deployment tracking
+- **`main`**: Development source code and documentation  
+- **`releases`**: **Production-ready build files** (index.html, assets/) for deployment
 
 #### Build & Release Process
 
 1. **Development**: Work on features in `main` branch
-2. **Update Version**: Edit `src/config/version.ts` with new version (e.g., `v2025.12_v03`)
+2. **Update Version**: Edit `src/config/version.ts` with new version (e.g., `v2025.06_v03`)
 3. **Build & Test**: `npm run build` and `npm run lint` to ensure everything works
 4. **Commit Changes**: Commit version update and any final changes to `main`
-5. **Create Release**: Merge `main` → `releases` and create version tag
-6. **Deploy**: Deploy from `releases` branch with traceable build IDs
+5. **Create Release**: Build production files and commit to `releases` branch
+6. **Deploy**: Deploy built files from `releases` branch
 
 #### Release Commands
 
 ```bash
-# 1. Update version in src/config/version.ts (e.g., v2025.12_v03)
+# 1. Update version in src/config/version.ts (e.g., v2025.06_v03)
 
 # 2. Test everything works
 npm run build
 npm run lint
 
-# 3. Commit version update
+# 3. Commit version update to main
 git add .
-git commit -m "chore: bump version to v2025.12_v03"
+git commit -m "chore: bump version to v2025.06_v03"
 git push origin main
 
-# 4. Create release
+# 4. Create production release
 git checkout releases
 git merge main
-git tag -a v2025.12_v03 -m "Release v2025.12_v03: [Description]"
+npm run build
+cp -r dist/* .  # Copy built files to releases root
+git add index.html assets/
+git commit -m "build: production build v2025.06_v03"
+git tag -a v2025.06_v03 -m "Release v2025.06_v03: [Description]"
 git push origin releases
-git push origin v2025.12_v03
+git push origin v2025.06_v03
 
 # 5. Return to development
 git checkout main
 ```
 
+#### Deployment
+
+- **Source**: Deploy the built files from `releases` branch root
+- **Files**: `index.html` and `assets/` directory contain everything needed
+- **Version**: Each release tag points to a specific built version
+- **Traceability**: Git tags link deployed versions to exact source code
+
 #### Version Management
 
 - **Source of Truth**: `src/config/version.ts` - single file to update for new releases
-- **Format**: `v2025.12_v02` (year.month_version)
+- **Format**: `v2025.06_v02` (year.month_version)
 - **Display**: Automatically shown in bottom-left corner of website
-- **Git Tags**: Each release gets a corresponding git tag for traceability
+- **Git Tags**: Each release gets a corresponding git tag pointing to built files in `releases` branch
+- **Deployment**: Use files from `releases` branch root (index.html + assets/)
 
 ### Development Guidelines
 
