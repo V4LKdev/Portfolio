@@ -15,6 +15,7 @@ import AboutSection from "./sections/AboutSection";
 import SkillsSection from "./sections/SkillsSection";
 import ContactSection from "./sections/ContactSection";
 import ProjectDetail from "./ProjectDetail";
+import BUILD_VERSION from "../config/version";
 import { VideoControlProvider } from "./VideoControlProvider";
 import { NavigationProvider } from "./NavigationProvider";
 import { useVideoControls } from "../hooks/use-video-controls";
@@ -171,10 +172,9 @@ const PortfolioContent: React.FC = () => {
       {!isInnerPage && (
         <>
           <ServerConnectionPanel className="fixed top-6 md:top-8 right-6 md:right-8 z-30 hidden xl:block" />
-          <SocialMediaIcons className="fixed bottom-4 right-4 md:bottom-6 md:right-6 lg:bottom-8 lg:right-8 z-30" />
-          <div className="fixed bottom-4 left-8 md:bottom-6 md:left-12 z-50 build-id text-xs font-mono select-none pointer-events-none">
+          <SocialMediaIcons className="fixed bottom-4 right-4 md:bottom-6 md:right-6 lg:bottom-8 lg:right-8 z-30" />          <div className="fixed bottom-4 left-8 md:bottom-6 md:left-12 z-50 build-id text-xs font-mono select-none pointer-events-none">
             <span className="bg-black/60 px-2 py-1 rounded backdrop-blur-sm">
-              v2025.07_v01
+              {BUILD_VERSION}
             </span>
           </div>
         </>
