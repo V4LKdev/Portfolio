@@ -14,7 +14,7 @@ const AboutSection: NavigableSectionComponent = ({ onBack, className, id }) => {
   return (
     <div className={`max-w-4xl mx-auto ${className ?? ""}`} id={id}>
       <BackButton onClick={onBack} label="Back to Home" />
-      <h2 className="text-5xl font-bold mb-16 text-center deadlock-title">
+      <h2 className="text-5xl font-bold mb-16 text-center game-title">
         About Me
       </h2>
       <div className="theme-card rounded-lg p-8 atmospheric-glow">
@@ -22,7 +22,7 @@ const AboutSection: NavigableSectionComponent = ({ onBack, className, id }) => {
         {/* Bio paragraphs */}
         {aboutContent.intro.map((paragraph) => (
           <p
-            key={paragraph.substring(0, 50).replace(/\s/g, '-')}
+            key={paragraph.substring(0, 50).replace(/\s/g, "-")}
             className="text-lg theme-text leading-relaxed mb-6"
           >
             {paragraph}
@@ -31,10 +31,7 @@ const AboutSection: NavigableSectionComponent = ({ onBack, className, id }) => {
         {/* Education and Experience grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
           <div>
-            <h3
-              className="text-xl font-semibold theme-heading mb-3"
-              style={{ fontFamily: "Good Timing, serif" }}
-            >
+            <h3 className="game-section-heading theme-heading mb-3">
               Education
             </h3>
             {aboutContent.education.map((edu) => (
@@ -49,10 +46,7 @@ const AboutSection: NavigableSectionComponent = ({ onBack, className, id }) => {
             ))}
           </div>
           <div>
-            <h3
-              className="text-xl font-semibold theme-heading mb-3"
-              style={{ fontFamily: "Good Timing, serif" }}
-            >
+            <h3 className="game-section-heading theme-heading mb-3">
               Experience
             </h3>
             <p className="theme-text-muted text-sm">

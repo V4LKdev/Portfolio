@@ -28,6 +28,7 @@ This is a modern, game-inspired portfolio website built with:
 - **TanStack Query** for state management
 
 ### Key Features
+
 - Game-style UI with dynamic themes
 - Local video background with preferences
 - Real-time server connection monitoring
@@ -37,7 +38,8 @@ This is a modern, game-inspired portfolio website built with:
 ## 🚀 Development Setup
 
 ### Prerequisites
-- **Node.js** 18+ 
+
+- **Node.js** 18+
 - **npm** or **yarn** package manager
 - **Git** for version control
 
@@ -69,11 +71,17 @@ npm run preview      # Preview production build
 
 ```
 src/
-├── components/           # React components
-│   ├── ui/              # Radix UI components (auto-generated)
-│   ├── layout/          # Layout components
-│   ├── sections/        # Page section components
-│   └── *.tsx           # Feature components
+├── components/           # React components (organized by purpose)
+│   ├── core/            # Core app components (AppProviders, Portfolio)
+│   ├── navigation/      # Navigation components (MainNavigation, MenuItem, etc.)
+│   ├── sections/        # Page sections (Home, About, Skills, Projects, etc.)
+│   ├── panels/          # UI panels (ServerConnection, Settings)
+│   ├── projects/        # Project-specific components (ProjectDetail, Filter)
+│   ├── media/           # Media components (VideoBackground, SocialIcons)
+│   ├── errors/          # Error handling (ErrorBoundary, NotFound)
+│   ├── layout/          # Layout wrappers (Layout, HomeLayout, etc.)
+│   ├── ui/              # Reusable UI components (Radix UI based)
+│   └── index.ts         # Centralized component exports
 ├── content/             # Content data files
 │   ├── projects.ts      # Project showcase data
 │   ├── personal.ts      # Personal information
@@ -88,11 +96,32 @@ src/
 └── App.tsx             # Main application component
 ```
 
+### Component Organization Principles
+
+**📁 Folder Structure**: Components are organized by purpose into logical subfolders
+
+- Each subfolder contains an `index.ts` with documented exports
+- Components follow single-responsibility principle
+- Well-documented with clear purpose and usage examples
+
+**🎨 Theming**: All components use the centralized theme system
+
+- No hardcoded colors or fonts - everything uses CSS variables
+- Theme variables defined in `src/index.css` with fallback values
+- Consistent styling across all components
+
+**📝 Documentation**: Every component includes:
+
+- Clear purpose documentation
+- TypeScript interfaces for all props
+- Usage examples and context
+
 ### Key Files
 
 - **`src/content/`** - All content management (projects, skills, personal info)
 - **`src/lib/themes.ts`** - Complete theme system with CSS variable generation
-- **`src/components/AppProviders.tsx`** - Global state management contexts
+- **`src/components/core/AppProviders.tsx`** - Global state management contexts
+- **`src/components/index.ts`** - Centralized component exports
 - **`tsconfig.*.json`** - TypeScript configuration with strict mode
 
 ## 🏷️ Version Management
@@ -102,12 +131,14 @@ This project uses a **dual versioning system** for different purposes:
 ### Version Types
 
 **1. Release Version** (`src/config/version.ts`)
+
 - Format: `2025.06_v03` (year.month_version)
 - Used for: UI display, git tags
 - Shows: Release date and iteration number
 - Example: `2025.06_v03` = 3rd version in June 2025
 
 **2. Package Version** (`package.json`)
+
 - Format: `1.2.0` (major.minor.patch)
 - Used for: npm semantic versioning
 - Follows: Standard semantic versioning rules
@@ -116,11 +147,13 @@ This project uses a **dual versioning system** for different purposes:
 ### Creating a New Release
 
 1. **Update Release Version** in `src/config/version.ts`:
+
    ```typescript
    export const RELEASE_VERSION = "2025.07_v01"; // New version
    ```
 
 2. **Update Package Version** in `package.json`:
+
    ```json
    "version": "1.3.0" // Follow semver: major.minor.patch
    ```
@@ -170,6 +203,7 @@ npm run build
 ### 3. Commit Guidelines
 
 Use conventional commit format:
+
 ```
 feat: add new project showcase component
 fix: resolve mobile navigation issue
@@ -211,10 +245,10 @@ interface ComponentProps {
   readonly className?: string;
 }
 
-const Component: React.FC<ComponentProps> = ({ 
-  title, 
-  children, 
-  className = "" 
+const Component: React.FC<ComponentProps> = ({
+  title,
+  children,
+  className = "",
 }) => {
   return (
     <div className={cn("base-styles", className)}>
@@ -260,10 +294,16 @@ export const projects: Project[] = [
     details: "Detailed technical overview",
     image: "https://image-url.com",
     // Optional detailed sections
-    design: { /* design process */ },
-    code: { /* technical implementation */ },
-    implementation: { /* project timeline */ }
-  }
+    design: {
+      /* design process */
+    },
+    code: {
+      /* technical implementation */
+    },
+    implementation: {
+      /* project timeline */
+    },
+  },
 ];
 ```
 
@@ -278,6 +318,7 @@ Edit `src/content/skills.ts` to update technical skills and tools.
 ### UI Configuration
 
 Edit `src/content/ui-config.ts` for:
+
 - Navigation menu items
 - Background images
 - Video settings
@@ -303,14 +344,15 @@ export const THEMES: Record<string, ThemeConfig> = {
     gameStyle: {
       menuTextColor: "#ffffff",
       // ... game-specific styling
-    }
-  }
+    },
+  },
 };
 ```
 
 ### CSS Variable Generation
 
 Themes automatically generate CSS custom properties:
+
 - `--background` → `hsl(0 0% 100%)`
 - `--theme-panel-bg` → `rgba(0, 0, 0, 0.8)`
 
@@ -350,22 +392,27 @@ npm run build
 This project implements several performance optimizations:
 
 #### Code Splitting & Lazy Loading
+
 - **ProjectDetail Component**: Lazy loaded to reduce initial bundle size
 - **React.Suspense**: Provides loading states for code-split components
 - **Automatic Bundle Analysis**: Vite automatically splits chunks for optimal loading
 
 #### React Performance
+
 - **React.memo()**: Applied to expensive components like NavigationMenu
 - **Stable Keys**: Proper React keys prevent unnecessary re-renders
 - **useCallback/useMemo**: Used in contexts to prevent excessive re-renders
 
 #### Bundle Size Monitoring
+
 Current production bundle sizes:
+
 - Main bundle: ~294KB (~93KB gzipped)
 - ProjectDetail chunk: ~10KB (~2.5KB gzipped)
 - CSS: ~37KB (~7KB gzipped)
 
 #### Cookie Security
+
 - **Secure Flag**: Automatically applied in HTTPS environments
 - **SameSite**: Set to 'Lax' for CSRF protection
 - **Client-side Only**: HttpOnly intentionally omitted for preference access
@@ -379,6 +426,7 @@ npm run build
 ```
 
 Generates optimized static files in `dist/`:
+
 - **HTML**: Single-page application entry point
 - **CSS**: Compiled Tailwind styles (~37KB, ~7KB gzipped)
 - **JS Main Bundle**: React application bundle (~294KB, ~93KB gzipped)
@@ -387,6 +435,7 @@ Generates optimized static files in `dist/`:
 ### Environment Variables
 
 Create `.env.local` for local development:
+
 ```env
 VITE_API_URL=your-api-url
 ```
@@ -394,8 +443,9 @@ VITE_API_URL=your-api-url
 ### Deployment Platforms
 
 This project is optimized for:
+
 - **Vercel** (recommended)
-- **Netlify** 
+- **Netlify**
 - **GitHub Pages**
 - **Any static hosting**
 
@@ -404,6 +454,7 @@ This project is optimized for:
 ### Common Issues
 
 **TypeScript Errors**
+
 ```bash
 # Clear TypeScript cache
 rm -rf node_modules/.cache
@@ -411,12 +462,14 @@ npm run build
 ```
 
 **ESLint Issues**
+
 ```bash
 # Check specific file
 npx eslint src/components/YourComponent.tsx
 ```
 
 **Build Failures**
+
 ```bash
 # Clean install
 rm -rf node_modules package-lock.json
@@ -425,6 +478,7 @@ npm run build
 ```
 
 **Video Not Loading**
+
 - Check file path in `public/videos/`
 - Verify browser codec support
 - Test with fallback poster image
@@ -453,4 +507,4 @@ For questions or issues:
 
 ---
 
-*This contributing guide reflects the current state of the project as of the latest commit. Keep this document updated as the project evolves.*
+_This contributing guide reflects the current state of the project as of the latest commit. Keep this document updated as the project evolves._

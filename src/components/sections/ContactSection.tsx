@@ -19,7 +19,7 @@ const ContactSection: NavigableSectionComponent = ({
   return (
     <div className={`max-w-4xl mx-auto ${className || ""}`} id={id}>
       <BackButton onClick={onBack} label="Back to Home" />
-      <h2 className="text-5xl font-bold mb-16 text-center deadlock-title">
+      <h2 className="text-5xl font-bold mb-16 text-center game-title">
         Global Chat
       </h2>
       <div className="theme-card rounded-lg p-8 atmospheric-glow">

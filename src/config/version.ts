@@ -1,6 +1,6 @@
 /**
  * Version configuration - Single source of truth
- * 
+ *
  * Update both versions when creating a new release:
  * - RELEASE_VERSION: For UI display and git tags (date-based)
  * - PACKAGE_VERSION: For npm (semantic versioning)

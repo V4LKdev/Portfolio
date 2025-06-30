@@ -47,4 +47,4 @@ For planned features and improvements:
 
 ---
 
-*This project represents a professional portfolio showcasing development skills and project experience.*
+_This project represents a professional portfolio showcasing development skills and project experience._

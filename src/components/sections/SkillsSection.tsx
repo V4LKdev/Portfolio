@@ -19,16 +19,13 @@ const SkillsSection: NavigableSectionComponent = ({
   return (
     <div className={`max-w-6xl mx-auto ${className || ""}`} id={id}>
       <BackButton onClick={onBack} label="Back to Home" />
-      <h2 className="text-5xl font-bold mb-16 text-center deadlock-title">
+      <h2 className="text-5xl font-bold mb-16 text-center game-title">
         Skills & Tools
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {/* Software & Tools */}
         <div className="theme-card rounded-lg p-6 atmospheric-glow">
-          <h3
-            className="text-2xl font-semibold theme-heading mb-4"
-            style={{ fontFamily: "Good Timing, serif" }}
-          >
+          <h3 className="game-section-heading text-2xl theme-heading mb-4">
             Software
           </h3>
           <ul className="space-y-2">
@@ -42,10 +39,7 @@ const SkillsSection: NavigableSectionComponent = ({
 
         {/* Programming Languages */}
         <div className="theme-card rounded-lg p-6 atmospheric-glow">
-          <h3
-            className="text-2xl font-semibold theme-heading mb-4"
-            style={{ fontFamily: "Good Timing, serif" }}
-          >
+          <h3 className="game-section-heading text-2xl theme-heading mb-4">
             Programming Languages
           </h3>
           <ul className="space-y-2">
@@ -59,10 +53,7 @@ const SkillsSection: NavigableSectionComponent = ({
 
         {/* Unreal Engine Skills */}
         <div className="theme-card rounded-lg p-6 atmospheric-glow">
-          <h3
-            className="text-2xl font-semibold theme-heading mb-4"
-            style={{ fontFamily: "Good Timing, serif" }}
-          >
+          <h3 className="game-section-heading text-2xl theme-heading mb-4">
             Unreal Engine
           </h3>
           <ul className="space-y-2">
@@ -76,10 +67,7 @@ const SkillsSection: NavigableSectionComponent = ({
 
         {/* Soft Skills */}
         <div className="theme-card rounded-lg p-6 atmospheric-glow md:col-span-2 lg:col-span-3">
-          <h3
-            className="text-2xl font-semibold theme-heading mb-4"
-            style={{ fontFamily: "Good Timing, serif" }}
-          >
+          <h3 className="game-section-heading text-2xl theme-heading mb-4">
             Soft Skills
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">

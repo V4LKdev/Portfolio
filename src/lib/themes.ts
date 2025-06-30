@@ -88,9 +88,8 @@ export const THEMES: Record<string, ThemeConfig> = {
   // Current warm/amber theme (game-style)
   warm: {
     id: "warm",
-    name: "Deadlock Warm",
-    description:
-      "Warm amber theme inspired by game UIs like Deadlock/Overwatch",
+    name: "Game Warm",
+    description: "Warm amber theme inspired by modern game UIs",
     colors: {
       background: "8 8% 8%",
       foreground: "45 15% 85%",

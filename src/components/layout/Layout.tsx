@@ -5,10 +5,9 @@
  */
 
 import React from "react";
-import LocalVideoBackground from "../LocalVideoBackground";
-import ServerConnectionPanel from "../ServerConnectionPanel";
-import SocialMediaIcons from "../SocialMediaIcons";
-import SettingsPanel from "../SettingsPanel";
+import LocalVideoBackground from "../media/LocalVideoBackground";
+import SocialMediaIcons from "../media/SocialMediaIcons";
+import SettingsPanel from "../panels/SettingsPanel";
 import { SectionProps } from "../../types/SharedProps";
 import { useVideoControls } from "../../hooks/useVideoControls";
 import { videoConfig } from "../../content";
@@ -42,7 +41,7 @@ const Layout: React.FC<LayoutProps> = ({
   const { isPaused, isMuted } = useVideoControls();
   return (
     <div
-      className={`h-screen bg-black text-foreground overflow-hidden ${className || ""}`}
+      className={`h-screen bg-black text-foreground overflow-hidden ${className ?? ""}`}
       id={id}
     >
       {/* Background Video or Static Image */}
@@ -70,9 +69,6 @@ const Layout: React.FC<LayoutProps> = ({
       {/* Side Panels - positioned like the original design */}
       {showSidePanels && (
         <>
-          {/* Server Connection Panel - Top Right */}
-          <ServerConnectionPanel className="fixed top-6 md:top-8 right-6 md:right-8 z-30 hidden xl:block" />
-
           {/* Social Media Icons - Bottom Right */}
           <SocialMediaIcons className="fixed bottom-4 right-4 md:bottom-6 md:right-6 lg:bottom-8 lg:right-8 z-30" />
 

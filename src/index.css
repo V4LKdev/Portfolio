@@ -39,7 +39,7 @@
     --input: 20 15% 25%;
     --ring: 45 85% 65%;
 
-    --radius: 0.5rem;
+    --radius: 0.375rem;
 
     --sidebar-background: 8 8% 8%;
     --sidebar-foreground: 45 15% 85%;
@@ -49,6 +49,15 @@
     --sidebar-accent-foreground: 45 15% 85%;
     --sidebar-border: 20 15% 25%;
     --sidebar-ring: 45 85% 65%;
+
+    /* Connection status signal colors */
+    --theme-signal-good: #4ade80;
+    --theme-signal-medium: #facc15;
+    --theme-signal-poor: #f87171;
+    --theme-signal-inactive: rgba(75, 85, 99, 0.5);
+    --theme-panel-bg: rgba(0, 0, 0, 0.8);
+    --theme-panel-border: rgb(251 191 36 / 0.3);
+    --theme-panel-text: rgb(253 230 138 / 0.7);
 
     /* Theme transition timing */
     --theme-transition-duration: 0.3s;
@@ -95,7 +104,7 @@
 
 @layer components {
   /* Theme-aware game UI components */
-  .deadlock-menu-item {
+  .game-menu-item {
     /* Base menu item styles - colors now dynamic via theme system */
     @apply font-semibold transition-all duration-300 ease-out cursor-pointer;
     font-family: "Good Timing", serif;
@@ -105,7 +114,7 @@
     color: var(--theme-menu-text, rgb(253 230 138 / 0.9));
   }
 
-  .deadlock-menu-item:hover {
+  .game-menu-item:hover {
     color: var(--theme-menu-hover, rgb(254 243 199));
     text-shadow: 0 0 20px var(--theme-menu-glow, rgba(251, 191, 36, 0.8));
     transform: translateX(0.25rem);
@@ -115,47 +124,59 @@
   }
 
   /* Theme-aware menu hierarchy */
-  .deadlock-menu-item.menu-primary {
+  .game-menu-item.menu-primary {
     @apply text-4xl md:text-5xl lg:text-6xl font-bold;
     letter-spacing: 0.05em;
     line-height: 1.2;
   }
 
-  .deadlock-menu-item.menu-secondary,
-  .deadlock-menu-item.menu-tertiary {
+  .game-menu-item.menu-secondary,
+  .game-menu-item.menu-tertiary {
     @apply text-2xl md:text-3xl font-semibold;
     letter-spacing: 0.02em;
     line-height: 1.2;
   }
 
-  .deadlock-menu-item.menu-quit {
+  .game-menu-item.menu-quit {
     @apply text-lg md:text-xl font-medium;
     letter-spacing: 0.01em;
     line-height: 1.2;
     color: var(--theme-build-id, rgb(156 163 175));
   }
-  .deadlock-menu-item.menu-quit:hover {
+  .game-menu-item.menu-quit:hover {
     color: var(--theme-menu-hover, rgb(254 243 199));
     text-shadow: 0 0 10px var(--theme-menu-glow, rgba(251, 191, 36, 0.4));
     transform: translateX(0.25rem);
   }
 
   /* Ensure quit button icon and text align properly */
-  .deadlock-menu-item.menu-quit svg {
+  .game-menu-item.menu-quit svg {
     flex-shrink: 0;
     color: var(--theme-build-id, rgb(156 163 175));
   }
 
-  .deadlock-menu-item.menu-quit:hover svg {
+  .game-menu-item.menu-quit:hover svg {
     color: var(--theme-menu-hover, rgb(254 243 199));
   }
 
   /* Theme-aware title styling */
-  .deadlock-title {
+  .game-title {
     font-family: "Toxigenesis", "Good Timing", serif;
     @apply text-4xl font-bold tracking-wider;
     color: var(--theme-title, rgb(254 243 199));
     text-shadow: 0 0 30px var(--theme-title-glow, rgba(251, 191, 36, 0.5));
+  }
+
+  /* Theme-aware subtitle styling */
+  .game-subtitle {
+    font-family: "Good Timing", serif;
+    color: var(--theme-subtitle, rgb(253 230 138 / 0.8));
+  }
+
+  /* Theme-aware section heading styling */
+  .game-section-heading {
+    font-family: "Good Timing", serif;
+    @apply text-xl font-semibold;
   }
 
   /* Theme-aware atmospheric effects */
@@ -186,6 +207,35 @@
   /* Theme-specific icon colors for settings panel */
   .settings-panel-icon {
     color: var(--theme-settings-icon, rgb(253 230 138));
+  }
+
+  /* Theme-aware signal strength indicators */
+  .theme-signal-good {
+    background-color: var(
+      --theme-signal-good,
+      #4ade80
+    ); /* green-400 equivalent */
+  }
+
+  .theme-signal-medium {
+    background-color: var(
+      --theme-signal-medium,
+      #facc15
+    ); /* yellow-400 equivalent */
+  }
+
+  .theme-signal-poor {
+    background-color: var(
+      --theme-signal-poor,
+      #f87171
+    ); /* red-400 equivalent */
+  }
+
+  .theme-signal-inactive {
+    background-color: var(
+      --theme-signal-inactive,
+      rgba(75, 85, 99, 0.5)
+    ); /* gray-600/50 equivalent */
   }
 }
 

@@ -32,6 +32,12 @@ export interface HomeSectionProps extends SectionProps {
 }
 
 /**
+ * Home section component type
+ * React component that accepts HomeSectionProps
+ */
+export type HomeSectionComponent = React.FC<HomeSectionProps>;
+
+/**
  * Generic section component type for extensibility
  * @template P - Additional props extending SectionProps
  */

@@ -2,7 +2,7 @@
 // Displays portfolio projects with filtering and navigation
 // Handles project grid view and individual project selection
 
-import ProjectFilter from "../ProjectFilter";
+import ProjectFilter from "../projects/ProjectFilter";
 import { BackButton } from "../ui/navigation";
 import { type Project } from "../../content";
 import { NavigableSectionComponent } from "../../types/SharedProps";
@@ -45,13 +45,10 @@ const ProjectsSection: NavigableSectionComponent<AdditionalProjectsProps> = ({
       id={id}
     >
       <BackButton onClick={onBack} label="Back to Home" />
-      <h2 className="text-5xl font-bold mb-8 text-center deadlock-title">
+      <h2 className="text-5xl font-bold mb-8 text-center game-title">
         Featured Projects
       </h2>
-      <p
-        className="text-center theme-text-muted mb-12 text-lg"
-        style={{ fontFamily: "Good Timing, serif" }}
-      >
+      <p className="text-center game-subtitle theme-text-muted mb-12 text-lg">
         Portfolio of Game Development Work
       </p>
       <ProjectFilter
@@ -81,10 +78,7 @@ const ProjectsSection: NavigableSectionComponent<AdditionalProjectsProps> = ({
                   </span>
                 ))}
               </div>
-              <h3
-                className="text-xl font-semibold theme-heading mb-2"
-                style={{ fontFamily: "Good Timing, serif" }}
-              >
+              <h3 className="game-section-heading theme-heading mb-2">
                 {project.title}
               </h3>
               <p className="theme-text-muted text-sm mb-4 line-clamp-3">
