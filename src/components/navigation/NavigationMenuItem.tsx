@@ -53,7 +53,7 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
     <button
       key={id}
       onClick={() => onClick(section)}
-      className={`game-menu-item menu-${hierarchy} group menu-button transition-all duration-300 relative block w-full text-left no-select ${
+      className={`game-menu-item menu-${hierarchy} group menu-button transition-all duration-300 relative block w-full text-left no-select text-xl md:text-2xl lg:text-3xl ${
         isActive ? "theme-text text-shadow-glow" : ""
       } ${getButtonSpacing(hierarchy)}`}
       type="button"

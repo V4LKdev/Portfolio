@@ -44,14 +44,14 @@ const MainNavigation: React.FC<MainNavigationProps> = ({
       className="h-full no-select"
       style={{
         background:
-          "linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 25%, rgba(0,0,0,0.9) 35%, rgba(0,0,0,0.75) 50%, rgba(0,0,0,0.55) 65%, rgba(0,0,0,0.35) 75%, rgba(0,0,0,0.18) 85%, rgba(0,0,0,0.08) 92%, rgba(0,0,0,0.03) 96%, transparent 100%)",
+          "linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 25%, rgba(0,0,0,0.5) 70%, transparent 99%)",
       }}
     >
       {/* Navigation Header */}
       <NavigationHeader />
 
       {/* Menu Items */}
-      <div className="px-8 md:px-12 no-select">
+      <div className="flex flex-col px-8 md:px-12 no-select">
         {navigationItems.map((item) => (
           <NavigationMenuItem
             key={item.id}
