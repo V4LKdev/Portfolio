@@ -3,7 +3,7 @@
   "description": "Professional portfolio website for Nicolas Martin - Game Programmer",
   "author": "Nicolas Martin <nico@martin.li>",
   "private": true,
-  "version": "2025.06.03",
+  "version": "1.2.0",
   "type": "module",
   "scripts": {
     "dev": "vite",

@@ -12,8 +12,10 @@ node_modules
 # Previous project versions (for reference only)
 previous-versions/
 
+# Build outputs - these should never be committed
 dist
 dist-ssr
+assets/
 *.local
 
 # Editor directories and files
