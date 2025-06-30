@@ -97,9 +97,9 @@ function ServerConnectionPanel({ className = "" }: ServerConnectionPanelProps) {
         } else {
           failures++;
         }
-      } catch (error) {
+      } catch {
         failures++;
-        console.log("Latency measurement failed:", error);
+        // Silently handle latency measurement failures
       }
 
       // Small delay between requests

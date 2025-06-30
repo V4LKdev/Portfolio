@@ -55,7 +55,9 @@ const LocalVideoBackground: React.FC<LocalVideoBackgroundProps> = ({
       } else if (wasPlayingBeforeHidden && !isPaused) {
         // Browser tab is visible again - resume if it was playing before
         setWasPlayingBeforeHidden(false);
-        video.play().catch(console.warn);
+        video.play().catch(() => {
+          // Silently handle video play failures
+        });
       }
     };
 
@@ -73,8 +75,8 @@ const LocalVideoBackground: React.FC<LocalVideoBackgroundProps> = ({
     } else {
       // Hide poster immediately when resuming
       setShowPoster(false);
-      video.play().catch((error) => {
-        console.warn("Video autoplay failed:", error);
+      video.play().catch(() => {
+        // Video autoplay failed - show poster and set error state
         setHasError(true);
         onError?.();
       });

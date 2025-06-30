@@ -46,7 +46,18 @@ export type NavigableSectionComponent<P = object> = React.FC<
 >;
 
 /**
- * Generic home section component type
- * @template P - Additional props extending HomeSectionProps
+ * Theme-aware component props
+ * For components that need theme context
  */
-export type HomeSectionComponent<P = object> = React.FC<HomeSectionProps & P>;
+export interface ThemeAwareProps {
+  /** Optional theme override */
+  theme?: string;
+}
+
+/**
+ * Strict readonly wrapper for configuration objects
+ * Ensures immutability of config data
+ */
+export type ReadonlyDeep<T> = {
+  readonly [P in keyof T]: T[P] extends object ? ReadonlyDeep<T[P]> : T[P];
+};

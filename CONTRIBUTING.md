@@ -1,0 +1,381 @@
+# Contributing to Nicolas Martin Portfolio
+
+Thank you for your interest in contributing to this project! This document provides guidelines and information for maintaining and extending this React TypeScript portfolio website.
+
+## 📋 Table of Contents
+
+- [Project Overview](#project-overview)
+- [Development Setup](#development-setup)
+- [Project Structure](#project-structure)
+- [Development Workflow](#development-workflow)
+- [Code Standards](#code-standards)
+- [Content Management](#content-management)
+- [Theme System](#theme-system)
+- [Testing & Quality Assurance](#testing--quality-assurance)
+- [Build & Deployment](#build--deployment)
+- [Troubleshooting](#troubleshooting)
+
+## 🎯 Project Overview
+
+This is a modern, game-inspired portfolio website built with:
+
+- **React 18** with TypeScript for type safety
+- **Vite** for fast development and building
+- **Tailwind CSS** for utility-first styling
+- **Radix UI** components for accessibility
+- **React Router** for navigation
+- **TanStack Query** for state management
+
+### Key Features
+- Game-style UI with dynamic themes
+- Local video background with preferences
+- Real-time server connection monitoring
+- Mobile-responsive design
+- Comprehensive project showcase
+
+## 🚀 Development Setup
+
+### Prerequisites
+- **Node.js** 18+ 
+- **npm** or **yarn** package manager
+- **Git** for version control
+
+### Installation
+
+```bash
+# Clone the repository
+git clone <repository-url>
+cd UpdatedPortfolioWebsite
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+```
+
+### Available Scripts
+
+```bash
+npm run dev          # Start development server (localhost:8080)
+npm run build        # Production build
+npm run build:dev    # Development build
+npm run lint         # Run ESLint
+npm run preview      # Preview production build
+```
+
+## 📁 Project Structure
+
+```
+src/
+├── components/           # React components
+│   ├── ui/              # Radix UI components (auto-generated)
+│   ├── layout/          # Layout components
+│   ├── sections/        # Page section components
+│   └── *.tsx           # Feature components
+├── content/             # Content data files
+│   ├── projects.ts      # Project showcase data
+│   ├── personal.ts      # Personal information
+│   ├── skills.ts        # Technical skills
+│   └── ui-config.ts     # UI configuration
+├── hooks/               # Custom React hooks
+├── lib/                 # Utility libraries
+│   ├── themes.ts        # Theme system
+│   ├── cookies.ts       # Preference persistence
+│   └── utils.ts         # General utilities
+├── types/               # TypeScript type definitions
+└── App.tsx             # Main application component
+```
+
+### Key Files
+
+- **`src/content/`** - All content management (projects, skills, personal info)
+- **`src/lib/themes.ts`** - Complete theme system with CSS variable generation
+- **`src/components/AppProviders.tsx`** - Global state management contexts
+- **`tsconfig.*.json`** - TypeScript configuration with strict mode
+
+## 🔧 Development Workflow
+
+### 1. Code Quality Checks
+
+Before committing, always run:
+
+```bash
+# Type checking
+npx tsc --noEmit
+
+# Linting
+npm run lint
+
+# Build verification
+npm run build
+```
+
+### 2. Branch Strategy
+
+- **main** - Production-ready code
+- **develop** - Development integration
+- **feature/** - New features
+- **fix/** - Bug fixes
+
+### 3. Commit Guidelines
+
+Use conventional commit format:
+```
+feat: add new project showcase component
+fix: resolve mobile navigation issue
+docs: update setup instructions
+style: improve theme transition animations
+```
+
+## 📝 Code Standards
+
+### TypeScript Configuration
+
+This project uses **strict TypeScript** settings:
+
+```json
+{
+  "strict": true,
+  "noImplicitAny": true,
+  "strictNullChecks": true,
+  "noImplicitReturns": true,
+  "noUncheckedIndexedAccess": true,
+  "exactOptionalPropertyTypes": true
+}
+```
+
+### Component Guidelines
+
+1. **Use functional components** with TypeScript interfaces
+2. **Implement proper prop validation** with readonly where appropriate
+3. **Export interfaces** for component props
+4. **Use semantic HTML** and proper accessibility attributes
+5. **Follow React hooks rules** (ESLint will enforce)
+
+#### Example Component Structure
+
+```tsx
+interface ComponentProps {
+  readonly title: string;
+  readonly children?: React.ReactNode;
+  readonly className?: string;
+}
+
+const Component: React.FC<ComponentProps> = ({ 
+  title, 
+  children, 
+  className = "" 
+}) => {
+  return (
+    <div className={cn("base-styles", className)}>
+      <h2>{title}</h2>
+      {children}
+    </div>
+  );
+};
+
+export default Component;
+```
+
+### Styling Guidelines
+
+1. **Use Tailwind CSS** utility classes
+2. **Leverage CSS variables** for theming (see `src/lib/themes.ts`)
+3. **Follow mobile-first** responsive design
+4. **Use `cn()` utility** for conditional classes
+5. **Maintain consistent spacing** using Tailwind's scale
+
+### State Management
+
+- **Local state**: `useState` for component-specific state
+- **Global state**: Context providers in `AppProviders.tsx`
+- **Server state**: TanStack Query for async operations
+- **Preferences**: Cookie-based persistence via `src/lib/cookies.ts`
+
+## 📄 Content Management
+
+### Adding Projects
+
+Edit `src/content/projects.ts`:
+
+```typescript
+export const projects: Project[] = [
+  {
+    id: "unique-project-id",
+    title: "Project Title",
+    category: "Project Category",
+    type: "solo" | "team" | "academic",
+    tags: ["React", "TypeScript"],
+    description: "Brief description",
+    details: "Detailed technical overview",
+    image: "https://image-url.com",
+    // Optional detailed sections
+    design: { /* design process */ },
+    code: { /* technical implementation */ },
+    implementation: { /* project timeline */ }
+  }
+];
+```
+
+### Updating Personal Information
+
+Edit `src/content/personal.ts` for contact details and social links.
+
+### Managing Skills
+
+Edit `src/content/skills.ts` to update technical skills and tools.
+
+### UI Configuration
+
+Edit `src/content/ui-config.ts` for:
+- Navigation menu items
+- Background images
+- Video settings
+- Layout preferences
+
+## 🎨 Theme System
+
+The theme system in `src/lib/themes.ts` provides:
+
+### Adding New Themes
+
+```typescript
+export const THEMES: Record<string, ThemeConfig> = {
+  newTheme: {
+    id: "newTheme",
+    name: "New Theme Name",
+    description: "Theme description",
+    colors: {
+      background: "0 0% 100%", // HSL format
+      foreground: "0 0% 0%",
+      // ... other colors
+    },
+    gameStyle: {
+      menuTextColor: "#ffffff",
+      // ... game-specific styling
+    }
+  }
+};
+```
+
+### CSS Variable Generation
+
+Themes automatically generate CSS custom properties:
+- `--background` → `hsl(0 0% 100%)`
+- `--theme-panel-bg` → `rgba(0, 0, 0, 0.8)`
+
+## 🧪 Testing & Quality Assurance
+
+### Manual Testing Checklist
+
+- [ ] **Responsive Design**: Test on mobile, tablet, desktop
+- [ ] **Video Functionality**: Play, pause, mute, preferences
+- [ ] **Navigation**: All sections and project details
+- [ ] **Theme Switching**: All themes render correctly
+- [ ] **Performance**: Video loading, smooth animations
+- [ ] **Accessibility**: Keyboard navigation, screen readers
+
+### Code Quality Tools
+
+```bash
+# TypeScript strict checking
+npx tsc --noEmit
+
+# ESLint with React rules
+npm run lint
+
+# Build verification
+npm run build
+```
+
+### Performance Considerations
+
+- **Video Optimization**: Proper loading states and error handling
+- **Image Loading**: Use appropriate formats and sizes
+- **Bundle Size**: Monitor with `npm run build` output
+- **Accessibility**: Maintain ARIA attributes and semantic HTML
+
+## 🚀 Build & Deployment
+
+### Production Build
+
+```bash
+npm run build
+```
+
+Generates optimized static files in `dist/`:
+- **HTML**: Single-page application entry point
+- **CSS**: Compiled Tailwind styles (~76KB gzipped)
+- **JS**: React application bundle (~368KB gzipped)
+
+### Environment Variables
+
+Create `.env.local` for local development:
+```env
+VITE_API_URL=your-api-url
+```
+
+### Deployment Platforms
+
+This project is optimized for:
+- **Vercel** (recommended)
+- **Netlify** 
+- **GitHub Pages**
+- **Any static hosting**
+
+## 🔧 Troubleshooting
+
+### Common Issues
+
+**TypeScript Errors**
+```bash
+# Clear TypeScript cache
+rm -rf node_modules/.cache
+npm run build
+```
+
+**ESLint Issues**
+```bash
+# Check specific file
+npx eslint src/components/YourComponent.tsx
+```
+
+**Build Failures**
+```bash
+# Clean install
+rm -rf node_modules package-lock.json
+npm install
+npm run build
+```
+
+**Video Not Loading**
+- Check file path in `public/videos/`
+- Verify browser codec support
+- Test with fallback poster image
+
+### Development Server Issues
+
+1. **Port conflicts**: Default port 8080, configure in `vite.config.ts`
+2. **Hot reload**: Clear browser cache if changes don't appear
+3. **CORS issues**: Configure proxy in Vite config if needed
+
+## 📞 Support
+
+For questions or issues:
+
+1. **Check existing documentation** in this file
+2. **Review TypeScript errors** carefully
+3. **Test in clean environment** (fresh install)
+4. **Check browser console** for runtime errors
+
+## 🔄 Version History
+
+- **v1.0.0** - Initial portfolio release with strict TypeScript setup
+- Clean codebase with professional type safety
+- Complete theme system and content management
+- Production-ready build configuration
+
+---
+
+*This contributing guide reflects the current state of the project as of the latest commit. Keep this document updated as the project evolves.*

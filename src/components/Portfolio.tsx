@@ -5,7 +5,7 @@
  */
 
 import * as React from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Menu, X, LogOut } from "lucide-react";
 import { HomeLayout, SectionLayout } from "./layout";
 import ServerConnectionPanel from "./ServerConnectionPanel";
@@ -20,14 +20,21 @@ import SettingsPanel from "./SettingsPanel";
 import BUILD_VERSION from "../config/version";
 import { AppProviders } from "./AppProviders";
 import { useNavigation } from "../hooks/useNavigation";
+import { getProjects } from "../lib/contentLoader";
+import { type Project } from "../content";
 import { navigationItems } from "../content";
-import { projects } from "../content/projects";
 
 /**
  * Main portfolio layout component
  * Now focused purely on layout and rendering, with state managed by providers
  */
 const PortfolioContent: React.FC = () => {
+  const [projects, setProjects] = React.useState<Project[]>([]);
+
+  React.useEffect(() => {
+    getProjects().then(setProjects);
+  }, []);
+
   const {
     currentSection,
     selectedProject,

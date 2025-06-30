@@ -9,12 +9,25 @@
     "paths": {
       "@/*": ["./src/*"]
     },
+    /* Type Checking - Shared strict settings */
     "strict": true,
     "noImplicitAny": true,
-    "noUnusedParameters": true,
-    "skipLibCheck": true,
-    "allowJs": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitReturns": true,
+    "noImplicitOverride": true,
+    "noUncheckedIndexedAccess": true,
+    
+    /* Additional Checks */
     "noUnusedLocals": true,
-    "strictNullChecks": true
+    "noUnusedParameters": true,
+    "exactOptionalPropertyTypes": true,
+    "noFallthroughCasesInSwitch": true,
+    
+    /* Build Performance */
+    "skipLibCheck": true,
+    "allowJs": true
   }
 }

@@ -12,10 +12,21 @@
     "moduleDetection": "force",
     "noEmit": true,
 
-    /* Linting */
+    /* Type Checking - Aligned with app config */
     "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitReturns": true,
+    "noImplicitOverride": true,
+    "noUncheckedIndexedAccess": true,
+    
+    /* Build-specific settings (less strict for config files) */
     "noUnusedLocals": false,
     "noUnusedParameters": false,
+    "exactOptionalPropertyTypes": false,
     "noFallthroughCasesInSwitch": true
   },
   "include": ["vite.config.ts"]
