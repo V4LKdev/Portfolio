@@ -109,7 +109,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project, onBack }) => {
           <ul className="space-y-2">
             {project.design.challenges.map((challenge) => (
               <li
-                key={challenge.slice(0, 30)}
+                key={challenge.substring(0, 50).replace(/[^a-zA-Z0-9]/g, '-')}
                 className="theme-text flex items-start"
               >
                 <span className="theme-icon-accent mr-2">•</span>
@@ -128,7 +128,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project, onBack }) => {
           <ul className="space-y-2">
             {project.design.solutions.map((solution) => (
               <li
-                key={solution.slice(0, 30)}
+                key={solution.substring(0, 50).replace(/[^a-zA-Z0-9]/g, '-')}
                 className="theme-text flex items-start"
               >
                 <span className="theme-icon-accent mr-2">▸</span>
@@ -185,7 +185,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project, onBack }) => {
           <ul className="space-y-2">
             {project.code.keyFeatures.map((feature) => (
               <li
-                key={feature.slice(0, 30)}
+                key={feature.substring(0, 50).replace(/[^a-zA-Z0-9]/g, '-')}
                 className="theme-text flex items-start"
               >
                 <span className="theme-icon-accent mr-2">▸</span>
@@ -271,7 +271,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project, onBack }) => {
           <ul className="space-y-2">
             {project.implementation.challenges.map((challenge) => (
               <li
-                key={challenge.slice(0, 30)}
+                key={challenge.substring(0, 50).replace(/[^a-zA-Z0-9]/g, '-')}
                 className="theme-text flex items-start"
               >
                 <span className="theme-icon-accent mr-2">•</span>
@@ -290,7 +290,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project, onBack }) => {
           <ul className="space-y-2">
             {project.implementation.results.map((result) => (
               <li
-                key={result.slice(0, 30)}
+                key={result.substring(0, 50).replace(/[^a-zA-Z0-9]/g, '-')}
                 className="theme-text flex items-start"
               >
                 <span className="theme-icon-accent mr-2">★</span>

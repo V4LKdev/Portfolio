@@ -2,7 +2,6 @@
 // Displays personal information, education, and experience
 // Shows bio, academic background, and professional experience
 
-import React from "react";
 import { aboutContent } from "../../content";
 import { BackButton } from "../ui/navigation";
 import { NavigableSectionComponent } from "../../types/SharedProps";
@@ -13,7 +12,7 @@ import { NavigableSectionComponent } from "../../types/SharedProps";
  */
 const AboutSection: NavigableSectionComponent = ({ onBack, className, id }) => {
   return (
-    <div className={`max-w-4xl mx-auto ${className || ""}`} id={id}>
+    <div className={`max-w-4xl mx-auto ${className ?? ""}`} id={id}>
       <BackButton onClick={onBack} label="Back to Home" />
       <h2 className="text-5xl font-bold mb-16 text-center deadlock-title">
         About Me
@@ -23,7 +22,7 @@ const AboutSection: NavigableSectionComponent = ({ onBack, className, id }) => {
         {/* Bio paragraphs */}
         {aboutContent.intro.map((paragraph) => (
           <p
-            key={paragraph.slice(0, 20)}
+            key={paragraph.substring(0, 50).replace(/\s/g, '-')}
             className="text-lg theme-text leading-relaxed mb-6"
           >
             {paragraph}

@@ -86,6 +86,8 @@ export function AppProviders({ children }: AppProvidersProps) {
         navigator.mediaSession.setActionHandler("pause", null);
       };
     }
+    // Return undefined for browsers without mediaSession support
+    return undefined;
   }, [isPaused, togglePlayback]);
 
   // Keyboard Controls

@@ -5,7 +5,7 @@
  */
 
 import * as React from "react";
-import { useEffect } from "react";
+import { useEffect, Suspense } from "react";
 import { Menu, X, LogOut } from "lucide-react";
 import { HomeLayout, SectionLayout } from "./layout";
 import ServerConnectionPanel from "./ServerConnectionPanel";
@@ -15,7 +15,6 @@ import ProjectsSection from "./sections/ProjectsSection";
 import AboutSection from "./sections/AboutSection";
 import SkillsSection from "./sections/SkillsSection";
 import ContactSection from "./sections/ContactSection";
-import ProjectDetail from "./ProjectDetail";
 import SettingsPanel from "./SettingsPanel";
 import BUILD_VERSION from "../config/version";
 import { AppProviders } from "./AppProviders";
@@ -23,6 +22,9 @@ import { useNavigation } from "../hooks/useNavigation";
 import { getProjects } from "../lib/contentLoader";
 import { type Project } from "../content";
 import { navigationItems } from "../content";
+
+// Lazy load ProjectDetail component for better initial bundle size
+const ProjectDetail = React.lazy(() => import("./ProjectDetail"));
 
 /**
  * Main portfolio layout component
@@ -64,7 +66,18 @@ const PortfolioContent: React.FC = () => {
     if (selectedProject) {
       return (
         <SectionLayout section="projects" className="fixed inset-0 z-50">
-          <ProjectDetail project={selectedProject} onBack={handleBackClick} />
+          <Suspense 
+            fallback={
+              <div className="flex items-center justify-center h-full">
+                <div className="flex items-center space-x-3 text-amber-200 bg-black/60 backdrop-blur-sm rounded-lg px-6 py-4">
+                  <div className="animate-spin rounded-full h-6 w-6 border-2 border-amber-200 border-t-transparent"></div>
+                  <span className="text-sm font-medium">Loading project details...</span>
+                </div>
+              </div>
+            }
+          >
+            <ProjectDetail project={selectedProject} onBack={handleBackClick} />
+          </Suspense>
         </SectionLayout>
       );
     } // Home page with video background and navigation
@@ -72,7 +85,7 @@ const PortfolioContent: React.FC = () => {
       return (
         <HomeLayout
           menu={
-            <NavigationMenu
+            <MemoizedNavigationMenu
               isOpen={isMobileMenuOpen}
               currentSection={currentSection}
               onMenuClick={handleMenuClick}
@@ -285,6 +298,9 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({
     </div>
   </nav>
 );
+
+// Memoize NavigationMenu to prevent unnecessary re-renders
+const MemoizedNavigationMenu = React.memo(NavigationMenu);
 
 // --- Additional Section Components ---
 const AdditionalSection: React.FC<{ onBack: () => void }> = ({ onBack }) => (

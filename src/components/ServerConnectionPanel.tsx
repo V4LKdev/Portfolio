@@ -41,7 +41,7 @@ const SignalBars = ({ ping }: SignalBarsProps) => {
     <div className="flex items-end gap-0.5">
       {[1, 2, 3].map((bar) => (
         <div
-          key={bar}
+          key={`signal-bar-${bar}`}
           className={`w-1 transition-colors duration-300 ${
             bar <= strength ? activeColorClass : "bg-gray-600/50"
           }`}

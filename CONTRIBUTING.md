@@ -345,6 +345,31 @@ npm run build
 - **Bundle Size**: Monitor with `npm run build` output
 - **Accessibility**: Maintain ARIA attributes and semantic HTML
 
+### Performance Optimizations
+
+This project implements several performance optimizations:
+
+#### Code Splitting & Lazy Loading
+- **ProjectDetail Component**: Lazy loaded to reduce initial bundle size
+- **React.Suspense**: Provides loading states for code-split components
+- **Automatic Bundle Analysis**: Vite automatically splits chunks for optimal loading
+
+#### React Performance
+- **React.memo()**: Applied to expensive components like NavigationMenu
+- **Stable Keys**: Proper React keys prevent unnecessary re-renders
+- **useCallback/useMemo**: Used in contexts to prevent excessive re-renders
+
+#### Bundle Size Monitoring
+Current production bundle sizes:
+- Main bundle: ~294KB (~93KB gzipped)
+- ProjectDetail chunk: ~10KB (~2.5KB gzipped)
+- CSS: ~37KB (~7KB gzipped)
+
+#### Cookie Security
+- **Secure Flag**: Automatically applied in HTTPS environments
+- **SameSite**: Set to 'Lax' for CSRF protection
+- **Client-side Only**: HttpOnly intentionally omitted for preference access
+
 ## 🚀 Build & Deployment
 
 ### Production Build
@@ -355,8 +380,9 @@ npm run build
 
 Generates optimized static files in `dist/`:
 - **HTML**: Single-page application entry point
-- **CSS**: Compiled Tailwind styles (~76KB gzipped)
-- **JS**: React application bundle (~368KB gzipped)
+- **CSS**: Compiled Tailwind styles (~37KB, ~7KB gzipped)
+- **JS Main Bundle**: React application bundle (~294KB, ~93KB gzipped)
+- **JS Lazy Chunks**: Code-split components (e.g., ProjectDetail ~10KB, ~2.5KB gzipped)
 
 ### Environment Variables
 
