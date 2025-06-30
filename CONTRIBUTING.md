@@ -7,6 +7,7 @@ Thank you for your interest in contributing to this project! This document provi
 - [Project Overview](#project-overview)
 - [Development Setup](#development-setup)
 - [Project Structure](#project-structure)
+- [Version Management](#version-management)
 - [Development Workflow](#development-workflow)
 - [Code Standards](#code-standards)
 - [Content Management](#content-management)
@@ -93,6 +94,54 @@ src/
 - **`src/lib/themes.ts`** - Complete theme system with CSS variable generation
 - **`src/components/AppProviders.tsx`** - Global state management contexts
 - **`tsconfig.*.json`** - TypeScript configuration with strict mode
+
+## 🏷️ Version Management
+
+This project uses a **dual versioning system** for different purposes:
+
+### Version Types
+
+**1. Release Version** (`src/config/version.ts`)
+- Format: `2025.06_v03` (year.month_version)
+- Used for: UI display, git tags
+- Shows: Release date and iteration number
+- Example: `2025.06_v03` = 3rd version in June 2025
+
+**2. Package Version** (`package.json`)
+- Format: `1.2.0` (major.minor.patch)
+- Used for: npm semantic versioning
+- Follows: Standard semantic versioning rules
+- Example: `1.2.0` = Major version 1, minor version 2, patch 0
+
+### Creating a New Release
+
+1. **Update Release Version** in `src/config/version.ts`:
+   ```typescript
+   export const RELEASE_VERSION = "2025.07_v01"; // New version
+   ```
+
+2. **Update Package Version** in `package.json`:
+   ```json
+   "version": "1.3.0" // Follow semver: major.minor.patch
+   ```
+
+3. **Create Git Tag** using the release version:
+   ```bash
+   git tag -a "v2025.07_v01" -m "Release v2025.07_v01"
+   git push origin v2025.07_v01
+   ```
+
+### Semantic Versioning Guidelines (Package Version)
+
+- **Major** (X.0.0): Breaking changes, major UI overhauls
+- **Minor** (1.X.0): New features, significant improvements
+- **Patch** (1.2.X): Bug fixes, small tweaks
+
+### Build Artifacts
+
+- **Never commit** build artifacts (`dist/`, `assets/`)
+- Files are auto-generated during build process
+- `.gitignore` prevents accidental commits
 
 ## 🔧 Development Workflow
 
