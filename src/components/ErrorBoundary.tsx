@@ -35,9 +35,12 @@ class ErrorBoundary extends Component<Props, State> {
       return (
         <div className="bg-background text-foreground min-h-screen flex flex-col items-center justify-center p-4 font-mono">
           <div className="border border-primary/20 bg-card p-8 rounded-lg shadow-xl max-w-lg w-full text-center">
-            <h1 className="text-2xl font-bold text-destructive mb-4">[ System Failure ]</h1>
+            <h1 className="text-2xl font-bold text-destructive mb-4">
+              [ System Failure ]
+            </h1>
             <p className="text-muted-foreground mb-6">
-              An unexpected error occurred. The application has been halted to prevent further issues.
+              An unexpected error occurred. The application has been halted to
+              prevent further issues.
             </p>
             <button
               onClick={() => window.location.reload()}

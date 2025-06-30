@@ -13,7 +13,7 @@
  * ```
  */
 import { useContext } from "react";
-import { VideoControlContext } from "../components/AppProviders";
+import { VideoControlContext } from "../contexts/VideoControlContext";
 
 export const useVideoControls = () => {
   const context = useContext(VideoControlContext);

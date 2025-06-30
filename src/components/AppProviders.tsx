@@ -1,61 +1,17 @@
 // AppProviders.tsx
 // Consolidated global providers for navigation and video state
 
-import React, {
-  createContext,
-  useState,
-  useCallback,
-  useEffect,
-  useMemo,
-} from "react";
-import { type Project } from "../content";
+import React, { useState, useCallback, useEffect, useMemo } from "react";
 import { VideoPreferences } from "../lib/cookies";
-
-// -------------------- Video Control Context & Provider --------------------
-
-interface VideoState {
-  isPaused: boolean;
-  isMuted: boolean;
-  isManuallyPaused: boolean;
-}
-
-interface VideoActions {
-  togglePlayback: () => void;
-  toggleMute: () => void;
-  setManualPause: (paused: boolean) => void;
-}
-
-export interface VideoControlContextType extends VideoState, VideoActions {}
-
-export const VideoControlContext =
-  createContext<VideoControlContextType | null>(null);
-
-// -------------------- Navigation Context & Provider --------------------
-
-interface NavigationState {
-  currentSection: string;
-  selectedProject: Project | null;
-  projectFilter: string;
-  isMobileMenuOpen: boolean;
-}
-
-interface NavigationActions {
-  setCurrentSection: (section: string) => void;
-  setSelectedProject: (project: Project | null) => void;
-  setProjectFilter: (filter: string) => void;
-  setIsMobileMenuOpen: (open: boolean) => void;
-  handleMenuClick: (sectionId: string) => void;
-  handleProjectClick: (project: Project) => void;
-  handleBackClick: () => void;
-}
-
-export interface NavigationContextType
-  extends NavigationState,
-    NavigationActions {}
-
-export const NavigationContext = createContext<NavigationContextType | null>(
-  null,
-);
+import {
+  VideoControlContext,
+  VideoControlContextType,
+} from "../contexts/VideoControlContext";
+import {
+  NavigationContext,
+  NavigationContextType,
+} from "../contexts/NavigationContext";
+import { type Project } from "../content";
 
 // -------------------- AppProviders Component --------------------
 

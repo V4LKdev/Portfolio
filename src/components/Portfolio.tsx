@@ -5,7 +5,7 @@
  */
 
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Menu, X, LogOut } from "lucide-react";
 import { HomeLayout, SectionLayout } from "./layout";
 import ServerConnectionPanel from "./ServerConnectionPanel";

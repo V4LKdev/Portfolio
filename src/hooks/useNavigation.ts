@@ -13,7 +13,7 @@
  * ```
  */
 import { useContext } from "react";
-import { NavigationContext } from "../components/AppProviders";
+import { NavigationContext } from "../contexts/NavigationContext";
 
 export const useNavigation = () => {
   const context = useContext(NavigationContext);
