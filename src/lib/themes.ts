@@ -272,13 +272,19 @@ export function applyTheme(themeId: string): void {
   root.style.setProperty("--theme-title", theme.gameStyle.titleColor);
   root.style.setProperty("--theme-title-glow", theme.gameStyle.titleGlowColor);
   root.style.setProperty("--theme-build-id", theme.gameStyle.buildIdColor);
-  
+
   // Special button colors
   root.style.setProperty("--theme-quit-color", theme.gameStyle.quitColor);
   root.style.setProperty("--theme-quit-hover", theme.gameStyle.quitHoverColor);
-  root.style.setProperty("--theme-patchnotes-color", theme.gameStyle.patchnotesColor);
-  root.style.setProperty("--theme-patchnotes-hover", theme.gameStyle.patchnotesHoverColor);
-  
+  root.style.setProperty(
+    "--theme-patchnotes-color",
+    theme.gameStyle.patchnotesColor,
+  );
+  root.style.setProperty(
+    "--theme-patchnotes-hover",
+    theme.gameStyle.patchnotesHoverColor,
+  );
+
   root.style.setProperty(
     "--theme-atmospheric-glow",
     theme.gameStyle.atmosphericGlow,

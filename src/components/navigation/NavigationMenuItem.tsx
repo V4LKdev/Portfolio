@@ -3,7 +3,7 @@
  *
  * Enhanced navigation menu item component with advanced text animations and game-style styling.
  * Features dynamic spacing, icon support, letter-morphing animations, instant reveal, and theme integration.
- * 
+ *
  * Animation Types:
  * - letter-morph: Characters change in place letter by letter (Valorant-style)
  * - instant-reveal: Immediate clear then reveal from left with clip-path
@@ -53,22 +53,22 @@ interface MorphingCharProps {
   animationSpeed: number;
 }
 
-const MorphingChar: React.FC<MorphingCharProps> = ({ 
-  fromChar, 
-  toChar, 
-  index, 
-  isHovered, 
-  animationSpeed 
+const MorphingChar: React.FC<MorphingCharProps> = ({
+  fromChar,
+  toChar,
+  index,
+  isHovered,
+  animationSpeed,
 }) => {
   const [currentChar, setCurrentChar] = useState(fromChar);
-  const delay = index * 0.02 / animationSpeed; // Reduced for faster response
+  const delay = (index * 0.02) / animationSpeed; // Reduced for faster response
 
   React.useEffect(() => {
     const targetChar = isHovered ? toChar : fromChar;
     const timer = setTimeout(() => {
       setCurrentChar(targetChar);
     }, delay * 1000);
-    
+
     return () => clearTimeout(timer);
   }, [isHovered, fromChar, toChar, delay]);
 
@@ -77,9 +77,9 @@ const MorphingChar: React.FC<MorphingCharProps> = ({
       key={`char-${index}`}
       animate={{ opacity: currentChar ? 1 : 0 }}
       transition={{ duration: 0.06 / animationSpeed }} // Reduced for snappier feel
-      style={{ display: 'inline-block' }}
+      style={{ display: "inline-block" }}
     >
-      {currentChar === ' ' ? '\u00A0' : currentChar}
+      {currentChar === " " ? "\u00A0" : currentChar}
     </motion.span>
   );
 };
@@ -93,7 +93,8 @@ const MorphingChar: React.FC<MorphingCharProps> = ({
  */
 const getButtonSpacing = (hierarchy: string): string => {
   if (hierarchy === "primary") return "mb-[clamp(2rem,4vh,5rem)]"; // Primary section: 32px-80px based on viewport
-  if (hierarchy === "patchnotes") return "mt-[clamp(2rem,4vh,5rem)] mb-[clamp(0.5rem,1vh,1rem)]"; // Large space before, small after
+  if (hierarchy === "patchnotes")
+    return "mt-[clamp(2rem,4vh,5rem)] mb-[clamp(0.5rem,1vh,1rem)]"; // Large space before, small after
   if (hierarchy === "quit") return "mb-[clamp(0.5rem,1vh,1rem)]"; // Small consistent space
   if (hierarchy === "secondary") return "mb-[clamp(1.5rem,3vh,3rem)]"; // Secondary: 24px-48px
   return "mb-[clamp(1.25rem,2.5vh,2.5rem)]"; // Tertiary: 20px-40px
@@ -148,7 +149,7 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
     setTimeout(() => {
       playFeedback();
     }, 100);
-    
+
     setIsActivated(true);
     onClick(section);
   };
@@ -157,13 +158,14 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
    * Render animated text based on selected animation type
    */
   const renderAnimatedText = () => {
-    const currentText = isHovered && gameLabel !== hoverLabel ? hoverLabel : gameLabel;
+    const currentText =
+      isHovered && gameLabel !== hoverLabel ? hoverLabel : gameLabel;
     const shouldAnimate = gameLabel !== hoverLabel && enableEnhancedAnimations;
-    
+
     if (animationType === "instant" || !shouldAnimate) {
       return <span className="block">{currentText}</span>;
     }
-    
+
     if (animationType === "letter-morph") {
       const fromText = gameLabel;
       const toText = hoverLabel;
@@ -172,9 +174,9 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
         <span className="block">
           {Array.from({ length: maxLength }).map((_, index) => (
             <MorphingChar
-              key={`morph-${fromText[index] ?? ''}-${toText[index] ?? ''}-${index}`}
-              fromChar={fromText[index] ?? ''}
-              toChar={toText[index] ?? ''}
+              key={`morph-${fromText[index] ?? ""}-${toText[index] ?? ""}-${index}`}
+              fromChar={fromText[index] ?? ""}
+              toChar={toText[index] ?? ""}
               index={index}
               isHovered={isHovered}
               animationSpeed={animationSpeed}
@@ -183,7 +185,7 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
         </span>
       );
     }
-    
+
     if (animationType === "instant-reveal") {
       return (
         <AnimatePresence mode="wait">
@@ -199,7 +201,7 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
         </AnimatePresence>
       );
     }
-    
+
     // Default: fade animation
     return (
       <AnimatePresence mode="wait">
@@ -234,23 +236,32 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
       <motion.span
         className="mr-1"
         animate={{
-          rotate: isHovered || isPressedDown || isActivated ? [0, -12, 12, -8, 8, 0] : 0,
+          rotate:
+            isHovered || isPressedDown || isActivated
+              ? [0, -12, 12, -8, 8, 0]
+              : 0,
         }}
         transition={{ duration: 0.5, ease: "easeInOut" }}
       >
-        <Newspaper 
+        <Newspaper
           className="w-4 h-4 md:w-5 md:h-5 transition-colors duration-300"
           style={{
-            color: isHovered ? 'var(--theme-patchnotes-hover)' : 'var(--theme-patchnotes-color)'
+            color: isHovered
+              ? "var(--theme-patchnotes-hover)"
+              : "var(--theme-patchnotes-color)",
           }}
         />
       </motion.span>
-      <span 
+      <span
         className="transition-colors duration-300"
         style={{
-          color: isHovered ? 'var(--theme-patchnotes-hover)' : 'var(--theme-patchnotes-color)'
+          color: isHovered
+            ? "var(--theme-patchnotes-hover)"
+            : "var(--theme-patchnotes-color)",
         }}
-      >{renderAnimatedText()}</span>
+      >
+        {renderAnimatedText()}
+      </span>
     </motion.div>
   );
 
@@ -272,24 +283,33 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
         <motion.span
           className="mr-1"
           animate={{
-            scale: isHovered || isPressedDown || isActivated ? [1, 1.18, 0.92, 1.12, 1] : 1,
+            scale:
+              isHovered || isPressedDown || isActivated
+                ? [1, 1.18, 0.92, 1.12, 1]
+                : 1,
           }}
           transition={{ duration: 0.5, ease: "easeInOut" }}
         >
-          <LogOut 
+          <LogOut
             className="w-4 h-4 md:w-5 md:h-5 transition-colors duration-300"
             style={{
-              color: isHovered ? 'var(--theme-quit-hover)' : 'var(--theme-quit-color)'
+              color: isHovered
+                ? "var(--theme-quit-hover)"
+                : "var(--theme-quit-color)",
             }}
           />
         </motion.span>
       )}
-      <span 
+      <span
         className="transition-colors duration-300"
         style={{
-          color: isHovered ? 'var(--theme-quit-hover)' : 'var(--theme-quit-color)'
+          color: isHovered
+            ? "var(--theme-quit-hover)"
+            : "var(--theme-quit-color)",
         }}
-      >{gameLabel}</span>
+      >
+        {gameLabel}
+      </span>
     </motion.div>
   );
 
@@ -297,27 +317,24 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
    * Render enhanced animated text with visual effects
    */
   const renderEnhancedText = () => (
-    <motion.span 
+    <motion.span
       className="relative inline-block align-bottom"
       animate={{
-        color: isPressedDown || isActivated 
-          ? "rgba(0, 0, 0, 0.9)"
-          : "currentColor"
+        color:
+          isPressedDown || isActivated ? "rgba(0, 0, 0, 0.9)" : "currentColor",
       }}
       transition={{ color: { duration: 0.1, ease: "linear" } }}
     >
-      <span className="block relative z-10">
-        {renderAnimatedText()}
-      </span>
+      <span className="block relative z-10">{renderAnimatedText()}</span>
       {/* Press fill effect */}
       <AnimatePresence>
         {(isPressedDown || isActivated) && (
           <motion.div
             className="absolute left-0 bottom-0 w-full z-0 will-change-transform rounded-sm"
-            style={{ 
-              height: '100%', 
-              pointerEvents: 'none', 
-              background: 'var(--theme-menu-hover)' 
+            style={{
+              height: "100%",
+              pointerEvents: "none",
+              background: "var(--theme-menu-hover)",
             }}
             initial={{ height: "2px", opacity: 1 }}
             animate={{ height: "100%", opacity: 1 }}
@@ -331,9 +348,9 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
         {isHovered && !isPressedDown && !isActivated && (
           <motion.div
             className="absolute left-0 bottom-0 h-0.5 will-change-transform rounded-sm"
-            style={{ 
-              pointerEvents: 'none', 
-              background: 'var(--theme-menu-hover)' 
+            style={{
+              pointerEvents: "none",
+              background: "var(--theme-menu-hover)",
             }}
             initial={{ width: 0 }}
             animate={{ width: "100%" }}
@@ -366,10 +383,9 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
     <div className="relative flex items-center gap-3">
       <div className="relative will-change-transform w-full">
         <div className="relative z-10 w-full min-w-0">
-          {enableEnhancedAnimations && animationType !== "instant" 
-            ? renderEnhancedText() 
-            : renderFallbackText()
-          }
+          {enableEnhancedAnimations && animationType !== "instant"
+            ? renderEnhancedText()
+            : renderFallbackText()}
         </div>
       </div>
     </div>

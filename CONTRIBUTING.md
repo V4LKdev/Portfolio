@@ -283,10 +283,10 @@ The navigation system features advanced text animations and professional game-st
   section="projects"
   isActive={currentSection === "projects"}
   onClick={handleMenuClick}
-  animationType="letter-morph"     // Default animation
-  animationSpeed={1.2}             // Enhanced responsiveness
-  enableEnhancedAnimations={true}  // Enable advanced effects
-  hasIcon={false}                  // Show icon for special buttons
+  animationType="letter-morph" // Default animation
+  animationSpeed={1.2} // Enhanced responsiveness
+  enableEnhancedAnimations={true} // Enable advanced effects
+  hasIcon={false} // Show icon for special buttons
 />
 ```
 
@@ -312,7 +312,7 @@ The navigation system features comprehensive theme integration with dedicated co
 // Themes automatically provide CSS variables:
 --theme-quit-color        // Base state (gray/slate)
 --theme-quit-hover        // Hover state (red-500)
---theme-patchnotes-color  // Base state (gray/slate)  
+--theme-patchnotes-color  // Base state (gray/slate)
 --theme-patchnotes-hover  // Hover state (theme accent)
 
 // Components automatically use these variables:
@@ -326,7 +326,7 @@ The theme system (`src/lib/themes.ts`) defines colors for each theme, and the `a
 #### Hierarchy Levels
 
 - **primary**: Largest buttons (Projects/Play)
-- **secondary**: Standard menu items (About, Contact, Skills)  
+- **secondary**: Standard menu items (About, Contact, Skills)
 - **tertiary**: Smaller items (Extras/Hobbies)
 - **patchnotes**: Special button with newspaper icon
 - **quit**: Exit button with logout icon

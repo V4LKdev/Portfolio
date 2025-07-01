@@ -21,14 +21,14 @@ const MorphingChar: React.FC<{
   animationSpeed: number;
 }> = ({ fromChar, toChar, index, isHovered, animationSpeed }) => {
   const [currentChar, setCurrentChar] = useState(fromChar);
-  const delay = index * 0.02 / animationSpeed; // Reduced from 0.05 to 0.02 for faster response
+  const delay = (index * 0.02) / animationSpeed; // Reduced from 0.05 to 0.02 for faster response
 
   React.useEffect(() => {
     const targetChar = isHovered ? toChar : fromChar;
     const timer = setTimeout(() => {
       setCurrentChar(targetChar);
     }, delay * 1000);
-    
+
     return () => clearTimeout(timer);
   }, [isHovered, fromChar, toChar, delay]);
 
@@ -37,9 +37,9 @@ const MorphingChar: React.FC<{
       key={`char-${index}`}
       animate={{ opacity: currentChar ? 1 : 0 }}
       transition={{ duration: 0.06 / animationSpeed }} // Reduced from 0.1 to 0.06 for snappier feel
-      style={{ display: 'inline-block' }}
+      style={{ display: "inline-block" }}
     >
-      {currentChar === ' ' ? '\u00A0' : currentChar}
+      {currentChar === " " ? "\u00A0" : currentChar}
     </motion.span>
   );
 };
@@ -51,7 +51,7 @@ const styleVariants = [
   },
   {
     id: "valorant",
-    name: "Valorant Sharp", 
+    name: "Valorant Sharp",
     description: "Sharp red accents with tactical precision",
   },
 ];
@@ -61,51 +61,51 @@ const animationTypes = [
   {
     id: "instant",
     name: "Instant",
-    description: "No animation - immediate swap"
+    description: "No animation - immediate swap",
   },
   {
     id: "hero-fade",
     name: "Fade",
-    description: "Simple crossfade between text states"
+    description: "Simple crossfade between text states",
   },
   {
     id: "tactical-instant",
     name: "Instant Reveal",
-    description: "Immediate clear then reveal from left"
+    description: "Immediate clear then reveal from left",
   },
   {
     id: "letter-morph",
     name: "Letter Morph",
-    description: "Characters change in place letter by letter"
+    description: "Characters change in place letter by letter",
   },
   // Add a fifth if you want, or keep at 4 for now
 ];
 
 // Exact navigation data from your main menu
 const demoButtons = [
-  { 
-    gameLabel: "Play", 
-    hoverLabel: "Projects", 
+  {
+    gameLabel: "Play",
+    hoverLabel: "Projects",
     hierarchy: "primary" as const,
   },
-  { 
-    gameLabel: "Profile", 
-    hoverLabel: "About Me", 
+  {
+    gameLabel: "Profile",
+    hoverLabel: "About Me",
     hierarchy: "secondary" as const,
   },
-  { 
-    gameLabel: "Social", 
-    hoverLabel: "Contact", 
+  {
+    gameLabel: "Social",
+    hoverLabel: "Contact",
     hierarchy: "secondary" as const,
   },
-  { 
-    gameLabel: "Achievements", 
-    hoverLabel: "Skills & CV", 
+  {
+    gameLabel: "Achievements",
+    hoverLabel: "Skills & CV",
     hierarchy: "secondary" as const,
   },
-  { 
-    gameLabel: "Extras", 
-    hoverLabel: "Hobbies", 
+  {
+    gameLabel: "Extras",
+    hoverLabel: "Hobbies",
     hierarchy: "tertiary" as const,
   },
   {
@@ -147,7 +147,9 @@ const GameTextButton: React.FC<GameTextButtonProps> = ({
   // Removed unused isPressed and clickAnimation state
   const [isPressedDown, setIsPressedDown] = useState(false);
   const [isActivated, setIsActivated] = useState(false);
-  const { playHover, playUnhover, playClick, playFeedback } = useSoundEffects({ enabled: true });
+  const { playHover, playUnhover, playClick, playFeedback } = useSoundEffects({
+    enabled: true,
+  });
 
   const handleMouseEnter = () => {
     setIsHovered(true);
@@ -182,12 +184,12 @@ const GameTextButton: React.FC<GameTextButtonProps> = ({
     setTimeout(() => {
       playFeedback();
     }, 100);
-    
+
     // Activate the button (stays active until mouse leave)
     setIsActivated(true);
-    
+
     // If not currently pressed down, trigger click animation (removed)
-    
+
     onClick?.();
   };
 
@@ -212,7 +214,8 @@ const GameTextButton: React.FC<GameTextButtonProps> = ({
       return `game-menu-item menu-${hierarchy} group menu-button transition-colors duration-100`;
     }
     // Valorant style: REMOVE transition-colors and duration-100 from button
-    const baseClasses = "relative block w-full text-left cursor-pointer select-none font-semibold";
+    const baseClasses =
+      "relative block w-full text-left cursor-pointer select-none font-semibold";
     if (hierarchy === "quit") {
       return `${baseClasses} text-gray-500 tracking-wide relative group`;
     }
@@ -223,7 +226,8 @@ const GameTextButton: React.FC<GameTextButtonProps> = ({
    * Render animated text for the button, based on selected animation type
    */
   const renderAnimatedText = () => {
-    const currentText = isHovered && gameLabel !== hoverLabel ? hoverLabel : gameLabel;
+    const currentText =
+      isHovered && gameLabel !== hoverLabel ? hoverLabel : gameLabel;
     const shouldAnimate = gameLabel !== hoverLabel;
     if (animationType === "instant" || !shouldAnimate) {
       return <span className="block">{currentText}</span>;
@@ -236,9 +240,9 @@ const GameTextButton: React.FC<GameTextButtonProps> = ({
         <span className="block">
           {Array.from({ length: maxLength }).map((_, index) => (
             <MorphingChar
-              key={`morph-${fromText[index] ?? ''}-${toText[index] ?? ''}-${index}`}
-              fromChar={fromText[index] ?? ''}
-              toChar={toText[index] ?? ''}
+              key={`morph-${fromText[index] ?? ""}-${toText[index] ?? ""}-${index}`}
+              fromChar={fromText[index] ?? ""}
+              toChar={toText[index] ?? ""}
               index={index}
               isHovered={isHovered}
               animationSpeed={animationSpeed || 1.0}
@@ -254,7 +258,10 @@ const GameTextButton: React.FC<GameTextButtonProps> = ({
             key={currentText}
             initial={{ opacity: 0, clipPath: "inset(0 100% 0 0)" }}
             animate={{ opacity: 1, clipPath: "inset(0 0% 0 0)" }}
-            transition={{ duration: 0.16 / (animationSpeed || 1.0), ease: "easeOut" as const }}
+            transition={{
+              duration: 0.16 / (animationSpeed || 1.0),
+              ease: "easeOut" as const,
+            }}
             className="block"
           >
             {currentText}
@@ -284,67 +291,67 @@ const GameTextButton: React.FC<GameTextButtonProps> = ({
           initial: { opacity: 0 },
           animate: { opacity: 1 },
           exit: { opacity: 0 },
-          transition: { duration: 0.15 / baseSpeed, ease: "easeOut" as const }
+          transition: { duration: 0.15 / baseSpeed, ease: "easeOut" as const },
         };
-      
+
       case "valorant-precision":
         return {
-          initial: { 
-            opacity: 0, 
+          initial: {
+            opacity: 0,
             scaleX: 0.3,
-            transformOrigin: "left center"
+            transformOrigin: "left center",
           },
-          animate: { 
-            opacity: 1, 
+          animate: {
+            opacity: 1,
             scaleX: 1,
-            transformOrigin: "left center"
+            transformOrigin: "left center",
           },
-          exit: { 
-            opacity: 0, 
+          exit: {
+            opacity: 0,
             scaleX: 0.3,
-            transformOrigin: "left center"
+            transformOrigin: "left center",
           },
-          transition: { 
-            duration: 0.18 / baseSpeed, 
-            ease: "easeInOut" as const
-          }
+          transition: {
+            duration: 0.18 / baseSpeed,
+            ease: "easeInOut" as const,
+          },
         };
-      
+
       case "tactical-reveal":
         return {
-          initial: { 
-            opacity: 0, 
-            clipPath: "inset(0 100% 0 0)"
+          initial: {
+            opacity: 0,
+            clipPath: "inset(0 100% 0 0)",
           },
-          animate: { 
-            opacity: 1, 
-            clipPath: "inset(0 0% 0 0)"
+          animate: {
+            opacity: 1,
+            clipPath: "inset(0 0% 0 0)",
           },
-          exit: { 
-            opacity: 0, 
-            clipPath: "inset(0 100% 0 0)"
+          exit: {
+            opacity: 0,
+            clipPath: "inset(0 100% 0 0)",
           },
-          transition: { 
-            duration: 0.16 / baseSpeed, 
-            ease: "easeOut" as const
-          }
+          transition: {
+            duration: 0.16 / baseSpeed,
+            ease: "easeOut" as const,
+          },
         };
       case "tactical-instant":
         return {
-          initial: { 
-            opacity: 0, 
-            clipPath: "inset(0 100% 0 0)"
+          initial: {
+            opacity: 0,
+            clipPath: "inset(0 100% 0 0)",
           },
-          animate: { 
-            opacity: 1, 
-            clipPath: "inset(0 0% 0 0)"
+          animate: {
+            opacity: 1,
+            clipPath: "inset(0 0% 0 0)",
           },
-          transition: { 
-            duration: 0.16 / baseSpeed, 
-            ease: "easeOut" as const
-          }
+          transition: {
+            duration: 0.16 / baseSpeed,
+            ease: "easeOut" as const,
+          },
         };
-      
+
       default:
         return null;
     }
@@ -353,28 +360,28 @@ const GameTextButton: React.FC<GameTextButtonProps> = ({
   const getAdvancedAnimations = (baseSpeed: number) => {
     if (animationType === "breach-entry") {
       return {
-        initial: { 
-          opacity: 0, 
-          x: -20, 
+        initial: {
+          opacity: 0,
+          x: -20,
           scaleX: 0.8,
-          transformOrigin: "left center"
+          transformOrigin: "left center",
         },
-        animate: { 
-          opacity: 1, 
-          x: 0, 
+        animate: {
+          opacity: 1,
+          x: 0,
           scaleX: 1,
-          transformOrigin: "left center"
+          transformOrigin: "left center",
         },
-        exit: { 
-          opacity: 0, 
-          x: -15, 
+        exit: {
+          opacity: 0,
+          x: -15,
           scaleX: 0.9,
-          transformOrigin: "left center"
+          transformOrigin: "left center",
         },
-        transition: { 
-          duration: 0.14 / baseSpeed, 
-          ease: "easeOut" as const
-        }
+        transition: {
+          duration: 0.14 / baseSpeed,
+          ease: "easeOut" as const,
+        },
       };
     }
 
@@ -385,37 +392,39 @@ const GameTextButton: React.FC<GameTextButtonProps> = ({
     if (animationType === "precision-type") {
       return {
         initial: { opacity: 0 },
-        animate: { 
+        animate: {
           opacity: 1,
           transition: {
             staggerChildren: 0.03 / baseSpeed,
-            delayChildren: 0.02 / baseSpeed
-          }
+            delayChildren: 0.02 / baseSpeed,
+          },
         },
-        exit: { 
+        exit: {
           opacity: 0,
           transition: {
             staggerChildren: 0.02 / baseSpeed,
-            staggerDirection: -1
-          }
-        }
+            staggerDirection: -1,
+          },
+        },
       };
     }
-    
+
     return {
       initial: { opacity: 0 },
       animate: { opacity: 1 },
       exit: { opacity: 0 },
-      transition: { duration: 0.15 / baseSpeed }
+      transition: { duration: 0.15 / baseSpeed },
     };
   };
 
   const getAnimationProps = () => {
     const baseSpeed = animationSpeed || 1.0;
-    
-    return getBasicAnimations(baseSpeed) || 
-           getAdvancedAnimations(baseSpeed) || 
-           getComplexAnimations(baseSpeed);
+
+    return (
+      getBasicAnimations(baseSpeed) ||
+      getAdvancedAnimations(baseSpeed) ||
+      getComplexAnimations(baseSpeed)
+    );
   };
 
   // Removed unused animatedButtonColor
@@ -430,9 +439,10 @@ const GameTextButton: React.FC<GameTextButtonProps> = ({
       onClick={handleClick}
       style={{
         // Add theme-aware text glow for Valorant primary buttons on hover
-        textShadow: variant === "valorant" && hierarchy === "primary" && isHovered 
-          ? '0 0 8px var(--theme-menu-glow)' 
-          : undefined
+        textShadow:
+          variant === "valorant" && hierarchy === "primary" && isHovered
+            ? "0 0 8px var(--theme-menu-glow)"
+            : undefined,
       }}
       // For Overwatch, use group for hover/active effects
     >
@@ -451,8 +461,15 @@ const GameTextButton: React.FC<GameTextButtonProps> = ({
           <motion.span
             className="force-no-color-transition mr-1"
             animate={{
-              rotate: isHovered || isPressedDown || isActivated ? [0, -12, 12, -8, 8, 0] : 0,
-              color: (variant === "valorant" && (isHovered || isPressedDown || isActivated)) ? 'var(--theme-menu-hover)' : undefined
+              rotate:
+                isHovered || isPressedDown || isActivated
+                  ? [0, -12, 12, -8, 8, 0]
+                  : 0,
+              color:
+                variant === "valorant" &&
+                (isHovered || isPressedDown || isActivated)
+                  ? "var(--theme-menu-hover)"
+                  : undefined,
             }}
             transition={{ duration: 0.5, ease: "easeInOut" }}
           >
@@ -461,7 +478,11 @@ const GameTextButton: React.FC<GameTextButtonProps> = ({
           <span
             className="force-no-color-transition"
             style={{
-              color: (variant === "valorant" && (isHovered || isPressedDown || isActivated)) ? 'var(--theme-menu-hover)' : undefined
+              color:
+                variant === "valorant" &&
+                (isHovered || isPressedDown || isActivated)
+                  ? "var(--theme-menu-hover)"
+                  : undefined,
             }}
           >
             {renderAnimatedText()}
@@ -482,8 +503,15 @@ const GameTextButton: React.FC<GameTextButtonProps> = ({
             <motion.span
               className="transition-colors duration-150 force-no-color-transition mr-1"
               animate={{
-                scale: isHovered || isPressedDown || isActivated ? [1, 1.18, 0.92, 1.12, 1] : 1,
-                color: (variant === "valorant" && (isHovered || isPressedDown || isActivated)) ? "#ef4444" : "currentColor"
+                scale:
+                  isHovered || isPressedDown || isActivated
+                    ? [1, 1.18, 0.92, 1.12, 1]
+                    : 1,
+                color:
+                  variant === "valorant" &&
+                  (isHovered || isPressedDown || isActivated)
+                    ? "#ef4444"
+                    : "currentColor",
               }}
               transition={{ duration: 0.5, ease: "easeInOut" }}
             >
@@ -493,7 +521,11 @@ const GameTextButton: React.FC<GameTextButtonProps> = ({
           <span
             className="force-no-color-transition"
             style={{
-              color: (variant === "valorant" && (isHovered || isPressedDown || isActivated)) ? "#ef4444" : undefined
+              color:
+                variant === "valorant" &&
+                (isHovered || isPressedDown || isActivated)
+                  ? "#ef4444"
+                  : undefined,
             }}
           >
             {gameLabel}
@@ -516,12 +548,17 @@ const GameTextButton: React.FC<GameTextButtonProps> = ({
                 </>
               ) : (
                 // Valorant: wrap animated text in relative span for underline/fill
-                <motion.span 
+                <motion.span
                   className="relative inline-block align-bottom force-no-color-transition"
                   animate={{
-                    color: variant === "valorant" && (isPressedDown || isActivated) && (hierarchy === "primary" || hierarchy === "secondary" || hierarchy === "tertiary")
-                      ? "rgba(0, 0, 0, 0.9)"
-                      : "currentColor"
+                    color:
+                      variant === "valorant" &&
+                      (isPressedDown || isActivated) &&
+                      (hierarchy === "primary" ||
+                        hierarchy === "secondary" ||
+                        hierarchy === "tertiary")
+                        ? "rgba(0, 0, 0, 0.9)"
+                        : "currentColor",
                   }}
                   transition={{ color: { duration: 0.1, ease: "linear" } }}
                 >
@@ -530,36 +567,49 @@ const GameTextButton: React.FC<GameTextButtonProps> = ({
                   </span>
                   {/* Press fill for Valorant (text only, theme-aware) */}
                   <AnimatePresence>
-                    {((variant === "valorant" && (hierarchy === "primary" || hierarchy === "secondary" || hierarchy === "tertiary"))) && (isPressedDown || isActivated) && (
-                      <motion.div
-                        className="absolute left-0 bottom-0 w-full z-0 will-change-transform rounded-sm"
-                        style={{ 
-                          height: '100%', 
-                          pointerEvents: 'none', 
-                          background: 'var(--theme-menu-hover)' 
-                        }}
-                        initial={{ height: "2px", opacity: 1 }}
-                        animate={{ height: "100%", opacity: 1 }}
-                        exit={{ height: "2px", opacity: 0 }}
-                        transition={{ duration: 0.2, ease: "easeOut" }}
-                      />
-                    )}
+                    {variant === "valorant" &&
+                      (hierarchy === "primary" ||
+                        hierarchy === "secondary" ||
+                        hierarchy === "tertiary") &&
+                      (isPressedDown || isActivated) && (
+                        <motion.div
+                          className="absolute left-0 bottom-0 w-full z-0 will-change-transform rounded-sm"
+                          style={{
+                            height: "100%",
+                            pointerEvents: "none",
+                            background: "var(--theme-menu-hover)",
+                          }}
+                          initial={{ height: "2px", opacity: 1 }}
+                          animate={{ height: "100%", opacity: 1 }}
+                          exit={{ height: "2px", opacity: 0 }}
+                          transition={{ duration: 0.2, ease: "easeOut" }}
+                        />
+                      )}
                   </AnimatePresence>
                   {/* Hover underline for Valorant (text only, theme-aware) */}
                   <AnimatePresence>
-                    {variant === "valorant" && isHovered && (hierarchy === "primary" || hierarchy === "secondary" || hierarchy === "tertiary") && !isPressedDown && !isActivated && (
-                      <motion.div
-                        className="absolute left-0 bottom-0 h-0.5 will-change-transform rounded-sm"
-                        style={{ 
-                          pointerEvents: 'none', 
-                          background: 'var(--theme-menu-hover)' 
-                        }}
-                        initial={{ width: 0 }}
-                        animate={{ width: "100%" }}
-                        exit={{ width: 0 }}
-                        transition={{ duration: 0.15, ease: "easeOut" as const }}
-                      />
-                    )}
+                    {variant === "valorant" &&
+                      isHovered &&
+                      (hierarchy === "primary" ||
+                        hierarchy === "secondary" ||
+                        hierarchy === "tertiary") &&
+                      !isPressedDown &&
+                      !isActivated && (
+                        <motion.div
+                          className="absolute left-0 bottom-0 h-0.5 will-change-transform rounded-sm"
+                          style={{
+                            pointerEvents: "none",
+                            background: "var(--theme-menu-hover)",
+                          }}
+                          initial={{ width: 0 }}
+                          animate={{ width: "100%" }}
+                          exit={{ width: 0 }}
+                          transition={{
+                            duration: 0.15,
+                            ease: "easeOut" as const,
+                          }}
+                        />
+                      )}
                   </AnimatePresence>
                 </motion.span>
               )}
@@ -584,15 +634,19 @@ const ButtonDemoPage: React.FC = () => {
   }, [activeTheme]);
 
   // Split buttons into main and bottom groups
-  const mainButtons = demoButtons.filter(b => b.hierarchy !== "patchnotes" && b.hierarchy !== "quit");
-  const bottomButtons = demoButtons.filter(b => b.hierarchy === "patchnotes" || b.hierarchy === "quit");
+  const mainButtons = demoButtons.filter(
+    (b) => b.hierarchy !== "patchnotes" && b.hierarchy !== "quit",
+  );
+  const bottomButtons = demoButtons.filter(
+    (b) => b.hierarchy === "patchnotes" || b.hierarchy === "quit",
+  );
 
   return (
     <div className="min-h-screen bg-black text-white relative overflow-hidden">
       {/* Background effects */}
       <div className="fixed inset-0 bg-grid-pattern opacity-[0.02]" />
       <div className="fixed inset-0 bg-gradient-radial from-gray-900/20 via-black to-black" />
-      
+
       <div className="relative z-10 container mx-auto px-8 py-12">
         {/* TEMP: Theme Switcher */}
         <div className="flex justify-end mb-6">
@@ -623,7 +677,8 @@ const ButtonDemoPage: React.FC = () => {
             Gaming Text Buttons
           </h1>
           <p className="text-gray-400 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed">
-            Essential animations with enhanced Valorant quit button that turns red on hover and grows on press
+            Essential animations with enhanced Valorant quit button that turns
+            red on hover and grows on press
           </p>
         </motion.div>
 
@@ -653,14 +708,17 @@ const ButtonDemoPage: React.FC = () => {
                 </button>
               ))}
             </div>
-            {styleVariants.find(v => v.id === selectedVariant) && (
+            {styleVariants.find((v) => v.id === selectedVariant) && (
               <motion.p
                 key={selectedVariant}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 className="text-center text-gray-500 text-sm mt-4"
               >
-                {styleVariants.find(v => v.id === selectedVariant)?.description}
+                {
+                  styleVariants.find((v) => v.id === selectedVariant)
+                    ?.description
+                }
               </motion.p>
             )}
           </motion.div>
@@ -689,14 +747,17 @@ const ButtonDemoPage: React.FC = () => {
                 </button>
               ))}
             </div>
-            {animationTypes.find(a => a.id === selectedAnimation) && (
+            {animationTypes.find((a) => a.id === selectedAnimation) && (
               <motion.p
                 key={selectedAnimation}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 className="text-center text-gray-500 text-sm mt-3"
               >
-                {animationTypes.find(a => a.id === selectedAnimation)?.description}
+                {
+                  animationTypes.find((a) => a.id === selectedAnimation)
+                    ?.description
+                }
               </motion.p>
             )}
           </motion.div>
@@ -719,13 +780,17 @@ const ButtonDemoPage: React.FC = () => {
                   max="2"
                   step="0.1"
                   value={animationSpeed}
-                  onChange={(e) => setAnimationSpeed(parseFloat(e.target.value))}
+                  onChange={(e) =>
+                    setAnimationSpeed(parseFloat(e.target.value))
+                  }
                   className="flex-1 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
                 />
                 <span className="text-sm text-gray-400 w-12">2.0x</span>
               </div>
               <div className="text-center mt-2">
-                <span className="text-sm text-gray-300">{animationSpeed.toFixed(1)}x speed</span>
+                <span className="text-sm text-gray-300">
+                  {animationSpeed.toFixed(1)}x speed
+                </span>
               </div>
             </div>
           </motion.div>
@@ -742,7 +807,7 @@ const ButtonDemoPage: React.FC = () => {
             <h3 className="text-xl font-semibold mb-8 text-center text-gray-300">
               Interactive Demo
             </h3>
-            
+
             {/* Button List - Vertical like game menus */}
             <div className="space-y-2">
               {/* Main buttons */}
@@ -783,7 +848,9 @@ const ButtonDemoPage: React.FC = () => {
                       variant={selectedVariant}
                       animationType={selectedAnimation}
                       animationSpeed={animationSpeed}
-                      onClick={() => console.log(`Clicked: ${button.hoverLabel}`)}
+                      onClick={() =>
+                        console.log(`Clicked: ${button.hoverLabel}`)
+                      }
                     />
                   </motion.div>
                 ))}

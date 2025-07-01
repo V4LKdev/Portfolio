@@ -19,13 +19,13 @@
     "noImplicitReturns": true,
     "noImplicitOverride": true,
     "noUncheckedIndexedAccess": true,
-    
+
     /* Additional Checks */
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "exactOptionalPropertyTypes": true,
     "noFallthroughCasesInSwitch": true,
-    
+
     /* Build Performance */
     "skipLibCheck": true,
     "allowJs": true

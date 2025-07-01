@@ -20,49 +20,65 @@ interface UseSoundEffectsReturn {
   isEnabled: boolean;
 }
 
-export function useSoundEffects(config: SoundEffectsConfig = {}): UseSoundEffectsReturn {
+export function useSoundEffects(
+  config: SoundEffectsConfig = {},
+): UseSoundEffectsReturn {
   const {
     enabled = true, // Enable by default, but respect global mute
   } = config;
 
   // Get global mute state from video controls
   const { isMuted } = useVideoControls();
-  
+
   // Sound effects are enabled when both local enabled is true AND global audio is not muted
   const effectivelyEnabled = enabled && !isMuted;
 
   const audioContextRef = useRef<AudioContext | null>(null);
 
   const getAudioContext = useCallback(() => {
-    audioContextRef.current ??= new (window.AudioContext || (window as any).webkitAudioContext)();
+    audioContextRef.current ??= new (window.AudioContext ||
+      (window as unknown as { webkitAudioContext: typeof AudioContext })
+        .webkitAudioContext)();
     return audioContextRef.current;
   }, []);
 
-  const playTone = useCallback((frequency: number, duration: number, volume: number = 0.1) => {
-    if (!effectivelyEnabled) return;
+  const playTone = useCallback(
+    (frequency: number, duration: number, volume: number = 0.1) => {
+      if (!effectivelyEnabled) return;
 
-    try {
-      const audioContext = getAudioContext();
-      const oscillator = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
+      try {
+        const audioContext = getAudioContext();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
 
-      oscillator.connect(gainNode);
-      gainNode.connect(audioContext.destination);
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
 
-      oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
-      oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(
+          frequency,
+          audioContext.currentTime,
+        );
+        oscillator.type = "sine";
 
-      gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-      gainNode.gain.linearRampToValueAtTime(volume, audioContext.currentTime + 0.01);
-      gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + duration);
+        gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+        gainNode.gain.linearRampToValueAtTime(
+          volume,
+          audioContext.currentTime + 0.01,
+        );
+        gainNode.gain.exponentialRampToValueAtTime(
+          0.001,
+          audioContext.currentTime + duration,
+        );
 
-      oscillator.start(audioContext.currentTime);
-      oscillator.stop(audioContext.currentTime + duration);
-    } catch (error) {
-      // Audio context may not be available in some browsers
-      console.warn('Audio context not available:', error);
-    }
-  }, [effectivelyEnabled, getAudioContext]);
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + duration);
+      } catch (error) {
+        // Audio context may not be available in some browsers
+        console.warn("Audio context not available:", error);
+      }
+    },
+    [effectivelyEnabled, getAudioContext],
+  );
 
   const playHover = useCallback(() => {
     playTone(800, 0.1, 0.05); // Subtle high-pitched hover
