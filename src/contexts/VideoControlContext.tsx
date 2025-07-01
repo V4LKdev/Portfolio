@@ -19,7 +19,10 @@ interface VideoActions {
   setManualPause: (paused: boolean) => void;
 }
 
-export interface VideoControlContextType extends VideoState, VideoActions {}
+// Add setMuted to context type for onboarding overlay direct control
+export interface VideoControlContextType extends VideoState, VideoActions {
+  setMuted: (muted: boolean) => void;
+}
 
 export const VideoControlContext =
   createContext<VideoControlContextType | null>(null);

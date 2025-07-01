@@ -73,7 +73,7 @@ export const VideoPreferences = {
   // Get video mute preference
   getMuted: (): boolean => {
     const saved = getCookie("video_muted");
-    return saved !== null ? saved === "true" : true; // Default to muted
+    return saved !== null ? saved === "true" : false; // Default to unmuted (video ON)
   },
 
   // Save video pause preference
@@ -84,5 +84,33 @@ export const VideoPreferences = {
   getPaused: (): boolean => {
     const saved = getCookie("video_paused");
     return saved !== null ? saved === "true" : false; // Default to playing
+  },
+};
+
+/**
+ * Sound preferences utilities
+ */
+export const SoundPreferences = {
+  // Save sound enabled preference
+  setEnabled: (isEnabled: boolean) => setCookie("sound_enabled", isEnabled.toString()),
+
+  // Get sound enabled preference
+  getEnabled: (): boolean => {
+    const saved = getCookie("sound_enabled");
+    return saved !== null ? saved === "true" : false; // Default to sound OFF
+  },
+};
+
+/**
+ * Onboarding preferences utilities
+ */
+export const OnboardingPreferences = {
+  // Save onboarding completion status
+  setCompleted: (isCompleted: boolean) => setCookie("onboarding_completed", isCompleted.toString()),
+
+  // Get onboarding completion status
+  getCompleted: (): boolean => {
+    const saved = getCookie("onboarding_completed");
+    return saved !== null ? saved === "true" : false; // Default to not completed
   },
 };

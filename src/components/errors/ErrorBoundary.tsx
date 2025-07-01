@@ -13,20 +13,25 @@ interface Props {
 
 interface State {
   hasError: boolean;
+  error?: Error | undefined;
+  errorInfo?: ErrorInfo | undefined;
 }
 
 class ErrorBoundary extends Component<Props, State> {
-  public state: State = {
+  override state: State = {
     hasError: false,
+    error: undefined,
+    errorInfo: undefined,
   };
 
-  public static getDerivedStateFromError(_: Error): State {
+  public static getDerivedStateFromError(error: Error): State {
     // Update state so the next render will show the fallback UI.
-    return { hasError: true };
+    return { hasError: true, error };
   }
 
   public override componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    // You can also log the error to an error reporting service
+    // Log the error and save it to state for display
+    this.setState({ error, errorInfo });
     console.error("Uncaught error:", error, errorInfo);
   }
 

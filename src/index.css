@@ -514,6 +514,13 @@
         0 0 30px var(--theme-menu-glow);
     }
   }
+
+  @keyframes shape-fade {
+    0% { opacity: 0; transform: scale(0.7); }
+    10% { opacity: 0.7; transform: scale(1.05); }
+    90% { opacity: 0.7; transform: scale(1.05); }
+    100% { opacity: 0; transform: scale(0.7); }
+  }
 }
 
 @layer utilities {
@@ -621,5 +628,70 @@
   .force-no-color-transition,
   .force-no-color-transition * {
     transition: none !important;
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes pulse-slow {
+    0%,
+    100% {
+      opacity: 0.3;
+    }
+    50% {
+      opacity: 0.4;
+    }
+  }
+
+  /* Animations for moving white geometric elements */
+  @keyframes float-triangle-1 {
+    0% { transform: translate(0, 0) rotate(45deg); }
+    100% { transform: translate(400px, 300px) rotate(225deg); }
+  }
+
+  @keyframes float-triangle-2 {
+    0% { transform: translate(0, 0) rotate(12deg); }
+    100% { transform: translate(350px, 250px) rotate(192deg); }
+  }
+
+  @keyframes float-triangle-3 {
+    0% { transform: translate(0, 0) rotate(-45deg); }
+    100% { transform: translate(420px, 320px) rotate(255deg); }
+  }
+
+  @keyframes float-circle-1 {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(300px, 350px); }
+  }
+
+  @keyframes float-circle-2 {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(380px, 400px); }
+  }
+
+  @keyframes float-line-1 {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    100% { transform: translate(420px, 320px) rotate(30deg); }
+  }
+
+  @keyframes float-line-2 {
+    0% { transform: translate(0, 0) rotate(45deg); }
+    100% { transform: translate(350px, 250px) rotate(180deg); }
+  }
+
+  @keyframes float-hex-1 {
+    0% { transform: translate(0, 0) rotate(12deg); }
+    100% { transform: translate(400px, 300px) rotate(252deg); }
+  }
+
+  @keyframes float-hex-2 {
+    0% { transform: translate(0, 0) rotate(45deg); }
+    100% { transform: translate(380px, 400px) rotate(225deg); }
   }
 }

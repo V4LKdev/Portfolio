@@ -13,8 +13,11 @@ import { Toaster } from "@/components/ui/feedback";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Portfolio from "@/components/core/Portfolio";
+import LoginOnboardingOverlay from "@/components/ui/LoginOnboardingOverlay";
+import { availableThemes } from "@/config/demoThemes";
 import NotFound from "@/components/errors/NotFound";
 import ErrorBoundary from "@/components/errors/ErrorBoundary";
+import AppProviders from "@/components/core/AppProviders";
 
 // Initialize React Query client for server state management
 const queryClient = new QueryClient();
@@ -27,14 +30,18 @@ const queryClient = new QueryClient();
 const App = () => (
   <ErrorBoundary>
     <QueryClientProvider client={queryClient}>
-      <Toaster />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Portfolio />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+      <AppProviders>
+        <Toaster />
+        {/* Always show the onboarding overlay visually above everything */}
+        <LoginOnboardingOverlay availableThemes={availableThemes} />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Portfolio />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </AppProviders>
     </QueryClientProvider>
   </ErrorBoundary>
 );

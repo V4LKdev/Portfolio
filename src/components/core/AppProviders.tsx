@@ -77,6 +77,12 @@ export function AppProviders({ children }: AppProvidersProps) {
     VideoPreferences.setPaused(paused);
   }, []);
 
+  // Add setMuted for direct mute control (for onboarding overlay)
+  const setMuted = React.useCallback((muted: boolean) => {
+    setIsMuted(muted);
+    VideoPreferences.setMuted(muted);
+  }, []);
+
   // Media Session Integration
   useEffect(() => {
     if ("mediaSession" in navigator) {
@@ -170,6 +176,7 @@ export function AppProviders({ children }: AppProvidersProps) {
       togglePlayback,
       toggleMute,
       setManualPause,
+      setMuted,
     }),
     [
       isPaused,
@@ -178,6 +185,7 @@ export function AppProviders({ children }: AppProvidersProps) {
       togglePlayback,
       toggleMute,
       setManualPause,
+      setMuted,
     ],
   );
   // --- Navigation State ---

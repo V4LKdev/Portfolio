@@ -11,6 +11,7 @@ import SettingsPanel from "../panels/SettingsPanel";
 import { SectionProps } from "../../types/SharedProps";
 import { useVideoControls } from "../../hooks/useVideoControls";
 import { videoConfig } from "../../content";
+import { useLoginOnboarding } from "../../hooks/useLoginOnboarding";
 
 interface LayoutProps extends SectionProps {
   /** Child content to render within the layout */
@@ -39,6 +40,7 @@ const Layout: React.FC<LayoutProps> = ({
   isInnerPage = false,
 }) => {
   const { isPaused, isMuted } = useVideoControls();
+  const { showOnboarding } = useLoginOnboarding();
   return (
     <div
       className={`h-screen bg-black text-foreground overflow-hidden ${className ?? ""}`}
@@ -50,8 +52,8 @@ const Layout: React.FC<LayoutProps> = ({
           <LocalVideoBackground
             videoSrc={videoConfig.localVideoSrc}
             posterSrc={videoConfig.posterSrc}
-            isPaused={isPaused}
-            isMuted={isMuted}
+            isPaused={showOnboarding ? true : isPaused}
+            isMuted={showOnboarding ? true : isMuted}
             className="video-responsive"
           />
           <div className="absolute inset-0 video-overlay" />
