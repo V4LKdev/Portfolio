@@ -7,7 +7,7 @@
  */
 
 import React, { useState, useCallback, useEffect, useMemo } from "react";
-import { VideoPreferences } from "../../lib/cookies";
+import { UserPreferences } from "../../lib/cookies";
 import {
   VideoControlContext,
   type VideoControlContextType,
@@ -49,32 +49,42 @@ interface AppProvidersProps {
  */
 export function AppProviders({ children }: AppProvidersProps) {
   // --- Video State ---
+  // Initialize state from user preferences using the new comprehensive system
   const [isPaused, setIsPaused] = useState(() => {
-    const initial = VideoPreferences.getPaused();
-    return initial;
+    // Note: isPaused is the inverse of autoplay enabled
+    const autoplayEnabled = UserPreferences.getVideoAutoplayEnabled();
+    return !autoplayEnabled;
   });
-  const [isMuted, setIsMuted] = useState(() => VideoPreferences.getMuted());
+
+  const [isMuted, setIsMuted] = useState(() =>
+    UserPreferences.getGlobalAudioMuted(),
+  );
+
   const [isManuallyPaused, setIsManuallyPaused] = useState(() => {
-    const initial = VideoPreferences.getPaused();
-    return initial;
+    // Note: isManuallyPaused is the inverse of autoplay enabled
+    const autoplayEnabled = UserPreferences.getVideoAutoplayEnabled();
+    return !autoplayEnabled;
   });
+
   const togglePlayback = useCallback(() => {
     const newPausedState = !isPaused;
     setIsPaused(newPausedState);
     setIsManuallyPaused(newPausedState);
-    VideoPreferences.setPaused(newPausedState);
+    // Save as autoplay preference (inverse of paused state)
+    UserPreferences.setVideoAutoplayEnabled(!newPausedState);
   }, [isPaused]);
 
   const toggleMute = useCallback(() => {
     const newMutedState = !isMuted;
     setIsMuted(newMutedState);
-    VideoPreferences.setMuted(newMutedState);
+    UserPreferences.setGlobalAudioMuted(newMutedState);
   }, [isMuted]);
 
   const setManualPause = useCallback((paused: boolean) => {
     setIsPaused(paused);
     setIsManuallyPaused(paused);
-    VideoPreferences.setPaused(paused);
+    // Save as autoplay preference (inverse of paused state)
+    UserPreferences.setVideoAutoplayEnabled(!paused);
   }, []);
 
   // Media Session Integration
@@ -142,11 +152,15 @@ export function AppProviders({ children }: AppProvidersProps) {
       video.removeEventListener("pause", handlePause);
       video.removeEventListener("volumechange", handleVolumeChange);
     };
-  }, [isPaused, isMuted]); // Tab Visibility Resume Logic
+  }, [isPaused, isMuted]);
+
+  // Tab Visibility Resume Logic
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (!document.hidden) {
-        const shouldBePaused = VideoPreferences.getPaused();
+        // Note: shouldBePaused is the inverse of autoplay enabled
+        const autoplayEnabled = UserPreferences.getVideoAutoplayEnabled();
+        const shouldBePaused = !autoplayEnabled;
         setIsPaused(shouldBePaused);
         setIsManuallyPaused(shouldBePaused);
         if (!shouldBePaused) {

@@ -8,6 +8,7 @@ This file tracks planned features, improvements, and technical debt for the Nico
 
 - [x] Theme system in place
 - [x] **Enhanced Navigation (July 2025)**: Advanced text animations (letter-morph, instant reveal), sound integration, Patchnotes button
+- [x] **Comprehensive User Preferences System (July 2025)**: Type-safe, extensible preference management with secure cookie persistence
 - [ ] Improve UI animations (settings, menu, buttons, subpage transitions)
 
 ### Project & Content Features
@@ -25,6 +26,8 @@ This file tracks planned features, improvements, and technical debt for the Nico
 - [x] Move fallback image warning and similar notifications to center bottom
 - [ ] Add more sound effects and audio feedback throughout the UI
 - [ ] Implement different animation themes (Overwatch-style, Valorant-style variations)
+- [ ] Integrate volume controls for sound effects using new preferences system
+- [ ] Add onboarding tutorial system using `showOnboarding` preference
 
 ### Performance & Optimization
 
@@ -37,7 +40,7 @@ This file tracks planned features, improvements, and technical debt for the Nico
 
 - [ ] Improve keyboard navigation and focus management
 - [ ] Enhance screen reader support and ARIA labels
-- [ ] Add reduced motion preferences
+- [x] **Reduced Motion Support (July 2025)**: Added `reduceMotionEnabled` preference for accessibility
 - [ ] Ensure mobile/touch-friendliness and legacy browser support
 
 ### Content Management & Analytics
@@ -55,6 +58,7 @@ This file tracks planned features, improvements, and technical debt for the Nico
 - [x] Standardize theming system across all components
 - [x] Remove all hardcoded colors and fonts
 - [x] Improve component documentation and single responsibility
+- [x] **Comprehensive Preferences System (July 2025)**: Replaced legacy VideoPreferences with extensible UserPreferences API
 - [ ] Improve documentation (Storybook, API docs, deployment guide)
 
 ---
@@ -85,6 +89,7 @@ This file tracks planned features, improvements, and technical debt for the Nico
 - **Theme Consistency (June 2025)**: Standardized theming, removed hardcoded styling
 - **UI Polish (June 2025)**: Improved network panel, refined gradients and spacing
 - **Enhanced Navigation (July 2025)**: Letter-morphing text animations, instant reveal effects, integrated sound system, Patchnotes button with icon animations
+- **Comprehensive User Preferences System (July 2025)**: Type-safe, extensible preference management with secure cookie persistence, replacing legacy VideoPreferences with modern UserPreferences API
 
 ---
 

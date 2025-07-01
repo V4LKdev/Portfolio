@@ -133,11 +133,11 @@ export const THEMES: Record<string, ThemeConfig> = {
       sidebarRing: "45 85% 65%",
     },
     gameStyle: {
-      menuTextColor: withOpacity(COLOR_PALETTE.amber[200], "90"),
+      menuTextColor: withOpacity(COLOR_PALETTE.amber[200], 90),
       menuHoverColor: COLOR_PALETTE.amber[100],
-      menuGlowColor: withOpacity(COLOR_PALETTE.amber[400], "60"),
+      menuGlowColor: withOpacity(COLOR_PALETTE.amber[400], 60),
       titleColor: COLOR_PALETTE.amber[100],
-      titleGlowColor: withOpacity(COLOR_PALETTE.amber[400], "50"),
+      titleGlowColor: withOpacity(COLOR_PALETTE.amber[400], 50),
       buildIdColor: COLOR_PALETTE.gray[400],
 
       // Special button colors
@@ -146,7 +146,7 @@ export const THEMES: Record<string, ThemeConfig> = {
       patchnotesColor: COLOR_PALETTE.gray[400],
       patchnotesHoverColor: COLOR_PALETTE.amber[400],
 
-      atmosphericGlow: withOpacity(COLOR_PALETTE.amber[400], "10"),
+      atmosphericGlow: withOpacity(COLOR_PALETTE.amber[400], 10),
       videoOverlay:
         "linear-gradient(45deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.4) 100%)",
     },
@@ -390,29 +390,64 @@ export function applyTheme(themeId: string): void {
   // Update data attribute for theme-specific styles
   root.setAttribute("data-theme", themeId);
 
-  // Store theme preference in cookie (365 days)
-  document.cookie = `portfolio-theme=${themeId};expires=${new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toUTCString()};path=/;SameSite=Lax`;
+  // Store theme preference using the new UserPreferences system
+  // Import UserPreferences dynamically to avoid circular dependencies
+  if (typeof window !== "undefined") {
+    // Use a small delay to ensure the cookies module is fully loaded
+    setTimeout(() => {
+      try {
+        // Dynamic import to avoid potential circular dependency issues
+        import("./cookies").then(({ UserPreferences }) => {
+          UserPreferences.setSelectedTheme(themeId);
+        });
+      } catch (error) {
+        console.warn("Failed to save theme preference:", error);
+        // Fallback to direct cookie setting (legacy approach)
+        document.cookie = `portfolio-theme=${themeId};expires=${new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toUTCString()};path=/;SameSite=Lax`;
+      }
+    }, 0);
+  }
 }
 
 /**
  * Get stored theme preference or default
+ * Now uses the new UserPreferences system for consistency
  */
 export function getStoredTheme(): string {
-  // Check cookie for theme preference
-  const nameEQ = "portfolio-theme=";
-  const cookies = document.cookie.split(";");
-
-  for (const cookie of cookies) {
-    let c = cookie;
-    while (c.startsWith(" ")) c = c.substring(1);
-    if (c.startsWith(nameEQ)) {
-      const value = c.substring(nameEQ.length);
-      // Validate that the theme exists
-      return THEMES[value] ? value : DEFAULT_THEME;
-    }
+  if (typeof window === "undefined") {
+    return DEFAULT_THEME;
   }
 
-  return DEFAULT_THEME;
+  try {
+    // Try to use the new UserPreferences system
+    // Use synchronous import to avoid async complications
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { UserPreferences } = require("./cookies");
+    const storedTheme = UserPreferences.getSelectedTheme();
+
+    // Validate that the theme exists
+    return THEMES[storedTheme] ? storedTheme : DEFAULT_THEME;
+  } catch (error) {
+    // Fallback to legacy cookie reading if UserPreferences is not available
+    console.warn(
+      "UserPreferences not available, falling back to legacy cookie reading:",
+      error,
+    );
+
+    const nameEQ = "portfolio-theme=";
+    const cookies = document.cookie.split(";");
+
+    for (const cookie of cookies) {
+      const c = cookie.trim();
+      if (c.startsWith(nameEQ)) {
+        const value = c.substring(nameEQ.length);
+        // Validate that the theme exists
+        return THEMES[value] ? value : DEFAULT_THEME;
+      }
+    }
+
+    return DEFAULT_THEME;
+  }
 }
 
 /**

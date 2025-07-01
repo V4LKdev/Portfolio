@@ -348,6 +348,36 @@ The theme system (`src/lib/themes.ts`) defines colors for each theme, and the `a
 
 ## 📄 Content Management
 
+### User Preferences System
+
+The portfolio now includes a comprehensive user preferences management system in `src/lib/cookies.ts` that provides:
+
+- **Type-Safe Preferences**: All preferences are defined with TypeScript interfaces
+- **Extensible Architecture**: Easy to add new preferences without breaking existing code
+- **Secure Cookie Management**: Proper security flags with URL encoding
+- **Single Source of Truth**: Centralized API accessible throughout the application
+
+#### Current Preferences:
+- **Video & Media**: `videoAutoplayEnabled`, `globalAudioMuted`
+- **Audio & Sound**: `soundEffectVolume`, `backgroundMusicVolume`, `backgroundMusicEnabled`
+- **UI & UX**: `selectedTheme`, `showOnboarding`
+- **Accessibility**: `reduceMotionEnabled`
+
+#### Usage Example:
+```typescript
+import { UserPreferences } from '@/lib/cookies';
+
+// Get preferences with automatic type safety and defaults
+const isAutoplayEnabled = UserPreferences.getVideoAutoplayEnabled();
+const currentTheme = UserPreferences.getSelectedTheme();
+
+// Set preferences with validation and persistence
+UserPreferences.setGlobalAudioMuted(true);
+UserPreferences.setSelectedTheme('cyberpunk');
+```
+
+See `PREFERENCES_SYSTEM.md` for complete documentation.
+
 ### Adding Projects
 
 Edit `src/content/projects.ts`:

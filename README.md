@@ -9,6 +9,7 @@ A modern, game-inspired portfolio website showcasing professional work and skill
 - **Theme Integration**: Comprehensive theming system with semantic color variables for all UI elements
 - **Local Video Background**: Optimized HTML5 video with cookie-based preferences
 - **Integrated Sound Effects**: Professional UI sounds with global mute integration
+- **Comprehensive User Preferences**: Type-safe preference management system for video, audio, theme, and accessibility settings
 - **Real-Time Network Stats**: Live HTTP latency and connection monitoring (desktop)
 - **Dynamic Themes**: Customizable color schemes with automatic CSS variable generation
 - **Project Showcase**: Detailed project presentations with filtering and categorization
