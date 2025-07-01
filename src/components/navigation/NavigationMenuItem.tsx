@@ -86,13 +86,17 @@ const MorphingChar: React.FC<MorphingCharProps> = ({
 
 /**
  * Gets appropriate spacing classes based on menu item hierarchy
+ * Uses viewport-aware dynamic spacing that adapts to available screen real estate:
+ * - Automatically scales with screen height and resolution
+ * - Ensures content fits on 1080p while utilizing space on 1440p+
+ * - CSS clamp() provides fluid scaling between min/max bounds
  */
 const getButtonSpacing = (hierarchy: string): string => {
-  if (hierarchy === "primary") return "mb-8 md:mb-10"; // Increased spacing after primary
-  if (hierarchy === "patchnotes") return "mt-6 md:mt-8 mb-2"; // More space before patchnotes
-  if (hierarchy === "quit") return "mb-2"; // Small space for quit
-  if (hierarchy === "secondary") return "mb-5 md:mb-6"; // More space between secondary items
-  return "mb-4 md:mb-5"; // More space for tertiary
+  if (hierarchy === "primary") return "mb-[clamp(2rem,4vh,5rem)]"; // Primary section: 32px-80px based on viewport
+  if (hierarchy === "patchnotes") return "mt-[clamp(2rem,4vh,5rem)] mb-[clamp(0.5rem,1vh,1rem)]"; // Large space before, small after
+  if (hierarchy === "quit") return "mb-[clamp(0.5rem,1vh,1rem)]"; // Small consistent space
+  if (hierarchy === "secondary") return "mb-[clamp(1.5rem,3vh,3rem)]"; // Secondary: 24px-48px
+  return "mb-[clamp(1.25rem,2.5vh,2.5rem)]"; // Tertiary: 20px-40px
 };
 
 /**

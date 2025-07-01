@@ -300,6 +300,29 @@ const { playHover, playClick } = useSoundEffects();
 // Will not play if video is muted via global toggle
 ```
 
+#### Theme Integration
+
+The navigation system features comprehensive theme integration with dedicated color variables:
+
+```tsx
+// Theme-aware special buttons
+// Quit button: always uses red for universal danger indication
+// Patchnotes button: uses theme's accent color for consistency
+
+// Themes automatically provide CSS variables:
+--theme-quit-color        // Base state (gray/slate)
+--theme-quit-hover        // Hover state (red-500)
+--theme-patchnotes-color  // Base state (gray/slate)  
+--theme-patchnotes-hover  // Hover state (theme accent)
+
+// Components automatically use these variables:
+style={{
+  color: isHovered ? 'var(--theme-quit-hover)' : 'var(--theme-quit-color)'
+}}
+```
+
+The theme system (`src/lib/themes.ts`) defines colors for each theme, and the `applyTheme()` function automatically applies the appropriate CSS variables. This ensures consistent styling across all themes while maintaining semantic color choices (red for quit/danger, theme accent for patchnotes).
+
 #### Hierarchy Levels
 
 - **primary**: Largest buttons (Projects/Play)
