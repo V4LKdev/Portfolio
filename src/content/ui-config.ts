@@ -57,7 +57,7 @@ export const navigationItems = [
     section: "additional",
     gameLabel: "Extras",
     hoverLabel: "Hobbies",
-    hierarchy: "tertiary", // Smaller - less important
+    hierarchy: "secondary", // Medium - important sections (was tertiary)
   },
   {
     id: "patchnotes",

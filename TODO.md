@@ -6,7 +6,10 @@ This file tracks planned features, improvements, and technical debt for the Nico
 
 ### Theming & Visual Style
 
-- [x] Theme system in place
+- [x] **Modern Theme System (July 2025)**: Complete overhaul with 4 themes (Moonlight Night, Sunny Daytime, Crimson Fire, Forest Emerald)
+- [x] **Two-Color Swatch Design (July 2025)**: Primary (interactive) + Secondary (background) color approach for consistency  
+- [x] **Lazy Loading & FOUC Prevention (July 2025)**: Individual theme files with optimal loading and no flash of unstyled content
+- [x] **Designer-Friendly Architecture (July 2025)**: One file per theme, easy customization, type-safe theme definitions
 - [x] **Enhanced Navigation (July 2025)**: Advanced text animations (letter-morph, instant reveal), sound integration, Patchnotes button
 - [x] **Comprehensive User Preferences System (July 2025)**: Type-safe, extensible preference management with secure cookie persistence
 - [ ] Improve UI animations (settings, menu, buttons, subpage transitions)
@@ -53,12 +56,15 @@ This file tracks planned features, improvements, and technical debt for the Nico
 
 ### Technical Debt & Quality
 
+- [x] **Modern Theme System (July 2025)**: Complete overhaul with 4 themes (Moonlight, Daytime, Crimson, Forest)
+- [x] **Two-Color Swatch Design (July 2025)**: Primary (interactive) + Secondary (background) color approach
+- [x] **Lazy Loading & FOUC Prevention (July 2025)**: Individual theme files with optimal loading
+- [x] **Comprehensive Preferences System (July 2025)**: Replaced legacy logic with a type-safe, extensible UserPreferences API
 - [x] Split large components into smaller, reusable pieces
 - [x] Organize components into logical subfolders
 - [x] Standardize theming system across all components
 - [x] Remove all hardcoded colors and fonts
 - [x] Improve component documentation and single responsibility
-- [x] **Comprehensive Preferences System (July 2025)**: Replaced legacy VideoPreferences with extensible UserPreferences API
 - [ ] Improve documentation (Storybook, API docs, deployment guide)
 
 ---

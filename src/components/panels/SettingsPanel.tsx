@@ -7,8 +7,7 @@ import { useState, useEffect } from "react";
 import {
   Settings,
   ChevronLeft,
-  Sun,
-  Moon,
+  Palette,
   Play,
   Pause,
   Volume2,
@@ -24,16 +23,26 @@ interface SettingsPanelProps {
 /**
  * Professional settings panel component
  * Features:
- * - Theme toggle (warm/cool)
+ * - Theme cycling through available themes
  * - Video playback controls
  * - Audio controls
  * - Click-outside-to-close functionality
  * - Accessible keyboard navigation
  */
 const SettingsPanel: React.FC<SettingsPanelProps> = ({ className = "" }) => {
-  const { toggleTheme, isTheme } = useTheme();
+  const { cycleTheme, currentTheme } = useTheme();
   const { isPaused, isMuted, togglePlayback, toggleMute } = useVideoControls();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
+  // Get current theme display name
+  const getCurrentThemeName = (): string => {
+    return currentTheme?.name ?? 'Unknown';
+  };
+
+  // Get appropriate icon for theme button
+  const getThemeIcon = () => {
+    return <Palette className="w-5 h-5 settings-panel-icon" />;
+  };
 
   // --- Click Outside to Close ---
   useEffect(() => {
@@ -80,9 +89,9 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ className = "" }) => {
           data-settings-panel
           style={{
             backgroundColor:
-              "var(--theme-settings-panel-bg, rgba(0, 0, 0, 0.8))",
+              "var(--theme-settings-panel-bg, rgba(30, 41, 59, 0.9))",
             borderColor:
-              "var(--theme-settings-panel-border, rgb(251 191 36 / 0.3))",
+              "var(--theme-settings-panel-border, rgb(59 130 246))",
             borderWidth: "1px",
             borderStyle: "solid",
           }}
@@ -102,9 +111,9 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ className = "" }) => {
           data-settings-panel
           style={{
             backgroundColor:
-              "var(--theme-settings-panel-bg, rgba(0, 0, 0, 0.8))",
+              "var(--theme-settings-panel-bg, rgba(30, 41, 59, 0.9))",
             borderColor:
-              "var(--theme-settings-panel-border, rgb(251 191 36 / 0.3))",
+              "var(--theme-settings-panel-border, rgb(59 130 246))",
             borderWidth: "1px",
             borderStyle: "solid",
           }}
@@ -124,22 +133,18 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ className = "" }) => {
             className="w-px h-6"
             style={{
               backgroundColor:
-                "var(--theme-settings-panel-border, rgb(251 191 36 / 0.3))",
+                "var(--theme-settings-panel-border, rgb(59 130 246))",
             }}
           />
 
-          {/* Theme Toggle */}
+          {/* Theme Cycle Button */}
           <button
-            onClick={toggleTheme}
+            onClick={cycleTheme}
             className="p-3 transition-all duration-300 hover:scale-110"
-            aria-label={`Switch to ${isTheme("warm") ? "cool" : "warm"} theme`}
-            title={`Switch to ${isTheme("warm") ? "cool blue" : "warm amber"} theme`}
+            aria-label="Cycle to next theme"
+            title={`Current: ${getCurrentThemeName()}. Click to cycle themes.`}
           >
-            {isTheme("cool") ? (
-              <Moon className="w-5 h-5 settings-panel-icon" />
-            ) : (
-              <Sun className="w-5 h-5 settings-panel-icon" />
-            )}
+            {getThemeIcon()}
           </button>
 
           {/* Video Toggle */}

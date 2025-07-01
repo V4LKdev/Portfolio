@@ -1,18 +1,51 @@
-# User Preferences Management System
+# User Preferences & Theme Management System
 
 ## Overview
 
-The portfolio website now includes a comprehensive, type-safe, and extensible user preferences management system. This system provides a single source of truth for all user settings and preferences, with secure cookie persistence and an easy-to-use API.
+The portfolio website includes a comprehensive, type-safe, and extensible user preferences management system integrated with a modern theme system. This provides a single source of truth for all user settings and themes, with secure cookie persistence, lazy loading, and FOUC (Flash of Unstyled Content) prevention.
 
-## Features
+## Theme System Features
 
-- **Type-Safe Preferences**: All preferences are defined with TypeScript interfaces for compile-time safety
+- **Two-Color Swatch Design**: Each theme uses a primary color (accents/interactive) and secondary color (backgrounds/containers)
+- **Lazy Loading**: Individual theme files are loaded only when needed for optimal performance
+- **Designer-Friendly**: One file per theme for easy editing and customization
+- **FOUC Prevention**: Critical theme CSS is loaded immediately to prevent flash of unstyled content
+- **Type Safety**: Full TypeScript support with proper interfaces and validation
+
+## Available Themes
+
+### 🌙 Moonlight Night (Default)
+- **ID**: `moonlight`
+- **Primary**: Cool blue (`rgb(59 130 246)`) for interactive elements
+- **Secondary**: Deep slate (`rgb(30 41 59)`) for backgrounds
+- **Description**: Cool blue theme perfect for nighttime browsing
+
+### ☀️ Sunny Daytime
+- **ID**: `daytime`
+- **Primary**: Warm orange (`rgb(249 115 22)`) for interactive elements
+- **Secondary**: Clean whites (`rgb(248 250 252)`) for backgrounds
+- **Description**: Bright, energetic theme perfect for daytime productivity
+
+### 🔥 Crimson Fire
+- **ID**: `crimson`
+- **Primary**: Deep red (`rgb(220 38 38)`) for interactive elements
+- **Secondary**: Dark charcoal (`rgb(38 38 38)`) for backgrounds
+- **Description**: Bold, passionate red theme with intense energy
+
+### 🌲 Forest Emerald
+- **ID**: `forest`
+- **Primary**: Rich emerald (`rgb(34 197 94)`) for interactive elements
+- **Secondary**: Deep forest green (`rgb(22 78 99)`) for backgrounds
+- **Description**: Natural, calming green theme inspired by forest environments
+
+## User Preferences Features
+
+- **Type-Safe Preferences**: All preferences are defined with TypeScript interfaces
 - **Extensible Architecture**: Easy to add new preferences without breaking existing code
-- **Secure Cookie Management**: Proper security flags (SameSite, Secure) with URL encoding
-- **Default Value Management**: Explicit default values with automatic fallbacks
-- **Single Source of Truth**: Centralized API for getting/setting preferences across the entire application
-- **Validation & Error Handling**: Robust validation and error handling for malformed data
-- **Legacy Compatibility**: Backward compatibility layer for existing code during migration
+- **Secure Cookie Management**: Proper security flags with URL encoding
+- **Default Value Management**: Explicit defaults with automatic fallbacks
+- **Single Source of Truth**: Centralized API for all preference management
+- **Validation & Error Handling**: Robust validation for malformed data
 
 ## Current Preferences
 
@@ -26,11 +59,87 @@ The portfolio website now includes a comprehensive, type-safe, and extensible us
 - `backgroundMusicEnabled` (boolean) - Whether background music should play automatically
 
 ### UI & UX
-- `selectedTheme` (string) - Selected theme identifier (e.g., 'warm', 'cool', 'cyberpunk')
+- `selectedTheme` (string) - Selected theme identifier ('moonlight', 'daytime', 'crimson', 'forest')
 - `showOnboarding` (boolean) - Whether to show onboarding/tutorial on first visit
 
 ### Accessibility
 - `reduceMotionEnabled` (boolean) - Whether to reduce motion for accessibility
+
+## Theme System Usage
+
+### Using Themes in Components
+
+```typescript
+import { useTheme } from '@/hooks/useTheme';
+
+function MyComponent() {
+  const { currentTheme, setTheme, availableThemes, isLoading } = useTheme();
+
+  const handleThemeChange = async (themeId: string) => {
+    const success = await setTheme(themeId);
+    if (success) {
+      console.log('Theme changed successfully!');
+    }
+  };
+
+  return (
+    <div>
+      <h2>Current Theme: {currentTheme?.name}</h2>
+      {availableThemes.map(theme => (
+        <button 
+          key={theme.id}
+          onClick={() => handleThemeChange(theme.id)}
+          disabled={isLoading}
+        >
+          {theme.name}
+        </button>
+      ))}
+    </div>
+  );
+}
+```
+
+### Creating Custom Themes
+
+Create a new theme file in `src/themes/`:
+
+```typescript
+// src/themes/my-theme.ts
+import type { ColorTheme } from './types';
+
+export const myTheme: ColorTheme = {
+  id: 'my-theme',
+  name: 'My Custom Theme',
+  description: 'A beautiful custom theme',
+  
+  colors: {
+    primary: {
+      main: 'rgb(147 51 234)',      // Purple-600
+      light: 'rgb(168 85 247)',     // Purple-500
+      dark: 'rgb(126 34 206)',      // Purple-700
+      foreground: 'rgb(255 255 255)', // White
+    },
+    
+    secondary: {
+      main: 'rgb(55 65 81)',        // Gray-700
+      light: 'rgb(75 85 99)',       // Gray-600
+      dark: 'rgb(31 41 55)',        // Gray-800
+      foreground: 'rgb(243 244 246)', // Gray-100
+    },
+    
+    // ... rest of the theme configuration
+  },
+};
+```
+
+Then register it in `src/themes/registry.ts`:
+
+```typescript
+export const THEME_REGISTRY: Record<string, ThemeLoader> = {
+  // ... existing themes
+  'my-theme': () => import('./my-theme').then(m => m.default),
+};
+```
 
 ## Usage Examples
 

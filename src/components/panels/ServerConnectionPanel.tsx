@@ -141,8 +141,8 @@ function ServerConnectionPanel({ className = "" }: ServerConnectionPanelProps) {
     <div
       className={`backdrop-blur-sm rounded-md p-3 atmospheric-glow ${className}`}
       style={{
-        backgroundColor: "var(--theme-panel-bg, rgba(0, 0, 0, 0.8))",
-        borderColor: "var(--theme-panel-border, rgb(251 191 36 / 0.3))",
+        backgroundColor: "var(--theme-panel-bg, rgba(30, 41, 59, 0.9))",
+        borderColor: "var(--theme-panel-border, rgb(59 130 246))",
         borderWidth: "1px",
         borderStyle: "solid",
       }}

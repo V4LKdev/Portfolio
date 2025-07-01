@@ -41,6 +41,82 @@
       href="https://fonts.googleapis.com/css2?family=Expletus+Sans:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
+
+    <!-- FOUC Prevention Script - Critical Theme Loading -->
+    <script>
+      (function() {
+        // Get theme from cookies immediately
+        function getCookie(name) {
+          const nameEQ = name + "=";
+          const cookies = document.cookie.split(";");
+          for (let cookie of cookies) {
+            const c = cookie.trim();
+            if (c.indexOf(nameEQ) === 0) {
+              return c.substring(nameEQ.length);
+            }
+          }
+          return null;
+        }
+        
+        // Parse preferences and get theme
+        try {
+          const prefsStr = getCookie("portfolio-preferences");
+          if (prefsStr) {
+            const prefs = JSON.parse(decodeURIComponent(prefsStr));
+            const themeId = prefs.selectedTheme || "moonlight";
+            
+            // Set data attribute early
+            document.documentElement.setAttribute("data-theme", themeId);
+            
+            // Apply critical CSS variables for the theme
+            const themes = {
+              moonlight: {
+                primary: "rgb(59 130 246)",
+                background: "rgb(2 6 23)",
+                foreground: "rgb(248 250 252)"
+              },
+              daytime: {
+                primary: "rgb(249 115 22)",
+                background: "rgb(255 255 255)",
+                foreground: "rgb(15 23 42)"
+              },
+              crimson: {
+                primary: "rgb(220 38 38)",
+                background: "rgb(0 0 0)",
+                foreground: "rgb(255 255 255)"
+              },
+              forest: {
+                primary: "rgb(34 197 94)",
+                background: "rgb(1 20 25)",
+                foreground: "rgb(240 253 244)"
+              }
+            };
+            
+            const theme = themes[themeId] || themes.moonlight;
+            const root = document.documentElement;
+            
+            root.style.setProperty("--theme-primary", theme.primary);
+            root.style.setProperty("--theme-background", theme.background);
+            root.style.setProperty("--theme-foreground", theme.foreground);
+          } else {
+            // No preferences found, set default
+            document.documentElement.setAttribute("data-theme", "moonlight");
+            const root = document.documentElement;
+            root.style.setProperty("--theme-primary", "rgb(59 130 246)");
+            root.style.setProperty("--theme-background", "rgb(2 6 23)");
+            root.style.setProperty("--theme-foreground", "rgb(248 250 252)");
+          }
+        } catch (e) {
+          // Fallback to default theme
+          console.warn('Failed to parse theme preferences:', e);
+          document.documentElement.setAttribute("data-theme", "moonlight");
+          const root = document.documentElement;
+          root.style.setProperty("--theme-primary", "rgb(59 130 246)");
+          root.style.setProperty("--theme-background", "rgb(2 6 23)");
+          root.style.setProperty("--theme-foreground", "rgb(248 250 252)");
+        }
+      })();
+    </script>
   </head>
 
   <body>

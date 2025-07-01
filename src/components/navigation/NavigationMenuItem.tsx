@@ -468,11 +468,36 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
   );
 
   /**
+   * Render tertiary menu items with muted styling
+   */
+  const renderTertiaryMenuItem = () => (
+    <div className="relative flex items-center gap-3">
+      <div className="relative will-change-transform w-full">
+        <div className="relative z-10 w-full min-w-0">
+          <span
+            className="transition-colors duration-300"
+            style={{
+              color: isHovered
+                ? "var(--theme-menu-hover)"
+                : "var(--theme-patchnotes-color)", // Use same muted color as patchnotes
+            }}
+          >
+            {enableEnhancedAnimations && animationType !== "instant"
+              ? renderEnhancedText()
+              : renderFallbackText()}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+
+  /**
    * Get the appropriate content based on hierarchy
    */
   const getButtonContent = () => {
     if (hierarchy === "patchnotes") return renderPatchnotesButton();
     if (hierarchy === "quit") return renderQuitButton();
+    if (hierarchy === "tertiary") return renderTertiaryMenuItem();
     return renderMainMenuItem();
   };
   return (
