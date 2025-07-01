@@ -22,7 +22,7 @@
     "noImplicitReturns": true,
     "noImplicitOverride": true,
     "noUncheckedIndexedAccess": true,
-    
+
     /* Build-specific settings (less strict for config files) */
     "noUnusedLocals": false,
     "noUnusedParameters": false,

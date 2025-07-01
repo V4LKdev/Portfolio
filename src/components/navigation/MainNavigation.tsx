@@ -59,11 +59,20 @@ const MainNavigation: React.FC<MainNavigationProps> = ({
             gameLabel={item.gameLabel}
             hoverLabel={item.hoverLabel}
             hierarchy={
-              item.hierarchy as "primary" | "secondary" | "tertiary" | "quit"
+              item.hierarchy as
+                | "primary"
+                | "secondary"
+                | "tertiary"
+                | "quit"
+                | "patchnotes"
             }
             section={item.section}
             isActive={currentSection === item.section}
             onClick={onMenuClick}
+            animationType="letter-morph"
+            animationSpeed={1.2}
+            enableEnhancedAnimations={true}
+            hasIcon={item.hasIcon || false}
           />
         ))}
       </div>

@@ -114,49 +114,49 @@
     color: var(--theme-menu-text, rgb(253 230 138 / 0.9));
   }
 
-  .game-menu-item:hover {
-    color: var(--theme-menu-hover, rgb(254 243 199));
-    text-shadow: 0 0 20px var(--theme-menu-glow, rgba(251, 191, 36, 0.8));
-    transform: translateX(0.25rem);
-    filter: drop-shadow(
-      0 0 10px var(--theme-menu-glow, rgba(251, 191, 36, 0.6))
-    );
-  }
+  /* Remove general hover behavior - animations now handled by components */
 
   /* Theme-aware menu hierarchy */
   .game-menu-item.menu-primary {
-    @apply text-4xl md:text-5xl lg:text-6xl font-bold;
+    @apply text-5xl md:text-6xl lg:text-7xl font-bold;
     letter-spacing: 0.05em;
     line-height: 1.2;
   }
 
   .game-menu-item.menu-secondary,
   .game-menu-item.menu-tertiary {
-    @apply text-2xl md:text-3xl font-semibold;
+    @apply text-3xl md:text-4xl font-semibold;
     letter-spacing: 0.02em;
     line-height: 1.2;
   }
 
   .game-menu-item.menu-quit {
-    @apply text-lg md:text-xl font-medium;
+    @apply text-xl md:text-2xl font-medium;
     letter-spacing: 0.01em;
     line-height: 1.2;
-    color: var(--theme-build-id, rgb(156 163 175));
+    /* Quit button will be styled via component classes */
   }
-  .game-menu-item.menu-quit:hover {
-    color: var(--theme-menu-hover, rgb(254 243 199));
-    text-shadow: 0 0 10px var(--theme-menu-glow, rgba(251, 191, 36, 0.4));
-    transform: translateX(0.25rem);
+
+  .game-menu-item.menu-patchnotes {
+    @apply text-xl md:text-2xl font-medium;
+    letter-spacing: 0.01em;
+    line-height: 1.2;
+    /* Patchnotes button will be styled via component classes */
+    margin-bottom: 0.5rem;
   }
+
+  /* Remove old hover styles - animations now handled by components */
 
   /* Ensure quit button icon and text align properly */
   .game-menu-item.menu-quit svg {
     flex-shrink: 0;
-    color: var(--theme-build-id, rgb(156 163 175));
+    /* Icon styling now handled by component classes */
   }
 
-  .game-menu-item.menu-quit:hover svg {
-    color: var(--theme-menu-hover, rgb(254 243 199));
+  /* Ensure patchnotes button icon and text align properly */
+  .game-menu-item.menu-patchnotes svg {
+    flex-shrink: 0;
+    /* Icon styling now handled by component classes */
   }
 
   /* Theme-aware title styling */
@@ -576,5 +576,50 @@
   .content-area textarea,
   .content-area select {
     cursor: pointer;
+  }
+
+  /* Grid pattern for button demo page background */
+  .bg-grid-pattern {
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 50px 50px;
+  }
+
+  /* Radial gradient background */
+  .bg-gradient-radial {
+    background: radial-gradient(ellipse at center, var(--tw-gradient-stops));
+  }
+
+  /* Game-inspired button utilities */
+  .button-scan-line {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .button-scan-line::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.1),
+      transparent
+    );
+    transition: left 0.7s ease-in-out;
+  }
+
+  .button-scan-line:hover::before {
+    left: 100%;
+  }
+
+  /* Disable transitions for instant color changes */
+  .force-no-color-transition,
+  .force-no-color-transition * {
+    transition: none !important;
   }
 }
