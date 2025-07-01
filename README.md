@@ -5,7 +5,9 @@ A modern, game-inspired portfolio website showcasing professional work and skill
 ## ✨ Features
 
 - **Game-Style UI**: Interactive navigation with smooth transitions and video game aesthetics
+- **Enhanced Navigation**: Advanced text animations including letter-morphing and instant reveal effects
 - **Local Video Background**: Optimized HTML5 video with cookie-based preferences
+- **Integrated Sound Effects**: Professional UI sounds with global mute integration
 - **Real-Time Network Stats**: Live HTTP latency and connection monitoring (desktop)
 - **Dynamic Themes**: Customizable color schemes with CSS variable generation
 - **Project Showcase**: Detailed project presentations with filtering and categorization

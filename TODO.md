@@ -7,7 +7,7 @@ This file tracks planned features, improvements, and technical debt for the Nico
 ### Theming & Visual Style
 
 - [x] Theme system in place
-- [ ] Polish main menu style (fonts, sound, hover/transition animations, gradient, title)
+- [x] **Enhanced Navigation (July 2025)**: Advanced text animations (letter-morph, instant reveal), sound integration, Patchnotes button
 - [ ] Improve UI animations (settings, menu, buttons, subpage transitions)
 
 ### Project & Content Features
@@ -21,8 +21,10 @@ This file tracks planned features, improvements, and technical debt for the Nico
 
 - [ ] Add contact form with validation, spam protection, and email service
 - [ ] Implement fake login/greeter screen (e.g., for QUIT/logout)
-- [ ] Add patchnotes element to the main menu
+- [x] **Add patchnotes element to the main menu (July 2025)**: Integrated with icon animations
 - [x] Move fallback image warning and similar notifications to center bottom
+- [ ] Add more sound effects and audio feedback throughout the UI
+- [ ] Implement different animation themes (Overwatch-style, Valorant-style variations)
 
 ### Performance & Optimization
 
@@ -82,7 +84,8 @@ This file tracks planned features, improvements, and technical debt for the Nico
 - **Component Organization (June 2025)**: Modular folder structure, single-responsibility components
 - **Theme Consistency (June 2025)**: Standardized theming, removed hardcoded styling
 - **UI Polish (June 2025)**: Improved network panel, refined gradients and spacing
+- **Enhanced Navigation (July 2025)**: Letter-morphing text animations, instant reveal effects, integrated sound system, Patchnotes button with icon animations
 
 ---
 
-_Last updated: June 2025_
+_Last updated: July 2025_

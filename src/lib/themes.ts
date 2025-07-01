@@ -71,6 +71,12 @@ export interface ThemeConfig {
     titleGlowColor: string;
     buildIdColor: string;
 
+    // Special button colors
+    quitColor: string;
+    quitHoverColor: string;
+    patchnotesColor: string;
+    patchnotesHoverColor: string;
+
     // Shadow and effect colors
     atmosphericGlow: string;
     videoOverlay: string;
@@ -132,6 +138,12 @@ export const THEMES: Record<string, ThemeConfig> = {
       titleGlowColor: "rgba(251, 191, 36, 0.5)", // amber-400 with opacity
       buildIdColor: "rgb(156 163 175)", // gray-400
 
+      // Special button colors
+      quitColor: "rgb(156 163 175)", // gray-400
+      quitHoverColor: "rgb(239 68 68)", // red-500
+      patchnotesColor: "rgb(156 163 175)", // gray-400
+      patchnotesHoverColor: "rgb(251 191 36)", // amber-400
+
       atmosphericGlow: "rgba(251, 191, 36, 0.1)",
       videoOverlay:
         "linear-gradient(45deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.4) 100%)", // neutral black overlay
@@ -184,6 +196,13 @@ export const THEMES: Record<string, ThemeConfig> = {
       titleColor: "rgb(255 255 255)", // pure white for title
       titleGlowColor: "rgba(14, 165, 233, 0.6)", // sky-500 with opacity
       buildIdColor: "rgb(148 163 184)", // slate-400
+
+      // Special button colors
+      quitColor: "rgb(148 163 184)", // slate-400
+      quitHoverColor: "rgb(239 68 68)", // red-500
+      patchnotesColor: "rgb(148 163 184)", // slate-400
+      patchnotesHoverColor: "rgb(125 211 252)", // sky-300
+
       atmosphericGlow: "rgba(14, 165, 233, 0.15)", // stronger blue glow
       videoOverlay:
         "linear-gradient(45deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.4) 100%)", // neutral black overlay
@@ -253,6 +272,13 @@ export function applyTheme(themeId: string): void {
   root.style.setProperty("--theme-title", theme.gameStyle.titleColor);
   root.style.setProperty("--theme-title-glow", theme.gameStyle.titleGlowColor);
   root.style.setProperty("--theme-build-id", theme.gameStyle.buildIdColor);
+  
+  // Special button colors
+  root.style.setProperty("--theme-quit-color", theme.gameStyle.quitColor);
+  root.style.setProperty("--theme-quit-hover", theme.gameStyle.quitHoverColor);
+  root.style.setProperty("--theme-patchnotes-color", theme.gameStyle.patchnotesColor);
+  root.style.setProperty("--theme-patchnotes-hover", theme.gameStyle.patchnotesHoverColor);
+  
   root.style.setProperty(
     "--theme-atmospheric-glow",
     theme.gameStyle.atmosphericGlow,

@@ -261,6 +261,53 @@ const Component: React.FC<ComponentProps> = ({
 export default Component;
 ```
 
+### Enhanced Navigation Components
+
+The navigation system features advanced text animations and professional game-style interactions:
+
+#### Animation Types
+
+- **letter-morph**: Characters change in place letter by letter (Valorant-style)
+- **instant-reveal**: Immediate clear then reveal from left with clip-path
+- **fade**: Simple crossfade between text states
+- **instant**: No animation - immediate swap
+
+#### NavigationMenuItem Configuration
+
+```tsx
+<NavigationMenuItem
+  id="projects"
+  gameLabel="Play"
+  hoverLabel="Projects"
+  hierarchy="primary"
+  section="projects"
+  isActive={currentSection === "projects"}
+  onClick={handleMenuClick}
+  animationType="letter-morph"     // Default animation
+  animationSpeed={1.2}             // Enhanced responsiveness
+  enableEnhancedAnimations={true}  // Enable advanced effects
+  hasIcon={false}                  // Show icon for special buttons
+/>
+```
+
+#### Sound Integration
+
+Sound effects are automatically integrated with the global mute setting:
+
+```tsx
+// Sound effects respect global video mute state
+const { playHover, playClick } = useSoundEffects();
+// Will not play if video is muted via global toggle
+```
+
+#### Hierarchy Levels
+
+- **primary**: Largest buttons (Projects/Play)
+- **secondary**: Standard menu items (About, Contact, Skills)  
+- **tertiary**: Smaller items (Extras/Hobbies)
+- **patchnotes**: Special button with newspaper icon
+- **quit**: Exit button with logout icon
+
 ### Styling Guidelines
 
 1. **Use Tailwind CSS** utility classes

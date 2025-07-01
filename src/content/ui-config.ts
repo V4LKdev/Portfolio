@@ -60,12 +60,22 @@ export const navigationItems = [
     hierarchy: "tertiary", // Smaller - less important
   },
   {
+    id: "patchnotes",
+    label: "Patchnotes",
+    section: "patchnotes",
+    gameLabel: "Patchnotes",
+    hoverLabel: "News",
+    hierarchy: "patchnotes", // Special styling with icon
+    hasIcon: true,
+  },
+  {
     id: "exit",
     label: "Exit",
     section: "exit",
     gameLabel: "Quit",
     hoverLabel: "Quit",
     hierarchy: "quit", // Special styling - smallest and grey
+    hasIcon: true,
   },
 ];
 
