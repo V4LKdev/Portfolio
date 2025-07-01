@@ -7,6 +7,7 @@
 
 import { useCallback, useRef } from "react";
 import { useVideoControls } from "./useVideoControls";
+import { AUDIO_CONFIG } from "../config/audio";
 
 interface SoundEffectsConfig {
   enabled?: boolean; // Local override, respects global mute when true
@@ -58,15 +59,15 @@ export function useSoundEffects(
           frequency,
           audioContext.currentTime,
         );
-        oscillator.type = "sine";
+        oscillator.type = AUDIO_CONFIG.WAVEFORM;
 
         gainNode.gain.setValueAtTime(0, audioContext.currentTime);
         gainNode.gain.linearRampToValueAtTime(
           volume,
-          audioContext.currentTime + 0.01,
+          audioContext.currentTime + AUDIO_CONFIG.FADE_IN_DURATION,
         );
         gainNode.gain.exponentialRampToValueAtTime(
-          0.001,
+          AUDIO_CONFIG.MIN_VOLUME,
           audioContext.currentTime + duration,
         );
 
@@ -81,23 +82,29 @@ export function useSoundEffects(
   );
 
   const playHover = useCallback(() => {
-    playTone(800, 0.1, 0.05); // Subtle high-pitched hover
+    const { frequency, duration, volume } = AUDIO_CONFIG.HOVER;
+    playTone(frequency, duration, volume);
   }, [playTone]);
 
   const playUnhover = useCallback(() => {
-    playTone(600, 0.08, 0.03); // Even more subtle unhover
+    const { frequency, duration, volume } = AUDIO_CONFIG.UNHOVER;
+    playTone(frequency, duration, volume);
   }, [playTone]);
 
   const playClick = useCallback(() => {
-    // Two-tone click for more satisfying feedback
-    playTone(1000, 0.05, 0.08);
-    setTimeout(() => playTone(750, 0.05, 0.06), 50);
+    const { primary, secondary } = AUDIO_CONFIG.CLICK;
+    playTone(primary.frequency, primary.duration, primary.volume);
+    setTimeout(() => {
+      playTone(secondary.frequency, secondary.duration, secondary.volume);
+    }, secondary.delay);
   }, [playTone]);
 
   const playFeedback = useCallback(() => {
-    // Success feedback tone
-    playTone(1200, 0.1, 0.07);
-    setTimeout(() => playTone(1600, 0.1, 0.05), 100);
+    const { primary, secondary } = AUDIO_CONFIG.FEEDBACK;
+    playTone(primary.frequency, primary.duration, primary.volume);
+    setTimeout(() => {
+      playTone(secondary.frequency, secondary.duration, secondary.volume);
+    }, secondary.delay);
   }, [playTone]);
 
   return {

@@ -11,10 +11,11 @@
  * - instant: No animation - immediate swap
  */
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { LogOut, Newspaper } from "lucide-react";
 import { useSoundEffects } from "../../hooks/useSoundEffects";
+import { ANIMATION_CONFIG, SPACING_CONFIG } from "../../config";
 
 export interface NavigationMenuItemProps {
   /** Unique identifier for the menu item */
@@ -53,35 +54,57 @@ interface MorphingCharProps {
   animationSpeed: number;
 }
 
-const MorphingChar: React.FC<MorphingCharProps> = ({
-  fromChar,
-  toChar,
-  index,
-  isHovered,
-  animationSpeed,
-}) => {
-  const [currentChar, setCurrentChar] = useState(fromChar);
-  const delay = (index * 0.02) / animationSpeed; // Reduced for faster response
+const MorphingChar: React.FC<MorphingCharProps> = React.memo(
+  ({ fromChar, toChar, index, isHovered, animationSpeed }) => {
+    const [currentChar, setCurrentChar] = useState(fromChar);
 
-  React.useEffect(() => {
-    const targetChar = isHovered ? toChar : fromChar;
-    const timer = setTimeout(() => {
-      setCurrentChar(targetChar);
-    }, delay * 1000);
+    const morphTransition = useMemo(
+      () => ({
+        duration: ANIMATION_CONFIG.MORPH_CHAR_OPACITY_DURATION / animationSpeed,
+      }),
+      [animationSpeed],
+    );
 
-    return () => clearTimeout(timer);
-  }, [isHovered, fromChar, toChar, delay]);
+    const delay = useMemo(
+      () => (index * ANIMATION_CONFIG.CHAR_DELAY_MULTIPLIER) / animationSpeed,
+      [index, animationSpeed],
+    );
 
-  return (
-    <motion.span
-      key={`char-${index}`}
-      animate={{ opacity: currentChar ? 1 : 0 }}
-      transition={{ duration: 0.06 / animationSpeed }} // Reduced for snappier feel
-      style={{ display: "inline-block" }}
-    >
-      {currentChar === " " ? "\u00A0" : currentChar}
-    </motion.span>
-  );
+    React.useEffect(() => {
+      const targetChar = isHovered ? toChar : fromChar;
+      const timer = setTimeout(() => {
+        setCurrentChar(targetChar);
+      }, delay * 1000);
+
+      return () => clearTimeout(timer);
+    }, [isHovered, fromChar, toChar, delay]);
+
+    return (
+      <motion.span
+        key={`char-${index}`}
+        animate={{ opacity: currentChar ? 1 : 0 }}
+        transition={morphTransition}
+        style={{ display: "inline-block" }}
+      >
+        {currentChar === " " ? "\u00A0" : currentChar}
+      </motion.span>
+    );
+  },
+);
+
+/**
+ * Validates navigation menu item hierarchy configuration
+ * Provides runtime validation to ensure hierarchy values are correct
+ */
+const validateHierarchy = (hierarchy: string): boolean => {
+  const validHierarchies = [
+    "primary",
+    "secondary",
+    "tertiary",
+    "quit",
+    "patchnotes",
+  ];
+  return validHierarchies.includes(hierarchy);
 };
 
 /**
@@ -92,12 +115,22 @@ const MorphingChar: React.FC<MorphingCharProps> = ({
  * - CSS clamp() provides fluid scaling between min/max bounds
  */
 const getButtonSpacing = (hierarchy: string): string => {
-  if (hierarchy === "primary") return "mb-[clamp(2rem,4vh,5rem)]"; // Primary section: 32px-80px based on viewport
-  if (hierarchy === "patchnotes")
-    return "mt-[clamp(2rem,4vh,5rem)] mb-[clamp(0.5rem,1vh,1rem)]"; // Large space before, small after
-  if (hierarchy === "quit") return "mb-[clamp(0.5rem,1vh,1rem)]"; // Small consistent space
-  if (hierarchy === "secondary") return "mb-[clamp(1.5rem,3vh,3rem)]"; // Secondary: 24px-48px
-  return "mb-[clamp(1.25rem,2.5vh,2.5rem)]"; // Tertiary: 20px-40px
+  if (!validateHierarchy(hierarchy)) {
+    console.warn(
+      `Invalid hierarchy value: ${hierarchy}. Using default spacing.`,
+    );
+    return SPACING_CONFIG.NAVIGATION.TERTIARY;
+  }
+
+  const spacingMap: Record<string, string> = {
+    primary: SPACING_CONFIG.NAVIGATION.PRIMARY,
+    patchnotes: SPACING_CONFIG.NAVIGATION.PATCHNOTES,
+    quit: SPACING_CONFIG.NAVIGATION.QUIT,
+    secondary: SPACING_CONFIG.NAVIGATION.SECONDARY,
+    tertiary: SPACING_CONFIG.NAVIGATION.TERTIARY,
+  };
+
+  return spacingMap[hierarchy] ?? SPACING_CONFIG.NAVIGATION.TERTIARY;
 };
 
 /**
@@ -124,6 +157,42 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
   const [isActivated, setIsActivated] = useState(false);
   const { playHover, playUnhover, playClick, playFeedback } = useSoundEffects();
 
+  // Memoized animation configurations
+  const animationConfigs = useMemo(
+    () => ({
+      instantReveal: {
+        duration: ANIMATION_CONFIG.INSTANT_REVEAL_DURATION / animationSpeed,
+        ease: ANIMATION_CONFIG.EASE_OUT,
+      },
+      fade: {
+        duration: ANIMATION_CONFIG.FADE_DURATION / animationSpeed,
+        ease: ANIMATION_CONFIG.EASE_OUT,
+      },
+      scale: {
+        type: "spring" as const,
+        stiffness: ANIMATION_CONFIG.SCALE_SPRING_STIFFNESS,
+        damping: ANIMATION_CONFIG.SCALE_SPRING_DAMPING,
+      },
+      iconRotation: {
+        duration: ANIMATION_CONFIG.ICON_ROTATION_DURATION,
+        ease: ANIMATION_CONFIG.EASE_IN_OUT,
+      },
+      iconScale: {
+        duration: ANIMATION_CONFIG.ICON_SCALE_DURATION,
+        ease: ANIMATION_CONFIG.EASE_IN_OUT,
+      },
+      fillEffect: {
+        duration: ANIMATION_CONFIG.FILL_EFFECT_DURATION,
+        ease: ANIMATION_CONFIG.EASE_OUT,
+      },
+      underline: {
+        duration: ANIMATION_CONFIG.UNDERLINE_DURATION,
+        ease: ANIMATION_CONFIG.EASE_OUT,
+      },
+    }),
+    [animationSpeed],
+  );
+
   const handleMouseEnter = () => {
     setIsHovered(true);
     playHover();
@@ -148,7 +217,7 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
     playClick();
     setTimeout(() => {
       playFeedback();
-    }, 100);
+    }, ANIMATION_CONFIG.FEEDBACK_DELAY);
 
     setIsActivated(true);
     onClick(section);
@@ -193,7 +262,7 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
             key={currentText}
             initial={{ opacity: 0, clipPath: "inset(0 100% 0 0)" }}
             animate={{ opacity: 1, clipPath: "inset(0 0% 0 0)" }}
-            transition={{ duration: 0.16 / animationSpeed, ease: "easeOut" }}
+            transition={animationConfigs.instantReveal}
             className="block"
           >
             {currentText}
@@ -210,7 +279,7 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.15 / animationSpeed, ease: "easeOut" }}
+          transition={animationConfigs.fade}
           className="block"
         >
           {currentText}
@@ -227,11 +296,12 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
       className="relative flex items-center gap-3"
       style={{ transformOrigin: "left center" }}
       animate={{
-        scale: isPressedDown || isActivated ? 1.08 : 1,
+        scale:
+          isPressedDown || isActivated
+            ? ANIMATION_CONFIG.BUTTON_SCALE_FACTOR
+            : 1,
       }}
-      transition={{
-        scale: { type: "spring", stiffness: 700, damping: 20 },
-      }}
+      transition={animationConfigs.scale}
     >
       <motion.span
         className="mr-1"
@@ -241,7 +311,7 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
               ? [0, -12, 12, -8, 8, 0]
               : 0,
         }}
-        transition={{ duration: 0.5, ease: "easeInOut" }}
+        transition={animationConfigs.iconRotation}
       >
         <Newspaper
           className="w-4 h-4 md:w-5 md:h-5 transition-colors duration-300"
@@ -273,11 +343,12 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
       className="relative flex items-center gap-3 mt-2"
       style={{ transformOrigin: "left center" }}
       animate={{
-        scale: isPressedDown || isActivated ? 1.08 : 1,
+        scale:
+          isPressedDown || isActivated
+            ? ANIMATION_CONFIG.BUTTON_SCALE_FACTOR
+            : 1,
       }}
-      transition={{
-        scale: { type: "spring", stiffness: 700, damping: 20 },
-      }}
+      transition={animationConfigs.scale}
     >
       {hasIcon && (
         <motion.span
@@ -288,7 +359,7 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
                 ? [1, 1.18, 0.92, 1.12, 1]
                 : 1,
           }}
-          transition={{ duration: 0.5, ease: "easeInOut" }}
+          transition={animationConfigs.iconScale}
         >
           <LogOut
             className="w-4 h-4 md:w-5 md:h-5 transition-colors duration-300"
@@ -323,7 +394,12 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
         color:
           isPressedDown || isActivated ? "rgba(0, 0, 0, 0.9)" : "currentColor",
       }}
-      transition={{ color: { duration: 0.1, ease: "linear" } }}
+      transition={{
+        color: {
+          duration: ANIMATION_CONFIG.COLOR_TRANSITION_DURATION,
+          ease: ANIMATION_CONFIG.LINEAR,
+        },
+      }}
     >
       <span className="block relative z-10">{renderAnimatedText()}</span>
       {/* Press fill effect */}
@@ -339,7 +415,7 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
             initial={{ height: "2px", opacity: 1 }}
             animate={{ height: "100%", opacity: 1 }}
             exit={{ height: "2px", opacity: 0 }}
-            transition={{ duration: 0.2, ease: "easeOut" }}
+            transition={animationConfigs.fillEffect}
           />
         )}
       </AnimatePresence>
@@ -355,7 +431,7 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
             initial={{ width: 0 }}
             animate={{ width: "100%" }}
             exit={{ width: 0 }}
-            transition={{ duration: 0.15, ease: "easeOut" }}
+            transition={animationConfigs.underline}
           />
         )}
       </AnimatePresence>

@@ -6,6 +6,7 @@
  */
 
 import React from "react";
+import { SPACING_CONFIG } from "../../config";
 
 /**
  * Navigation header with logo and title information
@@ -17,7 +18,9 @@ import React from "react";
  */
 const NavigationHeader: React.FC = () => {
   return (
-    <div className="pt-14 md:pt-20 pb-[clamp(1.5rem,3vh,5rem)] px-8 md:px-12 no-select">
+    <div
+      className={`${SPACING_CONFIG.HEADER.PADDING_TOP} ${SPACING_CONFIG.HEADER.PADDING_BOTTOM} ${SPACING_CONFIG.HEADER.PADDING_X} no-select`}
+    >
       <h1 className="game-title mb-1 text-4xl md:text-5xl lg:text-6xl no-select">
         NICOLAS MARTIN
       </h1>

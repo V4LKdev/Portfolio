@@ -1,3 +1,5 @@
+import { COLOR_PALETTE, withOpacity } from "../config/colors";
+
 /**
  * Professional Theme System for Portfolio Website
  *
@@ -131,22 +133,22 @@ export const THEMES: Record<string, ThemeConfig> = {
       sidebarRing: "45 85% 65%",
     },
     gameStyle: {
-      menuTextColor: "rgb(253 230 138 / 0.9)", // amber-200/90
-      menuHoverColor: "rgb(254 243 199)", // amber-100
-      menuGlowColor: "rgba(251, 191, 36, 0.6)", // amber-400 with opacity
-      titleColor: "rgb(254 243 199)", // amber-100
-      titleGlowColor: "rgba(251, 191, 36, 0.5)", // amber-400 with opacity
-      buildIdColor: "rgb(156 163 175)", // gray-400
+      menuTextColor: withOpacity(COLOR_PALETTE.amber[200], "90"),
+      menuHoverColor: COLOR_PALETTE.amber[100],
+      menuGlowColor: withOpacity(COLOR_PALETTE.amber[400], "60"),
+      titleColor: COLOR_PALETTE.amber[100],
+      titleGlowColor: withOpacity(COLOR_PALETTE.amber[400], "50"),
+      buildIdColor: COLOR_PALETTE.gray[400],
 
       // Special button colors
-      quitColor: "rgb(156 163 175)", // gray-400
-      quitHoverColor: "rgb(239 68 68)", // red-500
-      patchnotesColor: "rgb(156 163 175)", // gray-400
-      patchnotesHoverColor: "rgb(251 191 36)", // amber-400
+      quitColor: COLOR_PALETTE.gray[400],
+      quitHoverColor: COLOR_PALETTE.red[500],
+      patchnotesColor: COLOR_PALETTE.gray[400],
+      patchnotesHoverColor: COLOR_PALETTE.amber[400],
 
-      atmosphericGlow: "rgba(251, 191, 36, 0.1)",
+      atmosphericGlow: withOpacity(COLOR_PALETTE.amber[400], "10"),
       videoOverlay:
-        "linear-gradient(45deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.4) 100%)", // neutral black overlay
+        "linear-gradient(45deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.4) 100%)",
     },
   },
   // Cool/blue theme (night mode) - Modern like Overwatch 2/Titanfall
@@ -190,22 +192,22 @@ export const THEMES: Record<string, ThemeConfig> = {
       sidebarRing: "200 100% 70%",
     },
     gameStyle: {
-      menuTextColor: "rgb(248 250 252 / 0.95)", // slate-50/95 - bright white
-      menuHoverColor: "rgb(125 211 252)", // sky-300 - bright blue
-      menuGlowColor: "rgba(14, 165, 233, 0.8)", // sky-500 with strong glow
-      titleColor: "rgb(255 255 255)", // pure white for title
-      titleGlowColor: "rgba(14, 165, 233, 0.6)", // sky-500 with opacity
-      buildIdColor: "rgb(148 163 184)", // slate-400
+      menuTextColor: withOpacity(COLOR_PALETTE.slate[50], 95),
+      menuHoverColor: COLOR_PALETTE.sky[300],
+      menuGlowColor: withOpacity(COLOR_PALETTE.sky[500], 80),
+      titleColor: COLOR_PALETTE.white,
+      titleGlowColor: withOpacity(COLOR_PALETTE.sky[500], 60),
+      buildIdColor: COLOR_PALETTE.slate[400],
 
       // Special button colors
-      quitColor: "rgb(148 163 184)", // slate-400
-      quitHoverColor: "rgb(239 68 68)", // red-500
-      patchnotesColor: "rgb(148 163 184)", // slate-400
-      patchnotesHoverColor: "rgb(125 211 252)", // sky-300
+      quitColor: COLOR_PALETTE.slate[400],
+      quitHoverColor: COLOR_PALETTE.red[500],
+      patchnotesColor: COLOR_PALETTE.slate[400],
+      patchnotesHoverColor: COLOR_PALETTE.sky[300],
 
-      atmosphericGlow: "rgba(14, 165, 233, 0.15)", // stronger blue glow
+      atmosphericGlow: "rgba(14, 165, 233, 0.15)",
       videoOverlay:
-        "linear-gradient(45deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.4) 100%)", // neutral black overlay
+        "linear-gradient(45deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.4) 100%)",
     },
   },
 };
