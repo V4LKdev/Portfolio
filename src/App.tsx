@@ -15,7 +15,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Portfolio from "@/components/core/Portfolio";
 import NotFound from "@/components/errors/NotFound";
 import ErrorBoundary from "@/components/errors/ErrorBoundary";
-import ButtonDemoPage from "@/components/navigation/ButtonDemoPage";
 
 // Initialize React Query client for server state management
 const queryClient = new QueryClient();
@@ -32,7 +31,6 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Portfolio />} />
-          <Route path="/button-demo" element={<ButtonDemoPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
