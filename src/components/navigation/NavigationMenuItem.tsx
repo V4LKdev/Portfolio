@@ -46,51 +46,62 @@ export interface NavigationMenuItemProps {
  * Character morph component for letter-by-letter transitions
  * Provides smooth character-level animation for the letter-morph effect
  */
-interface MorphingCharProps {
-  fromChar: string;
-  toChar: string;
-  index: number;
+
+
+
+// New: Step-by-step morphing effect for letter-morph
+const MorphingString: React.FC<{
+  fromText: string;
+  toText: string;
   isHovered: boolean;
   animationSpeed: number;
-}
+}> = ({ fromText, toText, isHovered, animationSpeed }) => {
+  const maxLength = Math.max(fromText.length, toText.length);
+  const [step, setStep] = useState(0);
+  React.useEffect(() => {
+    let active = true;
+    if (isHovered) {
+      setStep(0);
+      let i = 0;
+      function next() {
+        if (!active) return;
+        setStep(i + 1);
+        if (i < maxLength) {
+          i++;
+          setTimeout(next, (ANIMATION_CONFIG.CHAR_DELAY_MULTIPLIER / animationSpeed) * 1000);
+        }
+      }
+      next();
+    } else {
+      setStep(0);
+    }
+    return () => {
+      active = false;
+    };
+  }, [isHovered, fromText, toText, animationSpeed, maxLength]);
 
-const MorphingChar: React.FC<MorphingCharProps> = React.memo(
-  ({ fromChar, toChar, index, isHovered, animationSpeed }) => {
-    const [currentChar, setCurrentChar] = useState(fromChar);
-
-    const morphTransition = useMemo(
-      () => ({
-        duration: ANIMATION_CONFIG.MORPH_CHAR_OPACITY_DURATION / animationSpeed,
-      }),
-      [animationSpeed],
-    );
-
-    const delay = useMemo(
-      () => (index * ANIMATION_CONFIG.CHAR_DELAY_MULTIPLIER) / animationSpeed,
-      [index, animationSpeed],
-    );
-
-    React.useEffect(() => {
-      const targetChar = isHovered ? toChar : fromChar;
-      const timer = setTimeout(() => {
-        setCurrentChar(targetChar);
-      }, delay * 1000);
-
-      return () => clearTimeout(timer);
-    }, [isHovered, fromChar, toChar, delay]);
-
-    return (
-      <motion.span
-        key={`char-${index}`}
-        animate={{ opacity: currentChar ? 1 : 0 }}
-        transition={morphTransition}
-        style={{ display: "inline-block" }}
-      >
-        {currentChar === " " ? "\u00A0" : currentChar}
-      </motion.span>
-    );
-  },
-);
+  let display = "";
+  for (let i = 0; i < maxLength; i++) {
+    if (isHovered && i < step) {
+      display += toText[i] ?? "";
+    } else {
+      display += fromText[i] ?? "";
+    }
+  }
+  return (
+    <span>
+      {display.split("").map((char, idx) => (
+        <motion.span
+          key={"morph-" + idx}
+          animate={{ opacity: 1 }}
+          style={{ display: "inline-block" }}
+        >
+          {char === " " ? "\u00A0" : char}
+        </motion.span>
+      ))}
+    </span>
+  );
+};
 
 /**
  * Validates navigation menu item hierarchy configuration
@@ -236,22 +247,13 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
     }
 
     if (animationType === "letter-morph") {
-      const fromText = gameLabel;
-      const toText = hoverLabel;
-      const maxLength = Math.max(fromText.length, toText.length);
       return (
-        <span className="block">
-          {Array.from({ length: maxLength }).map((_, index) => (
-            <MorphingChar
-              key={`morph-${fromText[index] ?? ""}-${toText[index] ?? ""}-${index}`}
-              fromChar={fromText[index] ?? ""}
-              toChar={toText[index] ?? ""}
-              index={index}
-              isHovered={isHovered}
-              animationSpeed={animationSpeed}
-            />
-          ))}
-        </span>
+        <MorphingString
+          fromText={gameLabel}
+          toText={hoverLabel}
+          isHovered={isHovered}
+          animationSpeed={animationSpeed}
+        />
       );
     }
 
