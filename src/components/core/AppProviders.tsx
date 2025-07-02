@@ -136,41 +136,30 @@ export function AppProviders({ children }: AppProvidersProps) {
   useEffect(() => {
     const video = document.querySelector("video");
     if (!video) return;
+    
     // Restore last playback time if available
     if (lastVideoTimeRef.current > 0) {
       video.currentTime = lastVideoTimeRef.current;
     }
-    const handlePlay = () => {
-      if (isPaused) {
-        setIsPaused(false);
-        setIsManuallyPaused(false);
-      }
-    };
-    const handlePause = () => {
-      if (!isPaused) {
-        setIsPaused(true);
-        setIsManuallyPaused(true);
-      }
-      // Save current time on pause
-      lastVideoTimeRef.current = video.currentTime;
-    };
-    const handleVolumeChange = () => {
-      if (video.muted !== isMuted) {
-        setIsMuted(video.muted);
-      }
-    };
+    
+    // Sync video element with our state
+    video.muted = isMuted;
+    
+    // Handle play/pause sync
+    if (isPaused && !video.paused) {
+      video.pause();
+    } else if (!isPaused && video.paused) {
+      video.play().catch(() => {});
+    }
+    
     // Save current time on unmount
     const handleBeforeUnload = () => {
       lastVideoTimeRef.current = video.currentTime;
     };
-    video.addEventListener("play", handlePlay);
-    video.addEventListener("pause", handlePause);
-    video.addEventListener("volumechange", handleVolumeChange);
+    
     window.addEventListener("beforeunload", handleBeforeUnload);
+    
     return () => {
-      video.removeEventListener("play", handlePlay);
-      video.removeEventListener("pause", handlePause);
-      video.removeEventListener("volumechange", handleVolumeChange);
       window.removeEventListener("beforeunload", handleBeforeUnload);
       // Save current time on navigation away
       if (!video.paused) {
