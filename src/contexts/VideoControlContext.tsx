@@ -17,6 +17,8 @@ interface VideoActions {
   togglePlayback: () => void;
   toggleMute: () => void;
   setManualPause: (paused: boolean) => void;
+  lastVideoTime: number;
+  setLastVideoTime: (t: number) => void;
 }
 
 export interface VideoControlContextType extends VideoState, VideoActions {}

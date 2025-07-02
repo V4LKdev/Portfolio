@@ -38,7 +38,8 @@ const Layout: React.FC<LayoutProps> = ({
   backgroundImage,
   isInnerPage = false,
 }) => {
-  const { isPaused, isMuted } = useVideoControls();
+  const { isPaused, isMuted, lastVideoTime, setLastVideoTime } =
+    useVideoControls();
   return (
     <div
       className={`h-screen bg-black text-foreground overflow-hidden ${className ?? ""}`}
@@ -52,6 +53,8 @@ const Layout: React.FC<LayoutProps> = ({
             posterSrc={videoConfig.posterSrc}
             isPaused={isPaused}
             isMuted={isMuted}
+            lastPlaybackTime={lastVideoTime}
+            setLastPlaybackTime={setLastVideoTime}
             className="video-responsive"
           />
           <div className="absolute inset-0 video-overlay" />

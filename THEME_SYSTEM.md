@@ -30,10 +30,12 @@ src/themes/
 Each theme follows a consistent two-color approach:
 
 ### Primary Color (Accent/Interactive)
+
 - **Usage**: Buttons, links, highlights, active states
 - **Variants**: `main`, `light` (hover), `dark` (active), `foreground` (text on primary)
 
 ### Secondary Color (Backgrounds/Containers)
+
 - **Usage**: Cards, panels, containers, surfaces
 - **Variants**: `main`, `light`, `dark`, `foreground` (text on secondary)
 
@@ -41,41 +43,41 @@ Each theme follows a consistent two-color approach:
 
 ```typescript
 export const myTheme: ColorTheme = {
-  id: 'my-theme',
-  name: 'My Theme',
-  description: 'Theme description',
-  
+  id: "my-theme",
+  name: "My Theme",
+  description: "Theme description",
+
   colors: {
     // Primary swatch (interactive elements)
     primary: {
-      main: 'rgb(59 130 246)',      // Main accent color
-      light: 'rgb(125 211 252)',    // Hover state
-      dark: 'rgb(37 99 235)',       // Active state
-      foreground: 'rgb(255 255 255)', // Text on primary
+      main: "rgb(59 130 246)", // Main accent color
+      light: "rgb(125 211 252)", // Hover state
+      dark: "rgb(37 99 235)", // Active state
+      foreground: "rgb(255 255 255)", // Text on primary
     },
-    
+
     // Secondary swatch (backgrounds)
     secondary: {
-      main: 'rgb(30 41 59)',        // Main background
-      light: 'rgb(51 65 85)',       // Light variant
-      dark: 'rgb(15 23 42)',        // Dark variant
-      foreground: 'rgb(226 232 240)', // Text on secondary
+      main: "rgb(30 41 59)", // Main background
+      light: "rgb(51 65 85)", // Light variant
+      dark: "rgb(15 23 42)", // Dark variant
+      foreground: "rgb(226 232 240)", // Text on secondary
     },
-    
+
     // Neutral colors (auto-derived but customizable)
     neutral: {
-      background: 'rgb(2 6 23)',    // Page background
-      foreground: 'rgb(248 250 252)', // Main text
-      muted: 'rgb(148 163 184)',     // Muted text
-      border: 'rgb(51 65 85)',       // Borders
+      background: "rgb(2 6 23)", // Page background
+      foreground: "rgb(248 250 252)", // Main text
+      muted: "rgb(148 163 184)", // Muted text
+      border: "rgb(51 65 85)", // Borders
     },
-    
+
     // Semantic colors (consistent across themes)
     semantic: {
-      success: 'rgb(34 197 94)',     // Green
-      warning: 'rgb(245 158 11)',    // Amber
-      error: 'rgb(239 68 68)',       // Red
-      info: 'rgb(59 130 246)',       // Blue
+      success: "rgb(34 197 94)", // Green
+      warning: "rgb(245 158 11)", // Amber
+      error: "rgb(239 68 68)", // Red
+      info: "rgb(59 130 246)", // Blue
     },
   },
 };
@@ -154,13 +156,13 @@ The system prevents Flash of Unstyled Content through:
 import { useTheme } from '@/hooks/useTheme';
 
 function MyComponent() {
-  const { 
-    currentTheme, 
-    currentThemeId, 
-    setTheme, 
+  const {
+    currentTheme,
+    currentThemeId,
+    setTheme,
     cycleTheme,
     availableThemes,
-    isLoading 
+    isLoading
   } = useTheme();
 
   return (
@@ -204,9 +206,9 @@ function MyComponent() {
 ```typescript
 function StyledComponent() {
   const { currentTheme } = useTheme();
-  
+
   if (!currentTheme) return null;
-  
+
   return (
     <div
       style={{
@@ -228,40 +230,40 @@ function StyledComponent() {
 Create `src/themes/my-new-theme.ts`:
 
 ```typescript
-import type { ColorTheme } from './types';
+import type { ColorTheme } from "./types";
 
 export const myNewTheme: ColorTheme = {
-  id: 'my-new-theme',
-  name: 'My New Theme',
-  description: 'Description of my new theme',
-  
+  id: "my-new-theme",
+  name: "My New Theme",
+  description: "Description of my new theme",
+
   colors: {
     primary: {
-      main: 'rgb(147 51 234)',      // Your primary color
-      light: 'rgb(168 85 247)',     // Lighter variant
-      dark: 'rgb(126 34 206)',      // Darker variant
-      foreground: 'rgb(255 255 255)', // Text on primary
+      main: "rgb(147 51 234)", // Your primary color
+      light: "rgb(168 85 247)", // Lighter variant
+      dark: "rgb(126 34 206)", // Darker variant
+      foreground: "rgb(255 255 255)", // Text on primary
     },
-    
+
     secondary: {
-      main: 'rgb(55 65 81)',        // Your secondary color
-      light: 'rgb(75 85 99)',       // Lighter variant
-      dark: 'rgb(31 41 55)',        // Darker variant
-      foreground: 'rgb(243 244 246)', // Text on secondary
+      main: "rgb(55 65 81)", // Your secondary color
+      light: "rgb(75 85 99)", // Lighter variant
+      dark: "rgb(31 41 55)", // Darker variant
+      foreground: "rgb(243 244 246)", // Text on secondary
     },
-    
+
     neutral: {
-      background: 'rgb(17 24 39)',  // Page background
-      foreground: 'rgb(243 244 246)', // Main text
-      muted: 'rgb(156 163 175)',     // Muted text
-      border: 'rgb(75 85 99)',       // Borders
+      background: "rgb(17 24 39)", // Page background
+      foreground: "rgb(243 244 246)", // Main text
+      muted: "rgb(156 163 175)", // Muted text
+      border: "rgb(75 85 99)", // Borders
     },
-    
+
     semantic: {
-      success: 'rgb(34 197 94)',
-      warning: 'rgb(245 158 11)',
-      error: 'rgb(239 68 68)',
-      info: 'rgb(59 130 246)',
+      success: "rgb(34 197 94)",
+      warning: "rgb(245 158 11)",
+      error: "rgb(239 68 68)",
+      info: "rgb(59 130 246)",
     },
   },
 };
@@ -276,15 +278,15 @@ Add to `src/themes/registry.ts`:
 ```typescript
 export const THEME_REGISTRY: Record<string, ThemeLoader> = {
   // ... existing themes
-  'my-new-theme': () => import('./my-new-theme').then(m => m.default),
+  "my-new-theme": () => import("./my-new-theme").then((m) => m.default),
 };
 
 export const THEME_METADATA = {
   // ... existing metadata
-  'my-new-theme': {
-    id: 'my-new-theme',
-    name: 'My New Theme',
-    description: 'Description of my new theme',
+  "my-new-theme": {
+    id: "my-new-theme",
+    name: "My New Theme",
+    description: "Description of my new theme",
   },
 };
 ```
@@ -296,11 +298,11 @@ Add to the critical CSS in `index.html` if you want immediate support:
 ```javascript
 const themes = {
   // ... existing themes
-  'my-new-theme': {
+  "my-new-theme": {
     primary: "rgb(147 51 234)",
     background: "rgb(17 24 39)",
-    foreground: "rgb(243 244 246)"
-  }
+    foreground: "rgb(243 244 246)",
+  },
 };
 ```
 
@@ -330,16 +332,19 @@ const themes = {
 ## Troubleshooting
 
 ### Theme Not Loading
+
 - Check if theme ID exists in `AVAILABLE_THEME_IDS`
 - Verify theme file exports default ColorTheme
 - Check browser console for import errors
 
 ### FOUC Issues
+
 - Ensure critical CSS is in `index.html`
 - Check that theme preference is being read correctly
 - Verify fallback theme is applied
 
 ### CSS Variables Not Working
+
 - Ensure theme has been applied with `applyTheme()`
 - Check that CSS uses correct variable syntax: `rgb(var(--theme-primary))`
 - Verify theme system has initialized
@@ -350,9 +355,9 @@ The new system maintains backward compatibility through `src/lib/themes.ts`. How
 
 ```typescript
 // Old way (deprecated)
-import { applyTheme, getTheme } from '@/lib/themes';
+import { applyTheme, getTheme } from "@/lib/themes";
 
 // New way (recommended)
-import { applyTheme, loadTheme } from '@/themes';
-import { useTheme } from '@/hooks/useTheme';
+import { applyTheme, loadTheme } from "@/themes";
+import { useTheme } from "@/hooks/useTheme";
 ```

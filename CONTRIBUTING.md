@@ -358,14 +358,16 @@ The portfolio now includes a comprehensive user preferences management system in
 - **Single Source of Truth**: Centralized API accessible throughout the application
 
 #### Current Preferences:
+
 - **Video & Media**: `videoAutoplayEnabled`, `globalAudioMuted`
 - **Audio & Sound**: `soundEffectVolume`, `backgroundMusicVolume`, `backgroundMusicEnabled`
 - **UI & UX**: `selectedTheme`, `showOnboarding`
 - **Accessibility**: `reduceMotionEnabled`
 
 #### Usage Example:
+
 ```typescript
-import { UserPreferences } from '@/lib/cookies';
+import { UserPreferences } from "@/lib/cookies";
 
 // Get preferences with automatic type safety and defaults
 const isAutoplayEnabled = UserPreferences.getVideoAutoplayEnabled();
@@ -373,7 +375,7 @@ const currentTheme = UserPreferences.getSelectedTheme();
 
 // Set preferences with validation and persistence
 UserPreferences.setGlobalAudioMuted(true);
-UserPreferences.setSelectedTheme('cyberpunk');
+UserPreferences.setSelectedTheme("cyberpunk");
 ```
 
 See `PREFERENCES_SYSTEM.md` for complete documentation.

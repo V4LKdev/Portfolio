@@ -10,6 +10,8 @@ interface LocalVideoBackgroundProps {
   posterSrc?: string;
   isPaused: boolean;
   isMuted: boolean;
+  lastPlaybackTime?: number;
+  setLastPlaybackTime?: (t: number) => void;
   onLoadStart?: () => void;
   onLoadComplete?: () => void;
   onError?: () => void;
@@ -30,6 +32,8 @@ const LocalVideoBackground: React.FC<LocalVideoBackgroundProps> = ({
   posterSrc,
   isPaused,
   isMuted,
+  lastPlaybackTime,
+  setLastPlaybackTime,
   onLoadStart,
   onLoadComplete,
   onError,
@@ -40,6 +44,22 @@ const LocalVideoBackground: React.FC<LocalVideoBackgroundProps> = ({
   const [hasError, setHasError] = useState(false);
   const [showPoster, setShowPoster] = useState(true);
   const [wasPlayingBeforeHidden, setWasPlayingBeforeHidden] = useState(false);
+
+  // Set playback time on mount and on loadedmetadata
+  useEffect(() => {
+    const video = videoRef.current;
+    if (video && typeof lastPlaybackTime === "number" && lastPlaybackTime > 0) {
+      video.currentTime = lastPlaybackTime;
+    }
+  }, [lastPlaybackTime, videoSrc]);
+
+  function handleLoadedMetadata() {
+    const video = videoRef.current;
+    if (video && typeof lastPlaybackTime === "number" && lastPlaybackTime > 0) {
+      video.currentTime = lastPlaybackTime;
+    }
+  }
+
   // Handle browser visibility changes for performance
   useEffect(() => {
     const handleVisibilityChange = () => {
@@ -119,16 +139,18 @@ const LocalVideoBackground: React.FC<LocalVideoBackgroundProps> = ({
     }
   };
 
-  // Cleanup on unmount
+  // Cleanup on unmount (save currentTime if possible)
   useEffect(() => {
     const video = videoRef.current;
     return () => {
-      if (video) {
+      if (video && setLastPlaybackTime) {
+        setLastPlaybackTime(video.currentTime);
         video.pause();
-        video.currentTime = 0;
+      } else if (video) {
+        video.pause();
       }
     };
-  }, []);
+  }, [setLastPlaybackTime]);
 
   return (
     <div className={`relative w-full h-full overflow-hidden ${className}`}>
@@ -152,6 +174,7 @@ const LocalVideoBackground: React.FC<LocalVideoBackgroundProps> = ({
         onCanPlay={handleCanPlay}
         onError={handleError}
         onLoadedData={handleLoadedData}
+        onLoadedMetadata={handleLoadedMetadata}
         style={{
           opacity: isLoading || hasError || showPoster ? 0 : 1,
           transition: "opacity 0.5s ease-in-out",

@@ -3,7 +3,7 @@
  *
  * Provides a simple interface for managing themes throughout the application.
  * Handles theme switching, persistence, and provides current theme information.
- * 
+ *
  * Now uses the new simplified theme system with lazy loading and FOUC prevention.
  */
 
@@ -33,7 +33,7 @@ interface UseThemeReturn {
   // Theme utilities
   isTheme: (themeId: string) => boolean;
   getThemeConfig: (themeId?: string) => Promise<ColorTheme | null>;
-  
+
   // Loading state
   isLoading: boolean;
 }
@@ -42,7 +42,8 @@ interface UseThemeReturn {
  * Custom hook for theme management
  */
 export function useTheme(): UseThemeReturn {
-  const [currentThemeId, setCurrentThemeId] = useState<string>(DEFAULT_THEME_ID);
+  const [currentThemeId, setCurrentThemeId] =
+    useState<string>(DEFAULT_THEME_ID);
   const [currentTheme, setCurrentTheme] = useState<ColorTheme | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [availableThemes] = useState(getAllThemeMetadata());
@@ -51,15 +52,15 @@ export function useTheme(): UseThemeReturn {
   useEffect(() => {
     const initializeTheme = async () => {
       setIsLoading(true);
-      
+
       try {
         const storedTheme = getStoredTheme();
-        const themeToApply = AVAILABLE_THEME_IDS.includes(storedTheme) 
-          ? storedTheme 
+        const themeToApply = AVAILABLE_THEME_IDS.includes(storedTheme)
+          ? storedTheme
           : DEFAULT_THEME_ID;
 
         setCurrentThemeId(themeToApply);
-        
+
         // Apply theme and load theme data
         const success = await applyTheme(themeToApply);
         if (success) {
@@ -67,7 +68,7 @@ export function useTheme(): UseThemeReturn {
           setCurrentTheme(themeData);
         }
       } catch (error) {
-        console.error('Failed to initialize theme:', error);
+        console.error("Failed to initialize theme:", error);
         // Fallback to default theme
         setCurrentThemeId(DEFAULT_THEME_ID);
         await applyTheme(DEFAULT_THEME_ID);
@@ -82,56 +83,65 @@ export function useTheme(): UseThemeReturn {
   }, []);
 
   // Set theme function
-  const setTheme = useCallback(async (themeId: string): Promise<boolean> => {
-    if (!AVAILABLE_THEME_IDS.includes(themeId)) {
-      console.warn(`Invalid theme ID: ${themeId}`);
-      return false;
-    }
-
-    if (themeId === currentThemeId) {
-      return true; // Already using this theme
-    }
-
-    setIsLoading(true);
-    
-    try {
-      const success = await applyTheme(themeId);
-      if (success) {
-        const themeData = await loadTheme(themeId);
-        setCurrentThemeId(themeId);
-        setCurrentTheme(themeData);
-        return true;
+  const setTheme = useCallback(
+    async (themeId: string): Promise<boolean> => {
+      if (!AVAILABLE_THEME_IDS.includes(themeId)) {
+        console.warn(`Invalid theme ID: ${themeId}`);
+        return false;
       }
-      return false;
-    } catch (error) {
-      console.error(`Failed to set theme ${themeId}:`, error);
-      return false;
-    } finally {
-      setIsLoading(false);
-    }
-  }, [currentThemeId]);
+
+      if (themeId === currentThemeId) {
+        return true; // Already using this theme
+      }
+
+      setIsLoading(true);
+
+      try {
+        const success = await applyTheme(themeId);
+        if (success) {
+          const themeData = await loadTheme(themeId);
+          setCurrentThemeId(themeId);
+          setCurrentTheme(themeData);
+          return true;
+        }
+        return false;
+      } catch (error) {
+        console.error(`Failed to set theme ${themeId}:`, error);
+        return false;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [currentThemeId],
+  );
 
   // Cycle through themes
   const cycleTheme = useCallback(async (): Promise<void> => {
     const currentIndex = AVAILABLE_THEME_IDS.indexOf(currentThemeId);
     const nextIndex = (currentIndex + 1) % AVAILABLE_THEME_IDS.length;
     const nextThemeId = AVAILABLE_THEME_IDS[nextIndex];
-    
+
     if (nextThemeId) {
       await setTheme(nextThemeId);
     }
   }, [currentThemeId, setTheme]);
 
   // Check if current theme matches given ID
-  const isTheme = useCallback((themeId: string): boolean => {
-    return currentThemeId === themeId;
-  }, [currentThemeId]);
+  const isTheme = useCallback(
+    (themeId: string): boolean => {
+      return currentThemeId === themeId;
+    },
+    [currentThemeId],
+  );
 
   // Get theme configuration
-  const getThemeConfig = useCallback(async (themeId?: string): Promise<ColorTheme | null> => {
-    const id = themeId ?? currentThemeId;
-    return await loadTheme(id);
-  }, [currentThemeId]);
+  const getThemeConfig = useCallback(
+    async (themeId?: string): Promise<ColorTheme | null> => {
+      const id = themeId ?? currentThemeId;
+      return await loadTheme(id);
+    },
+    [currentThemeId],
+  );
 
   return {
     currentTheme,

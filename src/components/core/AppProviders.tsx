@@ -6,7 +6,13 @@
  * managing both video controls and navigation state with persistent user preferences.
  */
 
-import React, { useState, useCallback, useEffect, useMemo } from "react";
+import React, {
+  useState,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+} from "react";
 import { UserPreferences } from "../../lib/cookies";
 import {
   VideoControlContext,
@@ -48,6 +54,9 @@ interface AppProvidersProps {
  * @param children - Child components that need access to global state
  */
 export function AppProviders({ children }: AppProvidersProps) {
+  // --- Video Resume State ---
+  // Store last video playback time (in seconds) across navigation
+  const lastVideoTimeRef = useRef(0);
   // --- Video State ---
   // Initialize state from user preferences using the new comprehensive system
   const [isPaused, setIsPaused] = useState(() => {
@@ -123,10 +132,14 @@ export function AppProviders({ children }: AppProvidersProps) {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [isPaused, togglePlayback]);
 
-  // Video Element Sync
+  // Video Element Sync & Resume
   useEffect(() => {
     const video = document.querySelector("video");
     if (!video) return;
+    // Restore last playback time if available
+    if (lastVideoTimeRef.current > 0) {
+      video.currentTime = lastVideoTimeRef.current;
+    }
     const handlePlay = () => {
       if (isPaused) {
         setIsPaused(false);
@@ -138,19 +151,31 @@ export function AppProviders({ children }: AppProvidersProps) {
         setIsPaused(true);
         setIsManuallyPaused(true);
       }
+      // Save current time on pause
+      lastVideoTimeRef.current = video.currentTime;
     };
     const handleVolumeChange = () => {
       if (video.muted !== isMuted) {
         setIsMuted(video.muted);
       }
     };
+    // Save current time on unmount
+    const handleBeforeUnload = () => {
+      lastVideoTimeRef.current = video.currentTime;
+    };
     video.addEventListener("play", handlePlay);
     video.addEventListener("pause", handlePause);
     video.addEventListener("volumechange", handleVolumeChange);
+    window.addEventListener("beforeunload", handleBeforeUnload);
     return () => {
       video.removeEventListener("play", handlePlay);
       video.removeEventListener("pause", handlePause);
       video.removeEventListener("volumechange", handleVolumeChange);
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+      // Save current time on navigation away
+      if (!video.paused) {
+        lastVideoTimeRef.current = video.currentTime;
+      }
     };
   }, [isPaused, isMuted]);
 
@@ -176,7 +201,7 @@ export function AppProviders({ children }: AppProvidersProps) {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
   }, []);
 
-  const videoValue = useMemo<VideoControlContextType>(
+  const videoValue = useMemo(
     () => ({
       isPaused,
       isMuted,
@@ -184,6 +209,10 @@ export function AppProviders({ children }: AppProvidersProps) {
       togglePlayback,
       toggleMute,
       setManualPause,
+      lastVideoTime: lastVideoTimeRef.current,
+      setLastVideoTime: (t: number) => {
+        lastVideoTimeRef.current = t;
+      },
     }),
     [
       isPaused,
@@ -273,6 +302,7 @@ export function AppProviders({ children }: AppProvidersProps) {
   return (
     <VideoControlContext.Provider value={videoValue}>
       <NavigationContext.Provider value={navigationValue}>
+        {/* Provide lastVideoTimeRef to children via context if needed in the future */}
         {children}
       </NavigationContext.Provider>
     </VideoControlContext.Provider>

@@ -1,9 +1,9 @@
 /**
  * Legacy Theme System - DEPRECATED
- * 
+ *
  * This file is deprecated and maintained only for backwards compatibility.
  * Please use the new theme system from @/themes instead.
- * 
+ *
  * New theme system features:
  * - Simplified two-color swatch approach
  * - Lazy-loaded individual theme files
@@ -21,7 +21,7 @@ export {
   getThemeMetadata as getTheme,
   applyTheme,
   getStoredTheme,
-} from '@/themes';
+} from "@/themes";
 
 // Legacy compatibility exports
 export const THEMES = {};
@@ -30,6 +30,8 @@ export const THEMES = {};
  * @deprecated Use applyTheme from @/themes instead
  */
 export function themeToCSSProperties(): Record<string, string> {
-  console.warn('themeToCSSProperties is deprecated. Use the new theme system from @/themes');
+  console.warn(
+    "themeToCSSProperties is deprecated. Use the new theme system from @/themes",
+  );
   return {};
 }

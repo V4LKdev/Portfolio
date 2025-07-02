@@ -36,7 +36,7 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ className = "" }) => {
 
   // Get current theme display name
   const getCurrentThemeName = (): string => {
-    return currentTheme?.name ?? 'Unknown';
+    return currentTheme?.name ?? "Unknown";
   };
 
   // Get appropriate icon for theme button
@@ -90,8 +90,7 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ className = "" }) => {
           style={{
             backgroundColor:
               "var(--theme-settings-panel-bg, rgba(30, 41, 59, 0.9))",
-            borderColor:
-              "var(--theme-settings-panel-border, rgb(59 130 246))",
+            borderColor: "var(--theme-settings-panel-border, rgb(59 130 246))",
             borderWidth: "1px",
             borderStyle: "solid",
           }}
@@ -112,8 +111,7 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ className = "" }) => {
           style={{
             backgroundColor:
               "var(--theme-settings-panel-bg, rgba(30, 41, 59, 0.9))",
-            borderColor:
-              "var(--theme-settings-panel-border, rgb(59 130 246))",
+            borderColor: "var(--theme-settings-panel-border, rgb(59 130 246))",
             borderWidth: "1px",
             borderStyle: "solid",
           }}

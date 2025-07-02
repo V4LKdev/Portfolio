@@ -15,24 +15,28 @@ The portfolio website includes a comprehensive, type-safe, and extensible user p
 ## Available Themes
 
 ### 🌙 Moonlight Night (Default)
+
 - **ID**: `moonlight`
 - **Primary**: Cool blue (`rgb(59 130 246)`) for interactive elements
 - **Secondary**: Deep slate (`rgb(30 41 59)`) for backgrounds
 - **Description**: Cool blue theme perfect for nighttime browsing
 
 ### ☀️ Sunny Daytime
+
 - **ID**: `daytime`
 - **Primary**: Warm orange (`rgb(249 115 22)`) for interactive elements
 - **Secondary**: Clean whites (`rgb(248 250 252)`) for backgrounds
 - **Description**: Bright, energetic theme perfect for daytime productivity
 
 ### 🔥 Crimson Fire
+
 - **ID**: `crimson`
 - **Primary**: Deep red (`rgb(220 38 38)`) for interactive elements
 - **Secondary**: Dark charcoal (`rgb(38 38 38)`) for backgrounds
 - **Description**: Bold, passionate red theme with intense energy
 
 ### 🌲 Forest Emerald
+
 - **ID**: `forest`
 - **Primary**: Rich emerald (`rgb(34 197 94)`) for interactive elements
 - **Secondary**: Deep forest green (`rgb(22 78 99)`) for backgrounds
@@ -50,19 +54,23 @@ The portfolio website includes a comprehensive, type-safe, and extensible user p
 ## Current Preferences
 
 ### Video & Media
+
 - `videoAutoplayEnabled` (boolean) - Whether video should autoplay when visiting/returning to home section
 - `globalAudioMuted` (boolean) - Global site-wide audio mute setting (affects video sound + UI sound effects)
 
 ### Audio & Sound
+
 - `soundEffectVolume` (number) - Volume level for UI sound effects (0.0 to 1.0)
 - `backgroundMusicVolume` (number) - Volume level for background music (0.0 to 1.0)
 - `backgroundMusicEnabled` (boolean) - Whether background music should play automatically
 
 ### UI & UX
+
 - `selectedTheme` (string) - Selected theme identifier ('moonlight', 'daytime', 'crimson', 'forest')
 - `showOnboarding` (boolean) - Whether to show onboarding/tutorial on first visit
 
 ### Accessibility
+
 - `reduceMotionEnabled` (boolean) - Whether to reduce motion for accessibility
 
 ## Theme System Usage
@@ -86,7 +94,7 @@ function MyComponent() {
     <div>
       <h2>Current Theme: {currentTheme?.name}</h2>
       {availableThemes.map(theme => (
-        <button 
+        <button
           key={theme.id}
           onClick={() => handleThemeChange(theme.id)}
           disabled={isLoading}
@@ -105,28 +113,28 @@ Create a new theme file in `src/themes/`:
 
 ```typescript
 // src/themes/my-theme.ts
-import type { ColorTheme } from './types';
+import type { ColorTheme } from "./types";
 
 export const myTheme: ColorTheme = {
-  id: 'my-theme',
-  name: 'My Custom Theme',
-  description: 'A beautiful custom theme',
-  
+  id: "my-theme",
+  name: "My Custom Theme",
+  description: "A beautiful custom theme",
+
   colors: {
     primary: {
-      main: 'rgb(147 51 234)',      // Purple-600
-      light: 'rgb(168 85 247)',     // Purple-500
-      dark: 'rgb(126 34 206)',      // Purple-700
-      foreground: 'rgb(255 255 255)', // White
+      main: "rgb(147 51 234)", // Purple-600
+      light: "rgb(168 85 247)", // Purple-500
+      dark: "rgb(126 34 206)", // Purple-700
+      foreground: "rgb(255 255 255)", // White
     },
-    
+
     secondary: {
-      main: 'rgb(55 65 81)',        // Gray-700
-      light: 'rgb(75 85 99)',       // Gray-600
-      dark: 'rgb(31 41 55)',        // Gray-800
-      foreground: 'rgb(243 244 246)', // Gray-100
+      main: "rgb(55 65 81)", // Gray-700
+      light: "rgb(75 85 99)", // Gray-600
+      dark: "rgb(31 41 55)", // Gray-800
+      foreground: "rgb(243 244 246)", // Gray-100
     },
-    
+
     // ... rest of the theme configuration
   },
 };
@@ -137,7 +145,7 @@ Then register it in `src/themes/registry.ts`:
 ```typescript
 export const THEME_REGISTRY: Record<string, ThemeLoader> = {
   // ... existing themes
-  'my-theme': () => import('./my-theme').then(m => m.default),
+  "my-theme": () => import("./my-theme").then((m) => m.default),
 };
 ```
 
@@ -146,7 +154,7 @@ export const THEME_REGISTRY: Record<string, ThemeLoader> = {
 ### Basic Usage
 
 ```typescript
-import { UserPreferences } from '@/lib/cookies';
+import { UserPreferences } from "@/lib/cookies";
 
 // Get a preference with automatic type safety and default fallback
 const isAutoplayEnabled = UserPreferences.getVideoAutoplayEnabled();
@@ -155,7 +163,7 @@ const isAutoplayEnabled = UserPreferences.getVideoAutoplayEnabled();
 UserPreferences.setGlobalAudioMuted(true);
 
 // Check if a preference has been explicitly set by the user
-const hasUserSetTheme = UserPreferences.hasUserSetPreference('selectedTheme');
+const hasUserSetTheme = UserPreferences.hasUserSetPreference("selectedTheme");
 ```
 
 ### Volume Controls
@@ -179,7 +187,7 @@ const musicVolume = UserPreferences.getBackgroundMusicVolume();
 const currentTheme = UserPreferences.getSelectedTheme();
 
 // Set theme (integrates with existing theme system)
-UserPreferences.setSelectedTheme('cyberpunk');
+UserPreferences.setSelectedTheme("cyberpunk");
 ```
 
 ### Accessibility Settings
@@ -199,7 +207,7 @@ UserPreferences.setReduceMotionEnabled(true);
 const allPrefs = UserPreferences.getAllPreferences();
 
 // Reset a specific preference to default
-UserPreferences.resetPreferenceToDefault('soundEffectVolume');
+UserPreferences.resetPreferenceToDefault("soundEffectVolume");
 
 // Reset all preferences (factory reset)
 UserPreferences.resetAllPreferencesToDefaults();
@@ -214,7 +222,7 @@ To add a new preference:
 ```typescript
 export interface UserPreferenceDefinitions {
   // ...existing preferences...
-  
+
   // Add your new preference
   newPreferenceName: boolean; // or string, number, etc.
 }
@@ -225,7 +233,7 @@ export interface UserPreferenceDefinitions {
 ```typescript
 export const DEFAULT_PREFERENCES: UserPreferenceDefinitions = {
   // ...existing defaults...
-  
+
   newPreferenceName: false, // Your default value
 };
 ```
@@ -233,9 +241,12 @@ export const DEFAULT_PREFERENCES: UserPreferenceDefinitions = {
 3. **Add Cookie Name**:
 
 ```typescript
-export const PREFERENCE_COOKIE_NAMES: Record<keyof UserPreferenceDefinitions, string> = {
+export const PREFERENCE_COOKIE_NAMES: Record<
+  keyof UserPreferenceDefinitions,
+  string
+> = {
   // ...existing names...
-  
+
   newPreferenceName: "portfolio-new-preference",
 };
 ```
@@ -245,14 +256,18 @@ export const PREFERENCE_COOKIE_NAMES: Record<keyof UserPreferenceDefinitions, st
 ```typescript
 export const UserPreferences = {
   // ...existing methods...
-  
+
   /**
    * Get your new preference
    * @returns Description of what it returns
    */
   getNewPreferenceName: (): boolean => {
     const cookieValue = getCookie(PREFERENCE_COOKIE_NAMES.newPreferenceName);
-    return deserializePreferenceValue(cookieValue, "boolean", DEFAULT_PREFERENCES.newPreferenceName);
+    return deserializePreferenceValue(
+      cookieValue,
+      "boolean",
+      DEFAULT_PREFERENCES.newPreferenceName,
+    );
   },
 
   /**
@@ -260,7 +275,10 @@ export const UserPreferences = {
    * @param value - Description of the parameter
    */
   setNewPreferenceName: (value: boolean): void => {
-    setCookie(PREFERENCE_COOKIE_NAMES.newPreferenceName, serializePreferenceValue(value));
+    setCookie(
+      PREFERENCE_COOKIE_NAMES.newPreferenceName,
+      serializePreferenceValue(value),
+    );
   },
 };
 ```
@@ -282,6 +300,7 @@ const isMuted = UserPreferences.getGlobalAudioMuted();
 ```
 
 **Migration Plan:**
+
 1. Legacy API will show deprecation warnings in console
 2. Update components to use new API over time
 3. Remove legacy compatibility layer in future version
@@ -296,18 +315,21 @@ const isMuted = UserPreferences.getGlobalAudioMuted();
 ## Technical Implementation
 
 ### Cookie Management
+
 - **Expiration**: 1 year by default (configurable)
 - **Path**: `/` (site-wide)
 - **SameSite**: `Lax` for CSRF protection
 - **Secure**: Automatically applied for HTTPS and localhost
 
 ### Validation & Error Handling
+
 - **Type Validation**: Automatic type checking and conversion
 - **Range Clamping**: Numeric values are clamped to valid ranges
 - **Fallback Behavior**: Always returns default values for invalid/missing data
 - **Error Logging**: Comprehensive error logging for debugging
 
 ### Performance
+
 - **Lazy Loading**: Preferences are only read when needed
 - **Caching**: No additional caching layer needed (cookies are already cached by browser)
 - **Bundle Size**: Minimal impact on bundle size
@@ -315,14 +337,17 @@ const isMuted = UserPreferences.getGlobalAudioMuted();
 ## Integration Points
 
 ### Video Controls (AppProviders.tsx)
+
 - Video autoplay state synchronized with `videoAutoplayEnabled`
 - Global mute state synchronized with `globalAudioMuted`
 
 ### Theme System (themes.ts)
+
 - Theme selection synchronized with `selectedTheme`
 - Automatic theme persistence when themes are applied
 
 ### Sound Effects (useSoundEffects.ts)
+
 - Sound effects respect `globalAudioMuted` setting
 - Volume controlled by `soundEffectVolume` (future enhancement)
 

@@ -1,6 +1,6 @@
 /**
  * Modern Theme System - Main Export
- * 
+ *
  * A simplified, designer-friendly theme system with:
  * - Two-color swatch approach (primary + secondary)
  * - Lazy-loaded individual theme files
@@ -10,10 +10,10 @@
  */
 
 // Core types
-export type { ColorTheme, ThemeConfig, ThemeLoader } from './types';
+export type { ColorTheme, ThemeConfig, ThemeLoader } from "./types";
 
 // Base theme configuration
-export { BASE_THEME, baseThemeToCSSProperties } from './base';
+export { BASE_THEME, baseThemeToCSSProperties } from "./base";
 
 // Theme registry and loading
 export {
@@ -27,7 +27,7 @@ export {
   getThemeMetadata,
   getAllThemeMetadata,
   isValidThemeId,
-} from './registry';
+} from "./registry";
 
 // Theme application and utilities
 export {
@@ -37,10 +37,10 @@ export {
   getStoredTheme,
   initializeThemeSystem,
   generateFOUCPreventionScript,
-} from './utils';
+} from "./utils";
 
 // Individual theme exports (for direct access if needed)
-export { default as moonlightTheme } from './moonlight';
-export { default as daytimeTheme } from './daytime';
-export { default as crimsonTheme } from './crimson';
-export { default as forestTheme } from './forest';
+export { default as moonlightTheme } from "./moonlight";
+export { default as daytimeTheme } from "./daytime";
+export { default as crimsonTheme } from "./crimson";
+export { default as forestTheme } from "./forest";

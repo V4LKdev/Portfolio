@@ -44,7 +44,7 @@
 
     <!-- FOUC Prevention Script - Critical Theme Loading -->
     <script>
-      (function() {
+      (function () {
         // Get theme from cookies immediately
         function getCookie(name) {
           const nameEQ = name + "=";
@@ -57,44 +57,44 @@
           }
           return null;
         }
-        
+
         // Parse preferences and get theme
         try {
           const prefsStr = getCookie("portfolio-preferences");
           if (prefsStr) {
             const prefs = JSON.parse(decodeURIComponent(prefsStr));
             const themeId = prefs.selectedTheme || "moonlight";
-            
+
             // Set data attribute early
             document.documentElement.setAttribute("data-theme", themeId);
-            
+
             // Apply critical CSS variables for the theme
             const themes = {
               moonlight: {
                 primary: "rgb(59 130 246)",
                 background: "rgb(2 6 23)",
-                foreground: "rgb(248 250 252)"
+                foreground: "rgb(248 250 252)",
               },
               daytime: {
                 primary: "rgb(249 115 22)",
                 background: "rgb(255 255 255)",
-                foreground: "rgb(15 23 42)"
+                foreground: "rgb(15 23 42)",
               },
               crimson: {
                 primary: "rgb(220 38 38)",
                 background: "rgb(0 0 0)",
-                foreground: "rgb(255 255 255)"
+                foreground: "rgb(255 255 255)",
               },
               forest: {
                 primary: "rgb(34 197 94)",
                 background: "rgb(1 20 25)",
-                foreground: "rgb(240 253 244)"
-              }
+                foreground: "rgb(240 253 244)",
+              },
             };
-            
+
             const theme = themes[themeId] || themes.moonlight;
             const root = document.documentElement;
-            
+
             root.style.setProperty("--theme-primary", theme.primary);
             root.style.setProperty("--theme-background", theme.background);
             root.style.setProperty("--theme-foreground", theme.foreground);
@@ -108,7 +108,7 @@
           }
         } catch (e) {
           // Fallback to default theme
-          console.warn('Failed to parse theme preferences:', e);
+          console.warn("Failed to parse theme preferences:", e);
           document.documentElement.setAttribute("data-theme", "moonlight");
           const root = document.documentElement;
           root.style.setProperty("--theme-primary", "rgb(59 130 246)");
@@ -119,7 +119,13 @@
     </script>
   </head>
 
-  <body>
+  <body
+    style="
+      background: rgb(2, 6, 23);
+      color: rgb(248, 250, 252);
+      min-height: 100vh;
+    "
+  >
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
