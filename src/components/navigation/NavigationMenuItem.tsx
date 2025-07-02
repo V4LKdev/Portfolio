@@ -43,13 +43,8 @@ export interface NavigationMenuItemProps {
 }
 
 /**
- * Character morph component for letter-by-letter transitions
- * Provides smooth character-level animation for the letter-morph effect
+ * MorphingString: Step-by-step character morph animation (forward on hover, reverse on unhover)
  */
-
-
-
-// New: Step-by-step morphing effect for letter-morph
 const MorphingString: React.FC<{
   fromText: string;
   toText: string;
@@ -57,43 +52,51 @@ const MorphingString: React.FC<{
   animationSpeed: number;
 }> = ({ fromText, toText, isHovered, animationSpeed }) => {
   const maxLength = Math.max(fromText.length, toText.length);
-  const [step, setStep] = useState(0);
-  React.useEffect(() => {
-    let active = true;
-    if (isHovered) {
-      setStep(0);
-      let i = 0;
-      function next() {
-        if (!active) return;
-        setStep(i + 1);
-        if (i < maxLength) {
-          i++;
-          setTimeout(next, (ANIMATION_CONFIG.CHAR_DELAY_MULTIPLIER / animationSpeed) * 1000);
-        }
-      }
-      next();
-    } else {
-      setStep(0);
-    }
-    return () => {
-      active = false;
-    };
-  }, [isHovered, fromText, toText, animationSpeed, maxLength]);
+  const [morphedCharacters, setMorphedCharacters] = useState(0);
 
-  let display = "";
-  for (let i = 0; i < maxLength; i++) {
-    if (isHovered && i < step) {
-      display += toText[i] ?? "";
-    } else {
-      display += fromText[i] ?? "";
+  React.useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+
+    const step = () => {
+      setMorphedCharacters(prev => {
+        if (isHovered && prev < maxLength) return prev + 1;
+        if (!isHovered && prev > 0) return prev - 1;
+        return prev;
+      });
+    };
+
+    if ((isHovered && morphedCharacters < maxLength) || (!isHovered && morphedCharacters > 0)) {
+      timeoutId = setTimeout(
+        step,
+        (ANIMATION_CONFIG.CHAR_DELAY_MULTIPLIER / animationSpeed) * 1000
+      );
     }
-  }
+
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isHovered, morphedCharacters, animationSpeed, maxLength]);
+
+  // Build the display string character by character
+  const displayText = useMemo(() => {
+    let result = "";
+    for (let i = 0; i < maxLength; i++) {
+      result += i < morphedCharacters ? toText[i] ?? "" : fromText[i] ?? "";
+    }
+    return result;
+  }, [morphedCharacters, fromText, toText, maxLength]);
+
   return (
-    <span>
-      {display.split("").map((char, idx) => (
+    <span className="inline-block">
+      {displayText.split("").map((char, idx) => (
         <motion.span
-          key={"morph-" + idx}
-          animate={{ opacity: 1 }}
+          key={`morph-${fromText}-${toText}-${idx}`}
+          animate={{ opacity: char ? 1 : 0 }}
+          transition={{
+            duration: ANIMATION_CONFIG.MORPH_CHAR_OPACITY_DURATION / animationSpeed,
+            ease: ANIMATION_CONFIG.EASE_OUT,
+          }}
           style={{ display: "inline-block" }}
         >
           {char === " " ? "\u00A0" : char}
