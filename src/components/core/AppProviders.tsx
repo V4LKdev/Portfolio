@@ -240,10 +240,17 @@ export function AppProviders({ children }: AppProvidersProps) {
     }
   }, [currentSection, pauseStateBeforeNavigation, setManualPause]);
 
-  const handleMenuClick = useCallback((sectionId: string) => {
-    setCurrentSection(sectionId);
-    setSelectedProject(null);
-    setIsMobileMenuOpen(false);
+  const handleMenuClick = useCallback((sectionId: string, hierarchy?: string) => {
+    const doNav = () => {
+      setCurrentSection(sectionId);
+      setSelectedProject(null);
+      setIsMobileMenuOpen(false);
+    };
+    if (hierarchy === "primary" || hierarchy === "secondary") {
+      setTimeout(doNav, 250); // 250ms delay for primary/secondary
+    } else {
+      doNav();
+    }
   }, []);
 
   const handleProjectClick = useCallback((project: Project) => {

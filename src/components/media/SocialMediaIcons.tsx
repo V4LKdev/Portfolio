@@ -36,11 +36,9 @@ const SocialMediaIcons: React.FC<SocialMediaIconsProps> = ({
     },
     {
       name: "The Rookies",
-      url: "https://www.therookies.co/u/your-profile", // Replace with your actual The Rookies profile
+      url: "https://www.therookies.co/u/NicM", // Updated to correct The Rookies profile
       icon: (
-        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M12 2L3.09 8.26l1.82 1.54L12 4.52l7.09 5.28l1.82-1.54L12 2zM12 7.3l-6.91 5.14v8.42c0 .66.54 1.2 1.2 1.2h11.42c.66 0 1.2-.54 1.2-1.2v-8.42L12 7.3zm-3.6 9.6v-3.6h7.2v3.6h-7.2z" />
-        </svg>
+        <img src="/TheRookies-White.png" alt="The Rookies Logo" className="w-5 h-5" style={{ display: 'inline', verticalAlign: 'middle' }} />
       ),
     },
     {

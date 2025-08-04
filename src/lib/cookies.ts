@@ -76,8 +76,8 @@ export interface UserPreferenceDefinitions {
  * These are used when no user preference has been set or when resetting to defaults
  */
 export const DEFAULT_PREFERENCES: UserPreferenceDefinitions = {
-  // Video defaults: Conservative approach - don't autoplay, start muted
-  videoAutoplayEnabled: false,
+  // Video defaults: Autoplay ON, start muted
+  videoAutoplayEnabled: true,
   globalAudioMuted: true,
 
   // Audio defaults: Medium volume levels, background music off by default
@@ -85,8 +85,8 @@ export const DEFAULT_PREFERENCES: UserPreferenceDefinitions = {
   backgroundMusicVolume: 0.2,
   backgroundMusicEnabled: false,
 
-  // UI defaults: Use default theme, show onboarding for new users
-  selectedTheme: "cool", // Default to cool theme as specified in themes.ts
+  // UI defaults: Use moonlight theme, show onboarding for new users
+  selectedTheme: "moonlight", // Default to moonlight theme
   showOnboarding: true,
 
   // Accessibility defaults: Standard settings, respect user's system preferences

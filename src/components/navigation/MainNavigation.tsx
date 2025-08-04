@@ -17,7 +17,7 @@ interface MainNavigationProps {
   /** Currently active section identifier */
   currentSection: string;
   /** Callback for menu item selection */
-  onMenuClick: (sectionId: string) => void;
+  onMenuClick: (sectionId: string, hierarchy: string) => void;
 }
 
 /**
@@ -68,7 +68,7 @@ const MainNavigation: React.FC<MainNavigationProps> = ({
             }
             section={item.section}
             isActive={currentSection === item.section}
-            onClick={onMenuClick}
+            onClick={(sectionId, hierarchy) => onMenuClick(sectionId, hierarchy)}
             animationType="letter-morph"
             animationSpeed={1.2}
             enableEnhancedAnimations={true}

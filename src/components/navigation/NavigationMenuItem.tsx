@@ -31,7 +31,7 @@ export interface NavigationMenuItemProps {
   /** Whether this item is currently active */
   isActive: boolean;
   /** Click handler for navigation */
-  onClick: (sectionId: string) => void;
+  onClick: (sectionId: string, hierarchy: string) => void;
   /** Animation type for text transitions */
   animationType?: "letter-morph" | "instant-reveal" | "fade" | "instant";
   /** Animation speed multiplier (default: 1.2 for enhanced feel) */
@@ -234,7 +234,7 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
     }, ANIMATION_CONFIG.FEEDBACK_DELAY);
 
     setIsActivated(true);
-    onClick(section);
+    onClick(section, hierarchy);
   };
 
   /**
