@@ -36,8 +36,34 @@ export const useTransitionState = ({
   const [showSpinner, setShowSpinner] = useState(false);
   const [pendingLocation, setPendingLocation] = useState<Location | null>(null);
 
+  // Helper function to determine if this is an actual page change vs section change
+  const isActualPageChange = (from: Location, to: Location): boolean => {
+    const fromPath = from.pathname;
+    const toPath = to.pathname;
+    
+    // Define home/portfolio sections (all render Portfolio component)
+    const homeSections = ['/', '/projects', '/about', '/skills', '/contact', '/additional'];
+    
+    const isFromHome = homeSections.includes(fromPath);
+    const isToHome = homeSections.includes(toPath);
+    
+    // If both are home sections, it's just a section change (no transition)
+    if (isFromHome && isToHome) return false;
+    
+    // Otherwise, it's an actual page change (transition needed)
+    return true;
+  };
+
   // Unified fade logic for both modes: state machine always used
   const handleLocationChange = () => {
+    // Only trigger transition for actual page changes
+    if (!isActualPageChange(_displayedLocation, location)) {
+      // For section changes, update immediately without transition
+      setDisplayedLocation(location);
+      return;
+    }
+    
+    // For actual page changes, do the full transition
     setPendingLocation(location);
     setTransitionState('fadingOut');
     setPageOpacity(1);

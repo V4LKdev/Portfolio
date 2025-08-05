@@ -66,6 +66,27 @@ export const FadeRoutes: React.FC<FadeRoutesProps> = ({
             path="/" 
             element={showOnboarding ? <Navigate to="/onboarding" replace /> : <Portfolio />} 
           />
+          {/* Homepage section routes - redirect to onboarding if not completed */}
+          <Route 
+            path="/projects" 
+            element={showOnboarding ? <Navigate to="/onboarding" replace /> : <Portfolio />} 
+          />
+          <Route 
+            path="/about" 
+            element={showOnboarding ? <Navigate to="/onboarding" replace /> : <Portfolio />} 
+          />
+          <Route 
+            path="/skills" 
+            element={showOnboarding ? <Navigate to="/onboarding" replace /> : <Portfolio />} 
+          />
+          <Route 
+            path="/contact" 
+            element={showOnboarding ? <Navigate to="/onboarding" replace /> : <Portfolio />} 
+          />
+          <Route 
+            path="/additional" 
+            element={showOnboarding ? <Navigate to="/onboarding" replace /> : <Portfolio />} 
+          />
           <Route path="/exit" element={<ExitPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

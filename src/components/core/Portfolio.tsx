@@ -22,7 +22,7 @@ import AppProviders from "./AppProviders";
 import { useNavigation } from "../../hooks/useNavigation";
 import { getProjects } from "../../lib/contentLoader";
 import { type Project } from "../../content";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 // Lazy load ProjectDetail component for better initial bundle size
 const ProjectDetail = React.lazy(() => import("../projects/ProjectDetail"));
@@ -34,16 +34,27 @@ const ProjectDetail = React.lazy(() => import("../projects/ProjectDetail"));
 const PortfolioContent: React.FC = () => {
   const [projects, setProjects] = React.useState<Project[]>([]);
   const navigate = useNavigate();
+  const location = useLocation();
 
   React.useEffect(() => {
     getProjects().then(setProjects);
   }, []);
+
+  // Derive current section from URL path
+  const getCurrentSectionFromPath = (pathname: string): string => {
+    const path = pathname.slice(1); // remove leading slash
+    if (!path || path === '') return 'home';
+    return path; // projects, about, skills, contact, additional
+  };
+
+  const urlSection = getCurrentSectionFromPath(location.pathname);
 
   const {
     currentSection,
     selectedProject,
     projectFilter,
     isMobileMenuOpen,
+    setCurrentSection,
     setProjectFilter,
     setIsMobileMenuOpen,
     handleMenuClick: _handleMenuClick,
@@ -51,14 +62,45 @@ const PortfolioContent: React.FC = () => {
     handleBackClick,
   } = useNavigation();
 
-  const handleMenuClick = (sectionId: string) => {
+  // Sync URL changes with navigation context
+  useEffect(() => {
+    if (urlSection !== currentSection) {
+      setCurrentSection(urlSection);
+    }
+  }, [urlSection, currentSection, setCurrentSection]);
+
+  const handleMenuClick = (sectionId: string, hierarchy?: string) => {
     if (sectionId === "exit") {
       setTimeout(() => {
         navigate("/exit");
       }, 250);
       return;
     }
-    _handleMenuClick(sectionId);
+    
+    // Map section IDs to routes for URL updates  
+    const sectionRoutes: Record<string, string> = {
+      home: "/",
+      projects: "/projects",
+      about: "/about",
+      skills: "/skills",
+      contact: "/contact",
+      additional: "/additional",
+    };
+    
+    const route = sectionRoutes[sectionId] || "/";
+    
+    // Respect button animation timing based on hierarchy
+    const shouldDelay = hierarchy === "primary" || hierarchy === "secondary";
+    
+    if (shouldDelay) {
+      // Delay navigation to match button animation (250ms)
+      setTimeout(() => {
+        navigate(route);
+      }, 250);
+    } else {
+      // Immediate navigation for non-primary items
+      navigate(route);
+    }
   };
 
   // Focus cursor to bottom-right when on home page

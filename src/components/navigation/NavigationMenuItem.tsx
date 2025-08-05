@@ -168,7 +168,6 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
   const [isHovered, setIsHovered] = useState(false);
   const [isPressedDown, setIsPressedDown] = useState(false);
   const [isActivated, setIsActivated] = useState(false);
-  const [isFrozenActive, setIsFrozenActive] = useState(false);
   const { playHover, playUnhover, playClick, playFeedback } = useSoundEffects();
 
   // Memoized animation configurations
@@ -214,7 +213,7 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
 
   const handleMouseLeave = () => {
     setIsHovered(false);
-    if (!isFrozenActive) setIsActivated(false);
+    setIsActivated(false); // Reset activation on mouse leave
     playUnhover();
   };
 
@@ -230,12 +229,14 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
   const handleClick = () => {
     playClick();
     setIsActivated(true);
-    setIsFrozenActive(true);
+    
+    // Call onClick immediately, let Portfolio handle the delay
+    onClick(section, hierarchy);
+    
+    // Play feedback sound and reset state after delay
     setTimeout(() => {
       playFeedback();
-      setIsActivated(false); // Reset pressed/active state after delay
-      setIsFrozenActive(false);
-      onClick(section, hierarchy);
+      setIsActivated(false); // Reset after delay
     }, ANIMATION_CONFIG.FEEDBACK_DELAY);
   };
 
