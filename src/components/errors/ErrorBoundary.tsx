@@ -33,21 +33,43 @@ class ErrorBoundary extends Component<Props, State> {
   public override render() {
     if (this.state.hasError) {
       return (
-        <div className="bg-background text-foreground min-h-screen flex flex-col items-center justify-center p-4 font-mono">
-          <div className="border border-primary/20 bg-card p-8 rounded-lg shadow-xl max-w-lg w-full text-center">
-            <h1 className="text-2xl font-bold text-destructive mb-4">
-              [ System Failure ]
+        <div
+          className="min-h-screen w-full flex flex-col items-center justify-center bg-[#181a20] text-white font-mono p-4"
+          style={{
+            background: 'linear-gradient(120deg, #181a20 60%, #23242b 100%)',
+          }}
+        >
+          <div
+            className="relative max-w-md w-full text-center p-8 rounded-xl shadow-xl border border-[#2e323c]"
+            style={{
+              background: 'rgba(24, 26, 32, 0.96)',
+              boxShadow: '0 4px 32px 0 #000a, 0 1.5px 0 0 #00ffe7 inset',
+              backdropFilter: 'blur(6px)',
+            }}
+          >
+            <h1
+              className="text-2xl md:text-3xl font-bold mb-3 tracking-wider"
+              style={{ color: '#00ffe7', letterSpacing: '0.12em', textShadow: '0 0 4px #00ffe7cc' }}
+            >
+              SYSTEM ERROR
             </h1>
-            <p className="text-muted-foreground mb-6">
-              An unexpected error occurred. The application has been halted to
-              prevent further issues.
+            <p className="mb-7 text-base text-gray-300" style={{ textShadow: '0 1px 4px #0008' }}>
+              An unexpected error has occurred.<br />
+              <span className="text-[#00ffe7] font-semibold">The application has stopped.</span>
             </p>
             <button
               onClick={() => window.location.reload()}
-              className="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+              className="px-5 py-2.5 rounded-md font-semibold text-base bg-[#232946] text-[#00ffe7] border border-[#00ffe7] hover:bg-[#00ffe7] hover:text-[#232946] transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-[#00ffe7] focus:ring-offset-2"
+              style={{
+                boxShadow: '0 2px 12px 0 #00ffe720',
+              }}
             >
-              Reload Application
+              Reload
             </button>
+            <div className="mt-7 text-xs text-gray-500 opacity-70 select-none">
+              If this keeps happening, please contact support.<br />
+              <span className="text-[#00ffe7]">error code: 0xC0DE</span>
+            </div>
           </div>
         </div>
       );
