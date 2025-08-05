@@ -129,7 +129,7 @@ const LocalVideoBackground: React.FC<LocalVideoBackgroundProps> = ({
     setShowPoster(true);
     onError?.();
     if (process.env.NODE_ENV !== "production") {
-      console.error("Video failed to load:", videoSrc);
+      // ...removed console.error...
     }
   };
 

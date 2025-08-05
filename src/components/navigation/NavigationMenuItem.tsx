@@ -129,9 +129,7 @@ const validateHierarchy = (hierarchy: string): boolean => {
  */
 const getButtonSpacing = (hierarchy: string): string => {
   if (!validateHierarchy(hierarchy)) {
-    console.warn(
-      `Invalid hierarchy value: ${hierarchy}. Using default spacing.`,
-    );
+    // Invalid hierarchy value: fallback to tertiary spacing
     return SPACING_CONFIG.NAVIGATION.TERTIARY;
   }
 
@@ -398,15 +396,10 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
   const renderEnhancedText = () => (
     <motion.span
       className="relative inline-block align-bottom"
-      animate={{
-        color:
-          (isPressedDown || isActivated) ? "rgba(0, 0, 0, 0.9)" : "currentColor",
-      }}
-      transition={{
-        color: {
-          duration: ANIMATION_CONFIG.COLOR_TRANSITION_DURATION,
-          ease: ANIMATION_CONFIG.LINEAR,
-        },
+      style={{
+        color: (isPressedDown || isActivated)
+          ? "rgba(0, 0, 0, 0.9)"
+          : undefined,
       }}
     >
       <span className="block relative z-10">{renderAnimatedText()}</span>

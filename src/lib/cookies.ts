@@ -96,31 +96,27 @@ export const setCookie = (
   value: string,
   days: number = 365,
 ): void => {
-  try {
-    const expires = new Date();
-    expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
+  const expires = new Date();
+  expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
 
-    // Detect if we're in a secure context (HTTPS or localhost development)
-    const isSecure =
-      window.location.protocol === "https:" ||
-      window.location.hostname === "localhost" ||
-      window.location.hostname === "127.0.0.1";
+  // Detect if we're in a secure context (HTTPS or localhost development)
+  const isSecure =
+    window.location.protocol === "https:" ||
+    window.location.hostname === "localhost" ||
+    window.location.hostname === "127.0.0.1";
 
-    // URL encode the value to handle special characters safely
-    const encodedValue = encodeURIComponent(value);
+  // URL encode the value to handle special characters safely
+  const encodedValue = encodeURIComponent(value);
 
-    // Build comprehensive cookie string with security flags
-    let cookieString = `${name}=${encodedValue};expires=${expires.toUTCString()};path=/;SameSite=Lax`;
+  // Build comprehensive cookie string with security flags
+  let cookieString = `${name}=${encodedValue};expires=${expires.toUTCString()};path=/;SameSite=Lax`;
 
-    // Add Secure flag for HTTPS environments (required for production)
-    if (isSecure) {
-      cookieString += ";Secure";
-    }
-
-    document.cookie = cookieString;
-  } catch (error) {
-    console.warn(`Failed to set cookie "${name}":`, error);
+  // Add Secure flag for HTTPS environments (required for production)
+  if (isSecure) {
+    cookieString += ";Secure";
   }
+
+  document.cookie = cookieString;
 };
 
 /**
@@ -130,23 +126,18 @@ export const setCookie = (
  * @returns Cookie value or null if not found
  */
 export const getCookie = (name: string): string | null => {
-  try {
-    const nameEQ = name + "=";
-    const cookies = document.cookie.split(";");
+  const nameEQ = name + "=";
+  const cookies = document.cookie.split(";");
 
-    for (const cookie of cookies) {
-      const c = cookie.trim(); // Use trim() instead of manual while loop
-      if (c.startsWith(nameEQ)) {
-        const encodedValue = c.substring(nameEQ.length);
-        // URL decode the value to handle special characters
-        return decodeURIComponent(encodedValue);
-      }
+  for (const cookie of cookies) {
+    const c = cookie.trim(); // Use trim() instead of manual while loop
+    if (c.startsWith(nameEQ)) {
+      const encodedValue = c.substring(nameEQ.length);
+      // URL decode the value to handle special characters
+      return decodeURIComponent(encodedValue);
     }
-    return null;
-  } catch (error) {
-    console.warn(`Failed to get cookie "${name}":`, error);
-    return null;
   }
+  return null;
 };
 
 /**
@@ -155,25 +146,21 @@ export const getCookie = (name: string): string | null => {
  * @param name - Cookie name to delete
  */
 export const deleteCookie = (name: string): void => {
-  try {
-    // Detect secure context using same logic as setCookie
-    const isSecure =
-      window.location.protocol === "https:" ||
-      window.location.hostname === "localhost" ||
-      window.location.hostname === "127.0.0.1";
+  // Detect secure context using same logic as setCookie
+  const isSecure =
+    window.location.protocol === "https:" ||
+    window.location.hostname === "localhost" ||
+    window.location.hostname === "127.0.0.1";
 
-    // Build deletion cookie string with same security flags as setCookie
-    let cookieString = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;SameSite=Lax`;
+  // Build deletion cookie string with same security flags as setCookie
+  let cookieString = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;SameSite=Lax`;
 
-    // Add Secure flag for HTTPS environments
-    if (isSecure) {
-      cookieString += ";Secure";
-    }
-
-    document.cookie = cookieString;
-  } catch (error) {
-    console.warn(`Failed to delete cookie "${name}":`, error);
+  // Add Secure flag for HTTPS environments
+  if (isSecure) {
+    cookieString += ";Secure";
   }
+
+  document.cookie = cookieString;
 };
 
 // ============================================================================
@@ -202,40 +189,36 @@ const serializePreferenceValue = (value: unknown): string => {
  * Deserialize a preference value from a cookie string
  * Includes type validation and error handling
  */
-const deserializePreferenceValue = <T>(
+function deserializePreferenceValue<T>(
   cookieValue: string | null,
   expectedType: "boolean" | "number" | "string",
   defaultValue: T,
-): T => {
+): T {
   if (cookieValue === null) {
     return defaultValue;
   }
 
-  try {
-    switch (expectedType) {
-      case "boolean":
-        return (cookieValue === "true") as T;
+  switch (expectedType) {
+    case "boolean":
+      return (cookieValue === "true") as T;
 
-      case "number": {
-        const parsed = parseFloat(cookieValue);
-        return (isNaN(parsed) ? defaultValue : parsed) as T;
-      }
-
-      case "string":
-        return cookieValue as T;
-
-      default:
-        // Fallback to JSON parsing for complex types
-        return JSON.parse(cookieValue) as T;
+    case "number": {
+      const parsed = parseFloat(cookieValue);
+      return (isNaN(parsed) ? defaultValue : parsed) as T;
     }
-  } catch (error) {
-    console.warn(
-      `Failed to deserialize preference value "${cookieValue}":`,
-      error,
-    );
-    return defaultValue;
+
+    case "string":
+      return cookieValue as T;
+
+    default:
+      // Fallback to JSON parsing for complex types
+      try {
+        return JSON.parse(cookieValue) as T;
+      } catch {
+        return defaultValue;
+      }
   }
-};
+}
 
 // ============================================================================
 // MAIN USER PREFERENCES API

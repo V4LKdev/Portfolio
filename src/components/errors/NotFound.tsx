@@ -22,7 +22,7 @@ const NotFound = () => {
 
   useEffect(() => {
     // Track navigation to non-existent routes for analytics
-    console.warn(`404 - Page not found: ${location.pathname}`);
+    // ...removed console.warn...
   }, [location.pathname]);
 
   return (

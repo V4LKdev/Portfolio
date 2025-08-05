@@ -31,7 +31,7 @@ const App = () => {
   // State to track onboarding status reactively
   const [showOnboarding, setShowOnboarding] = React.useState(() => {
     const shouldShow = UserPreferences.getShowOnboarding();
-    console.log("🔍 Initial showOnboarding:", shouldShow);
+    // ...removed console.log...
     return shouldShow;
   });
 
@@ -46,7 +46,7 @@ const App = () => {
   // Listen for onboarding completion (we'll trigger this from the onboarding page)
   React.useEffect(() => {
     const handleOnboardingComplete = () => {
-      console.log("🎉 Onboarding complete event received!");
+      // ...removed console.log...
       setShowOnboarding(false);
     };
 
@@ -58,7 +58,7 @@ const App = () => {
     };
   }, []);
 
-  console.log("🔄 App render - showOnboarding:", showOnboarding, "reduceMotion:", reduceMotion);
+  // ...removed console.log...
 
   return (
     <ErrorBoundary>
@@ -89,7 +89,7 @@ const App = () => {
             {reduceMotion ? 'Reduce Motion: ON' : 'Reduce Motion: OFF'}
           </button>
 
-          <BrowserRouter>
+          <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
             <FadeRoutes 
               showOnboarding={showOnboarding} 
               reduceMotion={reduceMotion} 

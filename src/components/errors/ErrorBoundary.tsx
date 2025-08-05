@@ -27,7 +27,7 @@ class ErrorBoundary extends Component<Props, State> {
 
   public override componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     // You can also log the error to an error reporting service
-    console.error("Uncaught error:", error, errorInfo);
+    // ...removed console.error...
   }
 
   public override render() {

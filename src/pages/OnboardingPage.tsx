@@ -53,24 +53,20 @@ const OnboardingPage: React.FC = () => {
 
   // Handle entering the portfolio
   const handleEnterPortfolio = useCallback(() => {
-    console.log("🚀 Entering portfolio...");
+    // ...removed console.log...
     
     // Save preferences to cookies
     UserPreferences.setVideoAutoplayEnabled(videoAutoplay);
     UserPreferences.setGlobalAudioMuted(!sfxEnabled); // Note: globalAudioMuted is inverse of sfxEnabled
     UserPreferences.setShowOnboarding(false); // Mark onboarding as completed
     
-    console.log("✅ Preferences saved:", {
-      videoAutoplay,
-      sfxEnabled: sfxEnabled,
-      showOnboarding: false
-    });
+    // ...removed console.log...
     
     // Dispatch custom event to notify App component
     window.dispatchEvent(new CustomEvent('onboardingComplete'));
     
     // Navigate to main portfolio
-    console.log("🔄 Navigating to home...");
+    // ...removed console.log...
     navigate('/', { replace: true });
   }, [navigate, videoAutoplay, sfxEnabled]);
 
