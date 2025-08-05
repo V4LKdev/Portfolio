@@ -69,17 +69,14 @@ const SocialMediaIcons: React.FC<SocialMediaIconsProps> = ({
           <div
             className="transition-all duration-300 group-hover:scale-105"
             style={{
-              color: "var(--theme-social-icon, rgb(253 230 138 / 0.6))",
+              color: "#fff",
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.color =
-                "var(--theme-social-icon-hover, rgb(254 243 199))";
-              e.currentTarget.style.filter =
-                "drop-shadow(0 0 8px var(--theme-social-glow, rgba(251, 191, 36, 0.6)))";
+              e.currentTarget.style.color = "#fff";
+              e.currentTarget.style.filter = "drop-shadow(0 0 8px rgba(255,255,255,0.5))";
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.color =
-                "var(--theme-social-icon, rgb(253 230 138 / 0.6))";
+              e.currentTarget.style.color = "#fff";
               e.currentTarget.style.filter = "none";
             }}
           >

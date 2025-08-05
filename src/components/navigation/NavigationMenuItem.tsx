@@ -75,7 +75,6 @@ const MorphingString: React.FC<{
     return () => {
       if (timeoutId) clearTimeout(timeoutId);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isHovered, morphedCharacters, animationSpeed, maxLength]);
 
   // Build the display string character by character

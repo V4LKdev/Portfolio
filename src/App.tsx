@@ -18,6 +18,7 @@ import NotFound from "@/components/errors/NotFound";
 import ErrorBoundary from "@/components/errors/ErrorBoundary";
 import AppProviders from "@/components/core/AppProviders";
 import OnboardingPage from "@/pages/OnboardingPage";
+import ExitPage from "@/pages/ExitPage";
 import { UserPreferences } from "@/lib/cookies";
 
 // Initialize React Query client for server state management
@@ -70,6 +71,7 @@ const App = () => {
                 path="/" 
                 element={showOnboarding ? <Navigate to="/onboarding" replace /> : <Portfolio />} 
               />
+              <Route path="/exit" element={<ExitPage />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

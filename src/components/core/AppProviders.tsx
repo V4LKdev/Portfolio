@@ -16,7 +16,6 @@ import React, {
 import { UserPreferences } from "../../lib/cookies";
 import {
   VideoControlContext,
-  type VideoControlContextType,
 } from "../../contexts/VideoControlContext";
 import {
   NavigationContext,

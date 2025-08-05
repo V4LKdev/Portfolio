@@ -17,12 +17,12 @@ import AboutSection from "../sections/AboutSection";
 import SkillsSection from "../sections/SkillsSection";
 import ContactSection from "../sections/ContactSection";
 import AdditionalSection from "../sections/AdditionalSection";
-import ExitSection from "../sections/ExitSection";
 import BUILD_VERSION from "../../config/version";
 import AppProviders from "./AppProviders";
 import { useNavigation } from "../../hooks/useNavigation";
 import { getProjects } from "../../lib/contentLoader";
 import { type Project } from "../../content";
+import { useNavigate } from "react-router-dom";
 
 // Lazy load ProjectDetail component for better initial bundle size
 const ProjectDetail = React.lazy(() => import("../projects/ProjectDetail"));
@@ -33,6 +33,7 @@ const ProjectDetail = React.lazy(() => import("../projects/ProjectDetail"));
  */
 const PortfolioContent: React.FC = () => {
   const [projects, setProjects] = React.useState<Project[]>([]);
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     getProjects().then(setProjects);
@@ -45,10 +46,20 @@ const PortfolioContent: React.FC = () => {
     isMobileMenuOpen,
     setProjectFilter,
     setIsMobileMenuOpen,
-    handleMenuClick,
+    handleMenuClick: _handleMenuClick,
     handleProjectClick,
     handleBackClick,
   } = useNavigation();
+
+  const handleMenuClick = (sectionId: string) => {
+    if (sectionId === "exit") {
+      setTimeout(() => {
+        navigate("/exit");
+      }, 250);
+      return;
+    }
+    _handleMenuClick(sectionId);
+  };
 
   // Focus cursor to bottom-right when on home page
   useEffect(() => {
@@ -158,12 +169,6 @@ const PortfolioContent: React.FC = () => {
         return (
           <SectionLayout section="projects">
             <AdditionalSection onBack={() => handleMenuClick("home")} />
-          </SectionLayout>
-        );
-      case "exit":
-        return (
-          <SectionLayout section="projects">
-            <ExitSection onBack={() => handleMenuClick("home")} />
           </SectionLayout>
         );
       default:

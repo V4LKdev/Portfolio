@@ -12,19 +12,13 @@
  * - Responsive design
  */
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserPreferences } from "../lib/cookies";
+import { onboardingContent } from "../content/onboarding-exit";
 import "../styles/onboarding.css";
 
-const LOADING_MESSAGES = [
-  "Initializing portfolio modules...",
-  "Compiling shaders...", 
-  "Establishing connection to server...",
-  "Loading project data...",
-  "Calibrating UI elements...",
-  "Finalizing...",
-];
+const LOADING_MESSAGES = onboardingContent.loadingMessages;
 
 const OnboardingPage: React.FC = () => {
   const navigate = useNavigate();
@@ -43,13 +37,13 @@ const OnboardingPage: React.FC = () => {
     const messageInterval = setInterval(() => {
       messageIndex = (messageIndex + 1) % LOADING_MESSAGES.length;
       setLoadingMessage(LOADING_MESSAGES[messageIndex]);
-    }, 700); // Change message every 700ms
+    }, 550); // Change message every 700ms
 
-    // Complete loading after 4 seconds
+    // Complete loading after 2.5 seconds
     const loadingTimeout = setTimeout(() => {
       setIsLoading(false);
       clearInterval(messageInterval);
-    }, 4000);
+    }, 3000);
     
     return () => {
       clearInterval(messageInterval);
@@ -58,7 +52,7 @@ const OnboardingPage: React.FC = () => {
   }, []);
 
   // Handle entering the portfolio
-  const handleEnterPortfolio = () => {
+  const handleEnterPortfolio = useCallback(() => {
     console.log("🚀 Entering portfolio...");
     
     // Save preferences to cookies
@@ -78,7 +72,7 @@ const OnboardingPage: React.FC = () => {
     // Navigate to main portfolio
     console.log("🔄 Navigating to home...");
     navigate('/', { replace: true });
-  };
+  }, [navigate, videoAutoplay, sfxEnabled]);
 
   // Handle keyboard events for "press any key to continue"
   useEffect(() => {
@@ -94,7 +88,17 @@ const OnboardingPage: React.FC = () => {
 
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [isLoading, videoAutoplay, sfxEnabled]);
+  }, [isLoading, videoAutoplay, sfxEnabled, handleEnterPortfolio]);
+
+  useEffect(() => {
+    // Hide text caret globally for this page
+    const style = document.createElement('style');
+    style.innerHTML = '* { caret-color: transparent !important; }';
+    document.head.appendChild(style);
+    return () => {
+      document.head.removeChild(style);
+    };
+  }, []);
 
   return (
     <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center onboarding-background p-4 select-none">
@@ -104,7 +108,7 @@ const OnboardingPage: React.FC = () => {
         <div className="flex flex-col items-center mb-10 w-full text-center">
           <span className="onboarding-title block w-full text-[3rem] sm:text-[4rem] md:text-[5rem] font-extrabold tracking-widest text-[#3b82f6] drop-shadow-lg uppercase leading-tight" 
                 style={{ letterSpacing: '0.10em' }}>
-            WELCOME
+            {onboardingContent.title}
           </span>
         </div>
 
@@ -114,9 +118,12 @@ const OnboardingPage: React.FC = () => {
             Nicolas Martin - Game Dev Portfolio
           </span>
           <span className="text-lg text-white/70 text-center max-w-2xl px-4 leading-relaxed">
-            Welcome! I'm Nicolas, a passionate game developer and creative technologist.<br className="hidden sm:inline" />
-            This portfolio showcases my favorite projects, skills, and journey in interactive media and game development.<br className="hidden sm:inline" />
-            <span className="block mt-2">Dive in and explore my work!</span>
+            {onboardingContent.description.split('\n').map((line, index) => (
+              <React.Fragment key={index}>
+                {line}
+                <br className="hidden sm:inline" />
+              </React.Fragment>
+            ))}
           </span>
         </div>
 
@@ -124,7 +131,7 @@ const OnboardingPage: React.FC = () => {
         <div className="w-full max-w-xl mx-auto mb-6 bg-black/20 p-8 border-t-2 border-b-2 border-[#3b82f6]/40">
           <div className="flex flex-col items-center gap-4">
             <span className="text-lg sm:text-xl text-[#3b82f6] font-bold mb-2 tracking-wide uppercase">
-              Set your preferences
+              {onboardingContent.preferences}
             </span>
             <div className="flex flex-row gap-8 items-center justify-center w-full">
               
@@ -150,7 +157,7 @@ const OnboardingPage: React.FC = () => {
                 <span className={`text-base sm:text-lg transition-colors duration-300 inline-block w-[90px] text-left align-middle whitespace-nowrap ${
                   videoAutoplay ? 'text-white' : 'text-white/60'
                 }`}>
-                  {videoAutoplay ? 'Video ON' : 'Video OFF'}
+                  {videoAutoplay ? onboardingContent.videoToggleOn : onboardingContent.videoToggleOff}
                 </span>
               </label>
               
@@ -176,7 +183,7 @@ const OnboardingPage: React.FC = () => {
                 <span className={`text-base sm:text-lg transition-colors duration-300 inline-block w-[90px] text-left align-middle whitespace-nowrap ${
                   sfxEnabled ? 'text-white' : 'text-white/60'
                 }`}>
-                  {sfxEnabled ? 'SFX ON' : 'SFX OFF'}
+                  {sfxEnabled ? onboardingContent.sfxToggleOn : onboardingContent.sfxToggleOff}
                 </span>
               </label>
             </div>
@@ -195,17 +202,17 @@ const OnboardingPage: React.FC = () => {
           ) : (
             <div className="flex flex-col items-center w-full">
               <span className="text-[#3b82f6] text-base font-medium h-[22px] flex items-center mb-8">
-                ✓ Ready to proceed
+                {onboardingContent.ready}
               </span>
               <button 
                 onClick={handleEnterPortfolio}
                 className="bg-[#3b82f6] text-white px-6 py-3 font-bold text-xl tracking-wide uppercase rounded-lg shadow-lg hover:bg-[#2563eb] hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#3b82f6] focus:ring-offset-2 focus:ring-offset-black mb-3"
                 style={{ boxShadow: '0 2px 16px 0 rgba(59,130,246,0.18)' }}
               >
-                ENTER PORTFOLIO
+                {onboardingContent.enterButton}
               </button>
               <span className="text-white/50 text-sm animate-pulse h-[20px] flex items-center">
-                or press any key to continue
+                {onboardingContent.pressAnyKey}
               </span>
             </div>
           )}
