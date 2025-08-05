@@ -168,6 +168,7 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
   const [isHovered, setIsHovered] = useState(false);
   const [isPressedDown, setIsPressedDown] = useState(false);
   const [isActivated, setIsActivated] = useState(false);
+  const [isFrozenActive, setIsFrozenActive] = useState(false);
   const { playHover, playUnhover, playClick, playFeedback } = useSoundEffects();
 
   // Memoized animation configurations
@@ -213,7 +214,7 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
 
   const handleMouseLeave = () => {
     setIsHovered(false);
-    setIsActivated(false);
+    if (!isFrozenActive) setIsActivated(false);
     playUnhover();
   };
 
@@ -228,12 +229,14 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
 
   const handleClick = () => {
     playClick();
+    setIsActivated(true);
+    setIsFrozenActive(true);
     setTimeout(() => {
       playFeedback();
+      setIsActivated(false); // Reset pressed/active state after delay
+      setIsFrozenActive(false);
+      onClick(section, hierarchy);
     }, ANIMATION_CONFIG.FEEDBACK_DELAY);
-
-    setIsActivated(true);
-    onClick(section, hierarchy);
   };
 
   /**
@@ -396,7 +399,7 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
       className="relative inline-block align-bottom"
       animate={{
         color:
-          isPressedDown || isActivated ? "rgba(0, 0, 0, 0.9)" : "currentColor",
+          (isPressedDown || isActivated) ? "rgba(0, 0, 0, 0.9)" : "currentColor",
       }}
       transition={{
         color: {
