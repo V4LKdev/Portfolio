@@ -9,11 +9,5 @@ import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
 
-// Initialize the new theme system
-import { initializeThemeSystem } from "@/themes";
-
-// Initialize theme system early to prevent FOUC
-initializeThemeSystem().catch(console.error);
-
 // Initialize React application with root element
 createRoot(document.getElementById("root")!).render(<App />);

@@ -6,60 +6,141 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Professional Theme System - CSS Variables are dynamically set by theme management */
+/* Moonlight Theme - Fixed CSS Variables */
 
 @layer base {
   :root {
-    /* Default theme variables - will be overridden by theme system */
-    --background: 8 8% 8%;
-    --foreground: 45 15% 85%;
+    /* Tailwind/shadcn compatible base variables */
+    --background: 2 6 23; /* Very dark blue-gray */
+    --foreground: 248 250 252; /* Slate-50 */
 
-    --card: 12 10% 12%;
-    --card-foreground: 45 15% 85%;
+    --card: 30 41 59; /* Slate-800 */
+    --card-foreground: 248 250 252; /* Slate-50 */
 
-    --popover: 12 10% 12%;
-    --popover-foreground: 45 15% 85%;
+    --popover: 30 41 59; /* Slate-800 */
+    --popover-foreground: 248 250 252; /* Slate-50 */
 
-    --primary: 45 85% 65%;
-    --primary-foreground: 12 10% 12%;
+    --primary: 59 130 246; /* Blue-500 */
+    --primary-foreground: 248 250 252; /* Slate-50 */
 
-    --secondary: 20 15% 20%;
-    --secondary-foreground: 45 15% 85%;
+    --secondary: 30 41 59; /* Slate-800 */
+    --secondary-foreground: 226 232 240; /* Slate-200 */
 
-    --muted: 15 12% 15%;
-    --muted-foreground: 45 8% 55%;
+    --muted: 51 65 85; /* Slate-700 */
+    --muted-foreground: 148 163 184; /* Slate-400 */
 
-    --accent: 45 85% 65%;
-    --accent-foreground: 12 10% 12%;
+    --accent: 59 130 246; /* Blue-500 */
+    --accent-foreground: 248 250 252; /* Slate-50 */
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 239 68 68; /* Red-500 */
+    --destructive-foreground: 248 250 252; /* Slate-50 */
 
-    --border: 20 15% 25%;
-    --input: 20 15% 25%;
-    --ring: 45 85% 65%;
+    --border: 51 65 85; /* Slate-700 */
+    --input: 51 65 85; /* Slate-700 */
+    --ring: 59 130 246; /* Blue-500 */
 
     --radius: 0.375rem;
 
-    --sidebar-background: 8 8% 8%;
-    --sidebar-foreground: 45 15% 85%;
-    --sidebar-primary: 45 85% 65%;
-    --sidebar-primary-foreground: 12 10% 12%;
-    --sidebar-accent: 20 15% 20%;
-    --sidebar-accent-foreground: 45 15% 85%;
-    --sidebar-border: 20 15% 25%;
-    --sidebar-ring: 45 85% 65%;
+    --sidebar-background: 2 6 23; /* Very dark blue-gray */
+    --sidebar-foreground: 248 250 252; /* Slate-50 */
+    --sidebar-primary: 59 130 246; /* Blue-500 */
+    --sidebar-primary-foreground: 248 250 252; /* Slate-50 */
+    --sidebar-accent: 30 41 59; /* Slate-800 */
+    --sidebar-accent-foreground: 226 232 240; /* Slate-200 */
+    --sidebar-border: 51 65 85; /* Slate-700 */
+    --sidebar-ring: 59 130 246; /* Blue-500 */
 
-    /* Connection status signal colors */
-    --theme-signal-good: #4ade80;
-    --theme-signal-medium: #facc15;
-    --theme-signal-poor: #f87171;
-    --theme-signal-inactive: rgba(75, 85, 99, 0.5);
-    --theme-panel-bg: rgba(0, 0, 0, 0.8);
-    --theme-panel-border: rgb(251 191 36 / 0.3);
-    --theme-panel-text: rgb(253 230 138 / 0.7);
+    /* Moonlight Theme Variables - Centralized Color Management */
+    
+    /* Primary Colors (Blue-based) */
+    --theme-primary: rgb(59 130 246); /* Blue-500 */
+    --theme-primary-light: rgb(125 211 252); /* Sky-300 */
+    --theme-primary-dark: rgb(37 99 235); /* Blue-600 */
+    --theme-primary-foreground: rgb(248 250 252); /* Slate-50 */
 
-    /* Theme transition timing */
+    /* Secondary Colors (Slate-based) */
+    --theme-secondary: rgb(30 41 59); /* Slate-800 */
+    --theme-secondary-light: rgb(51 65 85); /* Slate-700 */
+    --theme-secondary-dark: rgb(15 23 42); /* Slate-900 */
+    --theme-secondary-foreground: rgb(226 232 240); /* Slate-200 */
+
+    /* Neutral Colors */
+    --theme-background: rgb(2 6 23); /* Very dark blue-gray */
+    --theme-foreground: rgb(248 250 252); /* Slate-50 */
+    --theme-muted: rgb(148 163 184); /* Slate-400 */
+    --theme-border: rgb(51 65 85); /* Slate-700 */
+
+    /* Semantic Colors */
+    --theme-success: rgb(34 197 94); /* Green-500 */
+    --theme-warning: rgb(245 158 11); /* Amber-500 */
+    --theme-error: rgb(239 68 68); /* Red-500 */
+    --theme-info: rgb(59 130 246); /* Blue-500 */
+
+    /* UI Element Colors */
+    --theme-card-bg: rgb(30 41 59 / 0.5); /* Semi-transparent slate */
+    --theme-card-border: rgb(59 130 246 / 0.2); /* Semi-transparent blue */
+    --theme-card-hover-bg: rgb(59 130 246 / 0.1); /* Hover background */
+    --theme-card-hover-border: rgb(59 130 246 / 0.4); /* Hover border */
+
+    /* Button Colors */
+    --theme-button-bg: rgb(59 130 246 / 0.2); /* Semi-transparent blue */
+    --theme-button-border: rgb(59 130 246 / 0.5); /* Blue border */
+    --theme-button-text: rgb(248 250 252); /* Light text */
+    --theme-button-hover-bg: rgb(59 130 246 / 0.3); /* Hover background */
+    --theme-button-hover-border: rgb(59 130 246 / 0.8); /* Hover border */
+
+    /* Panel Colors */
+    --theme-panel-bg: rgba(30, 41, 59, 0.9); /* Dark slate background */
+    --theme-panel-border: rgb(59 130 246); /* Blue border */
+    --theme-panel-text: rgb(248 250 252); /* Light text */
+    --theme-settings-panel-bg: rgba(30, 41, 59, 0.9); /* Dark slate background */
+    --theme-settings-panel-border: rgb(59 130 246); /* Blue border */
+
+    /* Menu & Navigation */
+    --theme-menu-text: rgb(248 250 252 / 0.9); /* Semi-transparent light text */
+    --theme-menu-hover: rgb(125 211 252); /* Sky-300 for hover */
+    --theme-menu-glow: rgba(14, 165, 233, 0.8); /* Sky-500 glow */
+
+    /* Title & Heading Colors */
+    --theme-title: rgb(125 211 252); /* Sky-300 */
+    --theme-title-glow: rgba(14, 165, 233, 0.6); /* Sky-500 glow */
+    --theme-subtitle: rgb(248 250 252 / 0.8); /* Semi-transparent light text */
+    --theme-heading-text: rgb(125 211 252); /* Sky-300 */
+
+    /* Content Text Colors */
+    --theme-content-text: rgb(248 250 252 / 0.9); /* Semi-transparent light text */
+    --theme-content-text-muted: rgb(248 250 252 / 0.7); /* More transparent */
+    --theme-content-text-subtle: rgb(248 250 252 / 0.6); /* Very subtle */
+
+    /* Interactive Elements */
+    --theme-accent-color: rgb(59 130 246); /* Blue-500 */
+    --theme-back-button-text: rgb(125 211 252); /* Sky-300 */
+    --theme-back-button-hover: rgb(59 130 246); /* Blue-500 */
+
+    /* Effects & Visual Elements */
+    --theme-atmospheric-glow: rgba(14, 165, 233, 0.15); /* Sky-500 atmospheric */
+    --theme-video-overlay: linear-gradient(45deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.4) 100%);
+
+    /* Social & Icon Colors */
+    --theme-social-icon: rgb(248 250 252 / 0.6); /* Semi-transparent */
+    --theme-social-icon-hover: rgb(125 211 252); /* Sky-300 */
+    --theme-social-glow: rgba(14, 165, 233, 0.8); /* Sky-500 glow */
+
+    /* Status & Signal Colors */
+    --theme-signal-good: rgb(34 197 94); /* Green-500 */
+    --theme-signal-medium: rgb(245 158 11); /* Amber-500 */
+    --theme-signal-poor: rgb(239 68 68); /* Red-500 */
+    --theme-signal-inactive: rgb(75 85 99 / 0.5); /* Gray-600 semi-transparent */
+
+    /* Special Elements */
+    --theme-build-id: rgb(148 163 184); /* Slate-400 */
+    --theme-settings-icon: rgb(248 250 252); /* Light for dark panels */
+    --theme-quit-color: rgb(148 163 184); /* Slate-400 */
+    --theme-quit-hover: rgb(239 68 68); /* Red-500 */
+    --theme-patchnotes-color: rgb(148 163 184); /* Slate-400 */
+    --theme-patchnotes-hover: rgb(59 130 246); /* Blue-500 */
+
+    /* Transition Duration */
     --theme-transition-duration: 0.3s;
   }
 

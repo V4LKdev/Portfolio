@@ -1,5 +1,5 @@
 // SettingsPanel.tsx
-// Professional settings panel with theme, video, and audio controls
+// Professional settings panel with video and audio controls
 // Extracted from Portfolio component for better modularity
 
 import * as React from "react";
@@ -7,13 +7,11 @@ import { useState, useEffect } from "react";
 import {
   Settings,
   ChevronLeft,
-  Palette,
   Play,
   Pause,
   Volume2,
   VolumeX,
 } from "lucide-react";
-import { useTheme } from "../../hooks/useTheme";
 import { useVideoControls } from "../../hooks/useVideoControls";
 
 interface SettingsPanelProps {
@@ -23,26 +21,14 @@ interface SettingsPanelProps {
 /**
  * Professional settings panel component
  * Features:
- * - Theme cycling through available themes
  * - Video playback controls
  * - Audio controls
  * - Click-outside-to-close functionality
  * - Accessible keyboard navigation
  */
 const SettingsPanel: React.FC<SettingsPanelProps> = ({ className = "" }) => {
-  const { cycleTheme, currentTheme } = useTheme();
   const { isPaused, isMuted, togglePlayback, toggleMute } = useVideoControls();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-
-  // Get current theme display name
-  const getCurrentThemeName = (): string => {
-    return currentTheme?.name ?? "Unknown";
-  };
-
-  // Get appropriate icon for theme button
-  const getThemeIcon = () => {
-    return <Palette className="w-5 h-5 settings-panel-icon" />;
-  };
 
   // --- Click Outside to Close ---
   useEffect(() => {
@@ -100,7 +86,7 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ className = "" }) => {
         >
           <Settings
             className="w-5 h-5"
-            style={{ color: "var(--theme-settings-icon, rgb(253 230 138))" }}
+            style={{ color: "var(--theme-settings-icon, rgb(248 250 252))" }}
           />
         </button>
       ) : (
@@ -124,25 +110,6 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ className = "" }) => {
             title="Close settings menu"
           >
             <ChevronLeft className="w-5 h-5 settings-panel-icon" />
-          </button>
-
-          {/* Separator Line */}
-          <div
-            className="w-px h-6"
-            style={{
-              backgroundColor:
-                "var(--theme-settings-panel-border, rgb(59 130 246))",
-            }}
-          />
-
-          {/* Theme Cycle Button */}
-          <button
-            onClick={cycleTheme}
-            className="p-3 transition-all duration-300 hover:scale-110"
-            aria-label="Cycle to next theme"
-            title={`Current: ${getCurrentThemeName()}. Click to cycle themes.`}
-          >
-            {getThemeIcon()}
           </button>
 
           {/* Video Toggle */}

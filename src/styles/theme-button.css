@@ -1,6 +1,0 @@
-/* theme-button-active: visually indicate pressed/active state for MenuButton */
-.theme-button-active {
-  background: rgba(59, 130, 246, 0.18) !important;
-  box-shadow: 0 0 0 2px #3b82f6, 0 4px 32px 0 rgba(59,130,246,0.18);
-  transition: background 0.1s, box-shadow 0.1s;
-}

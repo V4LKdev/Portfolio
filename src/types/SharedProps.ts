@@ -51,14 +51,6 @@ export type NavigableSectionComponent<P = object> = React.FC<
   NavigableSectionProps & P
 >;
 
-/**
- * Theme-aware component props
- * For components that need theme context
- */
-export interface ThemeAwareProps {
-  /** Optional theme override */
-  theme?: string;
-}
 
 /**
  * Strict readonly wrapper for configuration objects

@@ -1,5 +1,5 @@
-// Quick debug script to check theme variables
-console.log("Theme variables check:");
+// Quick debug script to check moonlight theme variables
+console.log("Moonlight theme variables check:");
 const root = document.documentElement;
 const styles = getComputedStyle(root);
 
@@ -15,5 +15,5 @@ glowVars.forEach((varName) => {
   console.log(`${varName}: ${value}`);
 });
 
-// Also check theme attribute
+// Check theme attribute (should always be moonlight)
 console.log("Current theme:", root.getAttribute("data-theme"));
