@@ -7,7 +7,7 @@
  */
 
 /** Release version for UI display and git tags - UPDATE FOR NEW RELEASES */
-export const RELEASE_VERSION = "2025.07_v04";
+export const RELEASE_VERSION = "2025.07_v05";
 
 /** Package version for npm (semantic versioning) - UPDATE FOR NEW RELEASES */
 export const PACKAGE_VERSION = "1.2.0";
