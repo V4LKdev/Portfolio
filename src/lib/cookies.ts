@@ -48,27 +48,10 @@ export interface UserPreferenceDefinitions {
   /** Global site-wide audio mute setting (affects video sound + UI sound effects) */
   globalAudioMuted: boolean;
 
-  // ---- Audio & Sound Preferences ----
-
-  /** Volume level for UI sound effects (0.0 to 1.0) */
-  soundEffectVolume: number;
-
-  /** Volume level for background music (0.0 to 1.0) */
-  backgroundMusicVolume: number;
-
-  /** Whether background music should play automatically */
-  backgroundMusicEnabled: boolean;
-
   // ---- UI & UX Preferences ----
-
-  /** Selected theme identifier (e.g., 'warm', 'cool', 'cyberpunk') */
-  selectedTheme: string;
 
   /** Whether to show onboarding/tutorial on first visit */
   showOnboarding: boolean;
-
-  /** Whether to reduce motion for accessibility */
-  reduceMotionEnabled: boolean;
 }
 
 /**
@@ -76,21 +59,12 @@ export interface UserPreferenceDefinitions {
  * These are used when no user preference has been set or when resetting to defaults
  */
 export const DEFAULT_PREFERENCES: UserPreferenceDefinitions = {
-  // Video defaults: Autoplay ON, start muted
+  // Video defaults: Autoplay ON, start muted for better UX
   videoAutoplayEnabled: true,
-  globalAudioMuted: true,
+  globalAudioMuted: true, // SFX OFF by default (muted = true)
 
-  // Audio defaults: Medium volume levels, background music off by default
-  soundEffectVolume: 0.3,
-  backgroundMusicVolume: 0.2,
-  backgroundMusicEnabled: false,
-
-  // UI defaults: Use moonlight theme, show onboarding for new users
-  selectedTheme: "moonlight", // Default to moonlight theme
+  // UI defaults: Show onboarding for new users
   showOnboarding: true,
-
-  // Accessibility defaults: Standard settings, respect user's system preferences
-  reduceMotionEnabled: false, // Will be auto-detected from system preferences
 };
 
 /**
@@ -103,12 +77,7 @@ export const PREFERENCE_COOKIE_NAMES: Record<
 > = {
   videoAutoplayEnabled: "portfolio-video-autoplay",
   globalAudioMuted: "portfolio-audio-muted",
-  soundEffectVolume: "portfolio-sound-volume",
-  backgroundMusicVolume: "portfolio-music-volume",
-  backgroundMusicEnabled: "portfolio-music-enabled",
-  selectedTheme: "portfolio-theme",
   showOnboarding: "portfolio-show-onboarding",
-  reduceMotionEnabled: "portfolio-reduce-motion",
 };
 
 // ============================================================================
@@ -337,117 +306,7 @@ export const UserPreferences = {
     );
   },
 
-  // ---- Audio & Sound Preferences ----
-
-  /**
-   * Get volume level for UI sound effects
-   * @returns Volume level between 0.0 (silent) and 1.0 (full volume)
-   */
-  getSoundEffectVolume: (): number => {
-    const cookieValue = getCookie(PREFERENCE_COOKIE_NAMES.soundEffectVolume);
-    const volume = deserializePreferenceValue(
-      cookieValue,
-      "number",
-      DEFAULT_PREFERENCES.soundEffectVolume,
-    );
-    // Clamp volume to valid range
-    return Math.max(0.0, Math.min(1.0, volume));
-  },
-
-  /**
-   * Set volume level for UI sound effects
-   * @param volume - Volume level between 0.0 (silent) and 1.0 (full volume)
-   */
-  setSoundEffectVolume: (volume: number): void => {
-    // Clamp volume to valid range before saving
-    const clampedVolume = Math.max(0.0, Math.min(1.0, volume));
-    setCookie(
-      PREFERENCE_COOKIE_NAMES.soundEffectVolume,
-      serializePreferenceValue(clampedVolume),
-    );
-  },
-
-  /**
-   * Get volume level for background music
-   * @returns Volume level between 0.0 (silent) and 1.0 (full volume)
-   */
-  getBackgroundMusicVolume: (): number => {
-    const cookieValue = getCookie(
-      PREFERENCE_COOKIE_NAMES.backgroundMusicVolume,
-    );
-    const volume = deserializePreferenceValue(
-      cookieValue,
-      "number",
-      DEFAULT_PREFERENCES.backgroundMusicVolume,
-    );
-    // Clamp volume to valid range
-    return Math.max(0.0, Math.min(1.0, volume));
-  },
-
-  /**
-   * Set volume level for background music
-   * @param volume - Volume level between 0.0 (silent) and 1.0 (full volume)
-   */
-  setBackgroundMusicVolume: (volume: number): void => {
-    // Clamp volume to valid range before saving
-    const clampedVolume = Math.max(0.0, Math.min(1.0, volume));
-    setCookie(
-      PREFERENCE_COOKIE_NAMES.backgroundMusicVolume,
-      serializePreferenceValue(clampedVolume),
-    );
-  },
-
-  /**
-   * Get whether background music should play automatically
-   * @returns true if background music is enabled, false otherwise
-   */
-  getBackgroundMusicEnabled: (): boolean => {
-    const cookieValue = getCookie(
-      PREFERENCE_COOKIE_NAMES.backgroundMusicEnabled,
-    );
-    return deserializePreferenceValue(
-      cookieValue,
-      "boolean",
-      DEFAULT_PREFERENCES.backgroundMusicEnabled,
-    );
-  },
-
-  /**
-   * Set whether background music should play automatically
-   * @param enabled - true to enable background music, false to disable
-   */
-  setBackgroundMusicEnabled: (enabled: boolean): void => {
-    setCookie(
-      PREFERENCE_COOKIE_NAMES.backgroundMusicEnabled,
-      serializePreferenceValue(enabled),
-    );
-  },
-
   // ---- UI & UX Preferences ----
-
-  /**
-   * Get the selected theme identifier
-   * @returns Theme ID (e.g., 'warm', 'cool', 'cyberpunk')
-   */
-  getSelectedTheme: (): string => {
-    const cookieValue = getCookie(PREFERENCE_COOKIE_NAMES.selectedTheme);
-    return deserializePreferenceValue(
-      cookieValue,
-      "string",
-      DEFAULT_PREFERENCES.selectedTheme,
-    );
-  },
-
-  /**
-   * Set the selected theme identifier
-   * @param themeId - Theme ID (e.g., 'warm', 'cool', 'cyberpunk')
-   */
-  setSelectedTheme: (themeId: string): void => {
-    setCookie(
-      PREFERENCE_COOKIE_NAMES.selectedTheme,
-      serializePreferenceValue(themeId),
-    );
-  },
 
   /**
    * Get whether to show onboarding/tutorial on first visit
@@ -470,32 +329,6 @@ export const UserPreferences = {
     setCookie(
       PREFERENCE_COOKIE_NAMES.showOnboarding,
       serializePreferenceValue(show),
-    );
-  },
-
-  // ---- Accessibility Preferences ----
-
-  /**
-   * Get whether reduced motion is enabled for accessibility
-   * @returns true if motion should be reduced, false otherwise
-   */
-  getReduceMotionEnabled: (): boolean => {
-    const cookieValue = getCookie(PREFERENCE_COOKIE_NAMES.reduceMotionEnabled);
-    return deserializePreferenceValue(
-      cookieValue,
-      "boolean",
-      DEFAULT_PREFERENCES.reduceMotionEnabled,
-    );
-  },
-
-  /**
-   * Set whether reduced motion is enabled for accessibility
-   * @param enabled - true to reduce motion, false for normal motion
-   */
-  setReduceMotionEnabled: (enabled: boolean): void => {
-    setCookie(
-      PREFERENCE_COOKIE_NAMES.reduceMotionEnabled,
-      serializePreferenceValue(enabled),
     );
   },
 
@@ -535,6 +368,24 @@ export const UserPreferences = {
   },
 
   /**
+   * Clean up old/unused cookies from previous versions
+   * Call this during app initialization to remove deprecated cookies
+   */
+  cleanupOldCookies: (): void => {
+    const oldCookieNames = [
+      "portfolio-sound-volume",
+      "portfolio-music-volume", 
+      "portfolio-music-enabled",
+      "portfolio-theme",
+      "portfolio-reduce-motion",
+    ];
+    
+    oldCookieNames.forEach((cookieName) => {
+      deleteCookie(cookieName);
+    });
+  },
+
+  /**
    * Get all current preference values (useful for debugging or export)
    * @returns Object containing all current preference values
    */
@@ -542,12 +393,7 @@ export const UserPreferences = {
     return {
       videoAutoplayEnabled: UserPreferences.getVideoAutoplayEnabled(),
       globalAudioMuted: UserPreferences.getGlobalAudioMuted(),
-      soundEffectVolume: UserPreferences.getSoundEffectVolume(),
-      backgroundMusicVolume: UserPreferences.getBackgroundMusicVolume(),
-      backgroundMusicEnabled: UserPreferences.getBackgroundMusicEnabled(),
-      selectedTheme: UserPreferences.getSelectedTheme(),
       showOnboarding: UserPreferences.getShowOnboarding(),
-      reduceMotionEnabled: UserPreferences.getReduceMotionEnabled(),
     };
   },
 } as const;
