@@ -7,6 +7,7 @@
  */
 
 import React, { useState } from "react";
+import "../../styles/theme-button.css";
 
 interface MenuButtonProps {
   /** Default button label */
@@ -32,13 +33,19 @@ const MenuButton: React.FC<MenuButtonProps> = ({
   className = "",
 }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [isActive, setIsActive] = useState(false);
 
   return (
     <button
       onClick={onClick}
       onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      className={`px-6 py-3 theme-button transition-all duration-300 hover:scale-105 ${className}`}
+      onMouseLeave={() => {
+        setIsHovered(false);
+        setIsActive(false); // Reset active state if mouse leaves
+      }}
+      onMouseDown={() => setIsActive(true)}
+      onMouseUp={() => setIsActive(false)}
+      className={`px-6 py-3 theme-button transition-all duration-300 hover:scale-105 ${isActive ? "theme-button-active" : ""} ${className}`}
     >
       <span className="transition-all duration-300">
         {isHovered ? hoverLabel : label}
