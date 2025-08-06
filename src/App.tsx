@@ -31,7 +31,6 @@ const App = () => {
   // State to track onboarding status reactively
   const [showOnboarding, setShowOnboarding] = React.useState(() => {
     const shouldShow = UserPreferences.getShowOnboarding();
-    // ...removed console.log...
     return shouldShow;
   });
 
@@ -46,7 +45,6 @@ const App = () => {
   // Listen for onboarding completion (we'll trigger this from the onboarding page)
   React.useEffect(() => {
     const handleOnboardingComplete = () => {
-      // ...removed console.log...
       setShowOnboarding(false);
     };
 
@@ -57,8 +55,6 @@ const App = () => {
       window.removeEventListener('onboardingComplete', handleOnboardingComplete);
     };
   }, []);
-
-  // ...removed console.log...
 
   return (
     <ErrorBoundary>

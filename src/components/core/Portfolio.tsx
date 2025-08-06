@@ -1,4 +1,9 @@
-
+/**
+ * Portfolio.tsx
+ *
+ * This is the main component that renders the entire portfolio.
+ * It uses the AppProviders to provide context to all the other components.
+ */
 
 import * as React from "react";
 import { useEffect, Suspense } from "react";

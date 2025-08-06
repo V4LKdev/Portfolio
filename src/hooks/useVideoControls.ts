@@ -1,3 +1,9 @@
+/**
+ * useVideoControls.ts
+ *
+ * Custom hook for accessing the video control context.
+ */
+
 import { useContext } from "react";
 import { VideoControlContext } from "../contexts/VideoControlContext";
 

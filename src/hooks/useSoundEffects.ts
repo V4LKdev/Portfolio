@@ -75,7 +75,6 @@ export function useSoundEffects(
         oscillator.stop(audioContext.currentTime + duration);
       } catch (error) {
         // Audio context may not be available in some browsers
-        // ...removed console.warn...
       }
     },
     [effectivelyEnabled, getAudioContext],

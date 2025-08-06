@@ -1,3 +1,9 @@
+/**
+ * useNavigation.ts
+ *
+ * Custom hook for accessing the navigation context.
+ */
+
 import { useContext } from "react";
 import { NavigationContext } from "../contexts/NavigationContext";
 

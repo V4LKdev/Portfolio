@@ -1,3 +1,9 @@
+/**
+ * useToast.ts
+ *
+ * Custom hook for displaying toast notifications.
+ */
+
 import * as React from "react";
 
 import type { ToastActionElement, ToastProps } from "@/components/ui/toast";

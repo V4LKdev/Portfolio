@@ -1,3 +1,10 @@
+/**
+ * Layout.tsx
+ *
+ * This is the main layout component for the entire application.
+ * It handles the video background, side panels, and other global layout elements.
+ */
+
 import React from "react";
 import LocalVideoBackground from "../media/LocalVideoBackground";
 import SocialMediaIcons from "../media/SocialMediaIcons";

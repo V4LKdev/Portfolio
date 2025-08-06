@@ -1,3 +1,9 @@
+/**
+ * VideoControlContext.tsx
+ *
+ * Context for managing the video playback state of the application.
+ */
+
 import { createContext } from "react";
 
 interface VideoState {

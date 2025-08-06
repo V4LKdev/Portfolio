@@ -59,7 +59,6 @@ export function AppProviders({ children }: AppProvidersProps) {
     UserPreferences.setVideoAutoplayEnabled(!paused);
   }, []);
 
-  // Media Session Integration
   useEffect(() => {
     if ("mediaSession" in navigator) {
       navigator.mediaSession.setActionHandler("play", () => {
@@ -76,7 +75,6 @@ export function AppProviders({ children }: AppProvidersProps) {
     return undefined;
   }, [isPaused, togglePlayback]);
 
-  // Keyboard Controls
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       const shouldHandleSpace =
@@ -94,27 +92,22 @@ export function AppProviders({ children }: AppProvidersProps) {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [isPaused, togglePlayback]);
 
-  // Video Element Sync & Resume
   useEffect(() => {
     const video = document.querySelector("video");
     if (!video) return;
     
-    // Restore last playback time if available
     if (lastVideoTimeRef.current > 0) {
       video.currentTime = lastVideoTimeRef.current;
     }
     
-    // Sync video element with our state
     video.muted = isMuted;
     
-    // Handle play/pause sync
     if (isPaused && !video.paused) {
       video.pause();
     } else if (!isPaused && video.paused) {
       video.play().catch(() => {});
     }
     
-    // Save current time on unmount
     const handleBeforeUnload = () => {
       lastVideoTimeRef.current = video.currentTime;
     };
@@ -123,18 +116,15 @@ export function AppProviders({ children }: AppProvidersProps) {
     
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
-      // Save current time on navigation away
       if (!video.paused) {
         lastVideoTimeRef.current = video.currentTime;
       }
     };
   }, [isPaused, isMuted]);
 
-  // Tab Visibility Resume Logic
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (!document.hidden) {
-        // Note: shouldBePaused is the inverse of autoplay enabled
         const autoplayEnabled = UserPreferences.getVideoAutoplayEnabled();
         const shouldBePaused = !autoplayEnabled;
         setIsPaused(shouldBePaused);
@@ -174,29 +164,24 @@ export function AppProviders({ children }: AppProvidersProps) {
       setManualPause,
     ],
   );
-  // --- Navigation State ---
+
   const [currentSection, setCurrentSection] = useState("home");
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [projectFilter, setProjectFilter] = useState("all");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  // Track the user's pause state before navigation to restore it later
   const [pauseStateBeforeNavigation, setPauseStateBeforeNavigation] =
     React.useState<boolean | null>(null);
-  // Navigation Effects - Auto-pause when leaving home, auto-resume when returning
+
   useEffect(() => {
     if (currentSection !== "home") {
-      // Store the current manual pause state before auto-pausing
       setPauseStateBeforeNavigation(isManuallyPaused);
       setIsPaused(true);
-      // Note: We don't call setManualPause here because this is auto-pause, not user intent
     }
   }, [currentSection, isManuallyPaused]);
 
-  // Auto-resume video when returning to home section, but respect manual pause intent
   useEffect(() => {
     if (currentSection === "home" && pauseStateBeforeNavigation !== null) {
-      // Restore the user's original pause intent from before navigation
       setManualPause(pauseStateBeforeNavigation);
       setPauseStateBeforeNavigation(null);
     }
@@ -209,7 +194,7 @@ export function AppProviders({ children }: AppProvidersProps) {
       setIsMobileMenuOpen(false);
     };
     if (hierarchy === "primary" || hierarchy === "secondary") {
-      setTimeout(doNav, 250); // 250ms delay for primary/secondary
+      setTimeout(doNav, 250);
     } else {
       doNav();
     }
@@ -252,15 +237,9 @@ export function AppProviders({ children }: AppProvidersProps) {
     ],
   );
 
-  // Debug: Track state changes
-  useEffect(() => {
-    // State tracking can be added here for development if needed
-  }, [isPaused, isManuallyPaused, currentSection]);
-
   return (
     <VideoControlContext.Provider value={videoValue}>
       <NavigationContext.Provider value={navigationValue}>
-        {/* Provide lastVideoTimeRef to children via context if needed in the future */}
         {children}
       </NavigationContext.Provider>
     </VideoControlContext.Provider>

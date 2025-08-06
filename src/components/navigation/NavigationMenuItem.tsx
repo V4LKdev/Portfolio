@@ -1,14 +1,7 @@
 /**
  * NavigationMenuItem.tsx
  *
- * Enhanced navigation menu item component with advanced text animations and game-style styling.
- * Features dynamic spacing, icon support, letter-morphing animations, instant reveal, and theme integration.
- *
- * Animation Types:
- * - letter-morph: Characters change in place letter by letter (Valorant-style)
- * - instant-reveal: Immediate clear then reveal from left with clip-path
- * - fade: Simple crossfade between text states
- * - instant: No animation - immediate swap
+ * Menu item with advanced text animations and game-style styling.
  */
 
 import React, { useState, useMemo } from "react";
@@ -18,33 +11,19 @@ import { useSoundEffects } from "../../hooks/useSoundEffects";
 import { ANIMATION_CONFIG, SPACING_CONFIG } from "../../config";
 
 export interface NavigationMenuItemProps {
-  /** Unique identifier for the menu item */
   id: string;
-  /** Display label for normal state */
   gameLabel: string;
-  /** Display label for hover state */
   hoverLabel: string;
-  /** Visual hierarchy level affecting size and spacing */
   hierarchy: "primary" | "secondary" | "tertiary" | "quit" | "patchnotes";
-  /** Target section to navigate to */
   section: string;
-  /** Whether this item is currently active */
   isActive: boolean;
-  /** Click handler for navigation */
   onClick: (sectionId: string, hierarchy: string) => void;
-  /** Animation type for text transitions */
   animationType?: "letter-morph" | "instant-reveal" | "fade" | "instant";
-  /** Animation speed multiplier (default: 1.2 for enhanced feel) */
   animationSpeed?: number;
-  /** Enable enhanced animations (default: true) */
   enableEnhancedAnimations?: boolean;
-  /** Show icon for special buttons */
   hasIcon?: boolean;
 }
 
-/**
- * MorphingString: Step-by-step character morph animation (forward on hover, reverse on unhover)
- */
 const MorphingString: React.FC<{
   fromText: string;
   toText: string;
@@ -77,7 +56,6 @@ const MorphingString: React.FC<{
     };
   }, [isHovered, morphedCharacters, animationSpeed, maxLength]);
 
-  // Build the display string character by character
   const displayText = useMemo(() => {
     let result = "";
     for (let i = 0; i < maxLength; i++) {
@@ -105,10 +83,6 @@ const MorphingString: React.FC<{
   );
 };
 
-/**
- * Validates navigation menu item hierarchy configuration
- * Provides runtime validation to ensure hierarchy values are correct
- */
 const validateHierarchy = (hierarchy: string): boolean => {
   const validHierarchies = [
     "primary",
@@ -120,16 +94,8 @@ const validateHierarchy = (hierarchy: string): boolean => {
   return validHierarchies.includes(hierarchy);
 };
 
-/**
- * Gets appropriate spacing classes based on menu item hierarchy
- * Uses viewport-aware dynamic spacing that adapts to available screen real estate:
- * - Automatically scales with screen height and resolution
- * - Ensures content fits on 1080p while utilizing space on 1440p+
- * - CSS clamp() provides fluid scaling between min/max bounds
- */
 const getButtonSpacing = (hierarchy: string): string => {
   if (!validateHierarchy(hierarchy)) {
-    // Invalid hierarchy value: fallback to tertiary spacing
     return SPACING_CONFIG.NAVIGATION.TERTIARY;
   }
 
@@ -144,12 +110,6 @@ const getButtonSpacing = (hierarchy: string): string => {
   return spacingMap[hierarchy] ?? SPACING_CONFIG.NAVIGATION.TERTIARY;
 };
 
-/**
- * Individual navigation menu item with enhanced hover effects and advanced text animations
- *
- * @param props - Menu item configuration, animation settings, and event handlers
- * @returns JSX element for the navigation menu item with advanced animations
- */
 const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
   id,
   gameLabel,
@@ -168,7 +128,6 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
   const [isActivated, setIsActivated] = useState(false);
   const { playHover, playUnhover, playClick, playFeedback } = useSoundEffects();
 
-  // Memoized animation configurations
   const animationConfigs = useMemo(
     () => ({
       instantReveal: {
@@ -211,7 +170,7 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
 
   const handleMouseLeave = () => {
     setIsHovered(false);
-    setIsActivated(false); // Reset activation on mouse leave
+    setIsActivated(false);
     playUnhover();
   };
 
@@ -228,19 +187,14 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
     playClick();
     setIsActivated(true);
     
-    // Call onClick immediately, let Portfolio handle the delay
     onClick(section, hierarchy);
     
-    // Play feedback sound and reset state after delay
     setTimeout(() => {
       playFeedback();
-      setIsActivated(false); // Reset after delay
+      setIsActivated(false);
     }, ANIMATION_CONFIG.FEEDBACK_DELAY);
   };
 
-  /**
-   * Render animated text based on selected animation type
-   */
   const renderAnimatedText = () => {
     const currentText =
       isHovered && gameLabel !== hoverLabel ? hoverLabel : gameLabel;
@@ -277,7 +231,6 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
       );
     }
 
-    // Default: fade animation
     return (
       <AnimatePresence mode="wait">
         <motion.span
@@ -294,9 +247,6 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
     );
   };
 
-  /**
-   * Render the Patchnotes button with icon animation
-   */
   const renderPatchnotesButton = () => (
     <motion.div
       className="relative flex items-center gap-3"
@@ -341,9 +291,6 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
     </motion.div>
   );
 
-  /**
-   * Render the Quit button with icon animation
-   */
   const renderQuitButton = () => (
     <motion.div
       className="relative flex items-center gap-3 mt-2"
@@ -390,9 +337,6 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
     </motion.div>
   );
 
-  /**
-   * Render enhanced animated text with visual effects
-   */
   const renderEnhancedText = () => (
     <motion.span
       className="relative inline-block align-bottom"
@@ -403,7 +347,6 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
       }}
     >
       <span className="block relative z-10">{renderAnimatedText()}</span>
-      {/* Press fill effect */}
       <AnimatePresence>
         {(isPressedDown || isActivated) && (
           <motion.div
@@ -420,7 +363,6 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
           />
         )}
       </AnimatePresence>
-      {/* Hover underline */}
       <AnimatePresence>
         {isHovered && !isPressedDown && !isActivated && (
           <motion.div
@@ -439,9 +381,6 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
     </motion.span>
   );
 
-  /**
-   * Render fallback text with theme-aware transitions
-   */
   const renderFallbackText = () => (
     <>
       <span className="block w-full min-w-0 text-left group-hover:opacity-0 transition-opacity duration-300 no-select">
@@ -453,9 +392,6 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
     </>
   );
 
-  /**
-   * Render main menu items with enhanced animations
-   */
   const renderMainMenuItem = () => (
     <div className="relative flex items-center gap-3">
       <div className="relative will-change-transform w-full">
@@ -468,9 +404,6 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
     </div>
   );
 
-  /**
-   * Render tertiary menu items with muted styling
-   */
   const renderTertiaryMenuItem = () => (
     <div className="relative flex items-center gap-3">
       <div className="relative will-change-transform w-full">
@@ -480,7 +413,7 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
             style={{
               color: isHovered
                 ? "var(--theme-menu-hover)"
-                : "var(--theme-patchnotes-color)", // Use same muted color as patchnotes
+                : "var(--theme-patchnotes-color)",
             }}
           >
             {enableEnhancedAnimations && animationType !== "instant"
@@ -492,9 +425,6 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
     </div>
   );
 
-  /**
-   * Get the appropriate content based on hierarchy
-   */
   const getButtonContent = () => {
     if (hierarchy === "patchnotes") return renderPatchnotesButton();
     if (hierarchy === "quit") return renderQuitButton();

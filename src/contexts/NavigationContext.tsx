@@ -1,3 +1,9 @@
+/**
+ * NavigationContext.tsx
+ *
+ * Context for managing the navigation state of the application.
+ */
+
 import { createContext } from "react";
 import { type Project } from "../content";
 
