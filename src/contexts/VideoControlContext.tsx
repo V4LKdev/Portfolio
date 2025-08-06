@@ -1,11 +1,4 @@
-/**
- * Video Control Context
- * Manages video playback state and controls across the application
- */
-
 import { createContext } from "react";
-
-// -------------------- Video Control Context --------------------
 
 interface VideoState {
   isPaused: boolean;

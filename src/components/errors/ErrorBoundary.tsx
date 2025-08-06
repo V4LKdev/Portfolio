@@ -1,10 +1,3 @@
-/**
- * ErrorBoundary.tsx
- *
- * A top-level React component that catches JavaScript errors anywhere in its
- * child component tree, logs those errors, and displays a fallback UI
- * instead of a crashed component tree.
- */
 import React, { Component, ErrorInfo, ReactNode } from "react";
 
 interface Props {

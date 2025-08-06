@@ -27,22 +27,12 @@
  * UserPreferences.setGlobalAudioMuted(true);
  *
  * // Check if a preference has been explicitly set by the user
- * const hasUserSetTheme = UserPreferences.hasUserSetTheme();
  * ```
  */
 
-// ============================================================================
-// PREFERENCE TYPE DEFINITIONS
-// ============================================================================
 
-/**
- * Complete definition of all user preferences with their types and metadata
- * Add new preferences here to automatically get type safety and validation
- */
+
 export interface UserPreferenceDefinitions {
-  // ---- Video & Media Preferences ----
-
-  /** Whether video background should autoplay when user visits/returns to home section */
   videoAutoplayEnabled: boolean;
 
   /** Global site-wide audio mute setting (affects video sound + UI sound effects) */

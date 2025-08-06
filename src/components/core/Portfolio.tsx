@@ -1,8 +1,4 @@
-/**
- * Portfolio.tsx
- * Main portfolio component with game-inspired navigation
- * Features clean layout system with provider-based state management
- */
+
 
 import * as React from "react";
 import { useEffect, Suspense } from "react";
@@ -24,13 +20,8 @@ import { getProjects } from "../../lib/contentLoader";
 import { type Project } from "../../content";
 import { useNavigate, useLocation } from "react-router-dom";
 
-// Lazy load ProjectDetail component for better initial bundle size
 const ProjectDetail = React.lazy(() => import("../projects/ProjectDetail"));
 
-/**
- * Main portfolio content component
- * Handles routing between different sections and manages project state
- */
 const PortfolioContent: React.FC = () => {
   const [projects, setProjects] = React.useState<Project[]>([]);
   const navigate = useNavigate();
@@ -40,11 +31,10 @@ const PortfolioContent: React.FC = () => {
     getProjects().then(setProjects);
   }, []);
 
-  // Derive current section from URL path
   const getCurrentSectionFromPath = (pathname: string): string => {
-    const path = pathname.slice(1); // remove leading slash
+    const path = pathname.slice(1);
     if (!path || path === '') return 'home';
-    return path; // projects, about, skills, contact, additional
+    return path;
   };
 
   const urlSection = getCurrentSectionFromPath(location.pathname);
@@ -62,7 +52,6 @@ const PortfolioContent: React.FC = () => {
     handleBackClick,
   } = useNavigation();
 
-  // Sync URL changes with navigation context
   useEffect(() => {
     if (urlSection !== currentSection) {
       setCurrentSection(urlSection);
@@ -77,7 +66,6 @@ const PortfolioContent: React.FC = () => {
       return;
     }
     
-    // Map section IDs to routes for URL updates  
     const sectionRoutes: Record<string, string> = {
       home: "/",
       projects: "/projects",
@@ -89,21 +77,17 @@ const PortfolioContent: React.FC = () => {
     
     const route = sectionRoutes[sectionId] || "/";
     
-    // Respect button animation timing based on hierarchy
     const shouldDelay = hierarchy === "primary" || hierarchy === "secondary";
     
     if (shouldDelay) {
-      // Delay navigation to match button animation (250ms)
       setTimeout(() => {
         navigate(route);
       }, 250);
     } else {
-      // Immediate navigation for non-primary items
       navigate(route);
     }
   };
 
-  // Focus cursor to bottom-right when on home page
   useEffect(() => {
     if (currentSection === "home") {
       setTimeout(() => {
@@ -114,9 +98,7 @@ const PortfolioContent: React.FC = () => {
       }, 100);
     }
   }, [currentSection]);
-  // --- Content Rendering ---
   const renderContent = () => {
-    // Project detail page (overlay-style)
     if (selectedProject) {
       return (
         <SectionLayout section="projects" className="fixed inset-0 z-50">
@@ -136,7 +118,7 @@ const PortfolioContent: React.FC = () => {
           </Suspense>
         </SectionLayout>
       );
-    } // Home page with video background and navigation
+    }
     if (currentSection === "home") {
       return (
         <HomeLayout
@@ -152,11 +134,9 @@ const PortfolioContent: React.FC = () => {
             onNavigateToProjects={() => handleMenuClick("projects")}
           />
 
-          {/* Additional home page elements */}
           <ServerConnectionPanel className="fixed top-16 md:top-20 right-6 md:right-8 z-30 hidden xl:block" />
           <SocialMediaIcons className="fixed bottom-4 right-4 md:bottom-6 md:right-6 lg:bottom-8 lg:right-8 z-30" />
 
-          {/* Focus anchor */}
           <div
             id="main-menu-cursor-anchor"
             tabIndex={-1}
@@ -175,7 +155,6 @@ const PortfolioContent: React.FC = () => {
       );
     }
 
-    // Section pages with static backgrounds
     switch (currentSection) {
       case "projects":
         return (
@@ -225,7 +204,6 @@ const PortfolioContent: React.FC = () => {
   };
   return (
     <div className="min-h-screen bg-black text-foreground overflow-x-hidden">
-      {/* Mobile Menu Button for Home Page */}
       {currentSection === "home" && (
         <button
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -242,16 +220,13 @@ const PortfolioContent: React.FC = () => {
             <Menu className="w-6 h-6 theme-icon" />
           )}
         </button>
-      )}{" "}
-      {/* Render Content with Layout */}
-      {renderContent()}{" "}
-      {/* Build Version - only show on home page, positioned above navigation gradient */}
+      )}
+      {renderContent()}
       {currentSection === "home" && (
         <div className="fixed bottom-4 left-8 md:bottom-6 md:left-12 z-50 build-id text-xs font-mono select-none pointer-events-none">
           {BUILD_VERSION}
         </div>
       )}
-      {/* Mobile Menu Overlay for Home Page */}
       {isMobileMenuOpen && currentSection === "home" && (
         <button
           className="fixed inset-0 bg-black/50 z-30 lg:hidden"
@@ -266,11 +241,6 @@ const PortfolioContent: React.FC = () => {
   );
 };
 
-// --- Main Portfolio Component with Providers ---
-/**
- * Main Portfolio component with provider-based architecture
- * Renders the complete portfolio application with proper state management
- */
 const Portfolio: React.FC = () => (
   <AppProviders>
     <PortfolioContent />

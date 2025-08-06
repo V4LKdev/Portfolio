@@ -1,9 +1,5 @@
 /**
- * AppProviders.tsx
- *
- * Consolidated global providers for navigation and video state management.
- * This component serves as the main context provider wrapper for the entire application,
- * managing both video controls and navigation state with persistent user preferences.
+ * AppProviders - Global context providers for video and navigation state management
  */
 
 import React, {
@@ -23,43 +19,14 @@ import {
 } from "../../contexts/NavigationContext";
 import { type Project } from "../../content";
 
-// -------------------- AppProviders Component --------------------
-
 interface AppProvidersProps {
   readonly children: React.ReactNode;
 }
 
-/**
- * AppProviders
- *
- * Consolidated global providers for navigation and video state management.
- * Provides all context needed for the portfolio application:
- *
- * Video Features:
- * - Cookie-based preference persistence (remembers user settings across sessions)
- * - Auto-pause when navigating away from home (for performance)
- * - Auto-resume when returning to home (respects user's manual pause intent)
- * - Tab visibility handling (auto-resumes when tab becomes visible)
- * - Media session integration (responds to hardware media keys)
- * - Keyboard controls (space bar, media keys)
- * - Video element synchronization
- *
- * Navigation Features:
- * - Section navigation (home, projects, about, skills, contact)
- * - Project detail navigation
- * - Mobile menu state management
- * - Project filtering
- *
- * @param children - Child components that need access to global state
- */
 export function AppProviders({ children }: AppProvidersProps) {
-  // --- Video Resume State ---
-  // Store last video playback time (in seconds) across navigation
   const lastVideoTimeRef = useRef(0);
-  // --- Video State ---
-  // Initialize state from user preferences using the new comprehensive system
+  
   const [isPaused, setIsPaused] = useState(() => {
-    // Note: isPaused is the inverse of autoplay enabled
     const autoplayEnabled = UserPreferences.getVideoAutoplayEnabled();
     return !autoplayEnabled;
   });
@@ -69,7 +36,6 @@ export function AppProviders({ children }: AppProvidersProps) {
   );
 
   const [isManuallyPaused, setIsManuallyPaused] = useState(() => {
-    // Note: isManuallyPaused is the inverse of autoplay enabled
     const autoplayEnabled = UserPreferences.getVideoAutoplayEnabled();
     return !autoplayEnabled;
   });
@@ -78,7 +44,6 @@ export function AppProviders({ children }: AppProvidersProps) {
     const newPausedState = !isPaused;
     setIsPaused(newPausedState);
     setIsManuallyPaused(newPausedState);
-    // Save as autoplay preference (inverse of paused state)
     UserPreferences.setVideoAutoplayEnabled(!newPausedState);
   }, [isPaused]);
 
@@ -91,7 +56,6 @@ export function AppProviders({ children }: AppProvidersProps) {
   const setManualPause = useCallback((paused: boolean) => {
     setIsPaused(paused);
     setIsManuallyPaused(paused);
-    // Save as autoplay preference (inverse of paused state)
     UserPreferences.setVideoAutoplayEnabled(!paused);
   }, []);
 
@@ -109,7 +73,6 @@ export function AppProviders({ children }: AppProvidersProps) {
         navigator.mediaSession.setActionHandler("pause", null);
       };
     }
-    // Return undefined for browsers without mediaSession support
     return undefined;
   }, [isPaused, togglePlayback]);
 

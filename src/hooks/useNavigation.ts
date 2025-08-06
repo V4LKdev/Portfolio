@@ -1,17 +1,3 @@
-/**
- * Navigation Hook
- *
- * Custom hook for accessing navigation state and actions throughout the application.
- * Must be used within AppProviders context.
- *
- * @returns Navigation state and actions
- * @throws Error if used outside AppProviders
- *
- * @example
- * ```tsx
- * const { currentSection, handleMenuClick } = useNavigation();
- * ```
- */
 import { useContext } from "react";
 import { NavigationContext } from "../contexts/NavigationContext";
 

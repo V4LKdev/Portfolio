@@ -6,7 +6,7 @@
  * Uses the application's theming system for consistent styling.
  */
 
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 
 /**
@@ -33,12 +33,12 @@ const NotFound = () => {
         <p className="text-muted-foreground mb-8">
           The page you're looking for doesn't exist or has been moved.
         </p>
-        <a
-          href="/"
+        <Link
+          to="/"
           className="inline-block bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-3 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
         >
           Return to Home
-        </a>
+        </Link>
       </div>
     </div>
   );
