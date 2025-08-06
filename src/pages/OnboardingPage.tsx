@@ -26,6 +26,7 @@ const OnboardingPage: React.FC = () => {
   // Local state for preferences (initialize from cookies, will sync back when user clicks Enter)
   const [videoAutoplay, setVideoAutoplay] = useState(() => UserPreferences.getVideoAutoplayEnabled());
   const [sfxEnabled, setSfxEnabled] = useState(() => !UserPreferences.getGlobalAudioMuted()); // sfxEnabled is inverse of globalAudioMuted
+  const [reduceMotion, setReduceMotion] = useState(() => UserPreferences.getReduceMotion());
   
   // Loading state
   const [isLoading, setIsLoading] = useState(true);
@@ -53,22 +54,14 @@ const OnboardingPage: React.FC = () => {
 
   // Handle entering the portfolio
   const handleEnterPortfolio = useCallback(() => {
-    // ...removed console.log...
-    
     // Save preferences to cookies
     UserPreferences.setVideoAutoplayEnabled(videoAutoplay);
     UserPreferences.setGlobalAudioMuted(!sfxEnabled); // Note: globalAudioMuted is inverse of sfxEnabled
+    UserPreferences.setReduceMotion(reduceMotion);
     UserPreferences.setShowOnboarding(false); // Mark onboarding as completed
-    
-    // ...removed console.log...
-    
-    // Dispatch custom event to notify App component
     window.dispatchEvent(new CustomEvent('onboardingComplete'));
-    
-    // Navigate to main portfolio
-    // ...removed console.log...
     navigate('/', { replace: true });
-  }, [navigate, videoAutoplay, sfxEnabled]);
+  }, [navigate, videoAutoplay, sfxEnabled, reduceMotion]);
 
   // Handle keyboard events for "press any key to continue"
   useEffect(() => {
@@ -129,8 +122,7 @@ const OnboardingPage: React.FC = () => {
             <span className="text-lg sm:text-xl text-[#3b82f6] font-bold mb-2 tracking-wide uppercase">
               {onboardingContent.preferences}
             </span>
-            <div className="flex flex-row gap-8 items-center justify-center w-full">
-              
+            <div className="flex flex-col gap-6 items-center w-full mt-2">
               {/* Video Autoplay Toggle */}
               <label className="flex items-center gap-3 cursor-pointer group">
                 <div
@@ -150,13 +142,12 @@ const OnboardingPage: React.FC = () => {
                     style={{ top: '2px' }}
                   />
                 </div>
-                <span className={`text-base sm:text-lg transition-colors duration-300 inline-block w-[90px] text-left align-middle whitespace-nowrap ${
+                <span className={`text-base sm:text-lg transition-colors duration-300 inline-block w-[140px] text-left align-middle whitespace-nowrap ${
                   videoAutoplay ? 'text-white' : 'text-white/60'
                 }`}>
                   {videoAutoplay ? onboardingContent.videoToggleOn : onboardingContent.videoToggleOff}
                 </span>
               </label>
-              
               {/* Sound Effects Toggle */}
               <label className="flex items-center gap-3 cursor-pointer group">
                 <div
@@ -176,10 +167,35 @@ const OnboardingPage: React.FC = () => {
                     style={{ top: '2px' }}
                   />
                 </div>
-                <span className={`text-base sm:text-lg transition-colors duration-300 inline-block w-[90px] text-left align-middle whitespace-nowrap ${
+                <span className={`text-base sm:text-lg transition-colors duration-300 inline-block w-[140px] text-left align-middle whitespace-nowrap ${
                   sfxEnabled ? 'text-white' : 'text-white/60'
                 }`}>
                   {sfxEnabled ? onboardingContent.sfxToggleOn : onboardingContent.sfxToggleOff}
+                </span>
+              </label>
+              {/* Reduce Motion Toggle */}
+              <label className="flex items-center gap-3 cursor-pointer group">
+                <div
+                  role="switch"
+                  aria-checked={reduceMotion}
+                  tabIndex={0}
+                  className={`relative w-12 h-6 rounded-full flex items-center transition-all duration-300 focus:ring-2 focus:ring-[#3b82f6] focus:outline-none select-none ${
+                    reduceMotion ? 'bg-[#3b82f6]' : 'bg-gray-600'
+                  }`}
+                  onClick={() => setReduceMotion(!reduceMotion)}
+                  onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && setReduceMotion(!reduceMotion)}
+                >
+                  <div 
+                    className={`absolute w-5 h-5 bg-white rounded-full shadow-lg transition-all duration-300 transform ${
+                      reduceMotion ? 'translate-x-6' : 'translate-x-0.5'
+                    }`} 
+                    style={{ top: '2px' }}
+                  />
+                </div>
+                <span className={`text-base sm:text-lg transition-colors duration-300 inline-block w-[140px] text-left align-middle whitespace-nowrap ${
+                  reduceMotion ? 'text-white' : 'text-white/60'
+                }`}>
+                  {reduceMotion ? 'Reduce Motion ON' : 'Reduce Motion OFF'}
                 </span>
               </label>
             </div>

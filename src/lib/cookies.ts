@@ -42,6 +42,9 @@ export interface UserPreferenceDefinitions {
 
   /** Whether to show onboarding/tutorial on first visit */
   showOnboarding: boolean;
+
+  /** Whether to reduce motion/animations for accessibility */
+  reduceMotion: boolean;
 }
 
 /**
@@ -55,6 +58,9 @@ export const DEFAULT_PREFERENCES: UserPreferenceDefinitions = {
 
   // UI defaults: Show onboarding for new users
   showOnboarding: true,
+
+  // Accessibility: Reduce motion OFF by default
+  reduceMotion: false,
 };
 
 /**
@@ -68,6 +74,7 @@ export const PREFERENCE_COOKIE_NAMES: Record<
   videoAutoplayEnabled: "portfolio-video-autoplay",
   globalAudioMuted: "portfolio-audio-muted",
   showOnboarding: "portfolio-show-onboarding",
+  reduceMotion: "portfolio-reduce-motion",
 };
 
 // ============================================================================
@@ -305,6 +312,30 @@ export const UserPreferences = {
     );
   },
 
+  /**
+   * Get whether to reduce motion/animations for accessibility
+   * @returns true if reduced motion is enabled, false otherwise
+   */
+  getReduceMotion: (): boolean => {
+    const cookieValue = getCookie(PREFERENCE_COOKIE_NAMES.reduceMotion);
+    return deserializePreferenceValue(
+      cookieValue,
+      "boolean",
+      DEFAULT_PREFERENCES.reduceMotion,
+    );
+  },
+
+  /**
+   * Set whether to reduce motion/animations for accessibility
+   * @param reduce - true to enable reduced motion, false to disable
+   */
+  setReduceMotion: (reduce: boolean): void => {
+    setCookie(
+      PREFERENCE_COOKIE_NAMES.reduceMotion,
+      serializePreferenceValue(reduce),
+    );
+  },
+
   // ---- Utility Methods ----
 
   /**
@@ -367,6 +398,7 @@ export const UserPreferences = {
       videoAutoplayEnabled: UserPreferences.getVideoAutoplayEnabled(),
       globalAudioMuted: UserPreferences.getGlobalAudioMuted(),
       showOnboarding: UserPreferences.getShowOnboarding(),
+      reduceMotion: UserPreferences.getReduceMotion(),
     };
   },
 } as const;

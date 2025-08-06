@@ -15,16 +15,15 @@ import OnboardingPage from '@/pages/OnboardingPage';
 import ExitPage from '@/pages/ExitPage';
 import { CornerSpinner } from './CornerSpinner';
 import { useTransitionState } from './useTransitionState';
+import { useMotion } from "../../hooks/useMotion";
 
 interface FadeRoutesProps {
   showOnboarding: boolean;
-  reduceMotion?: boolean;
 }
 
-export const FadeRoutes: React.FC<FadeRoutesProps> = ({ 
-  showOnboarding, 
-  reduceMotion = false 
-}) => {
+export const FadeRoutes: React.FC<FadeRoutesProps> = ({ showOnboarding }) => {
+  const { reduceMotion } = useMotion();
+  
   const location = useLocation();
   const [displayedLocation, setDisplayedLocation] = useState(location);
   

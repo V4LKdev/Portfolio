@@ -17,6 +17,7 @@ import {
   NavigationContext,
   type NavigationContextType,
 } from "../../contexts/NavigationContext";
+import { MotionContext } from "../../contexts/MotionContext";
 import { type Project } from "../../content";
 
 interface AppProvidersProps {
@@ -24,6 +25,18 @@ interface AppProvidersProps {
 }
 
 export function AppProviders({ children }: AppProvidersProps) {
+  // Accessibility: Reduce motion state, initialized from UserPreferences
+  const [reduceMotion, setReduceMotion] = useState(() => UserPreferences.getReduceMotion());
+  // ...existing code...
+
+  // Toggle reduce motion and persist to cookies
+  const toggleReduceMotion = useCallback(() => {
+    setReduceMotion((prev) => {
+      const newValue = !prev;
+      UserPreferences.setReduceMotion(newValue);
+      return newValue;
+    });
+  }, []);
   const lastVideoTimeRef = useRef(0);
   
   const [isPaused, setIsPaused] = useState(() => {
@@ -165,6 +178,14 @@ export function AppProviders({ children }: AppProvidersProps) {
     ],
   );
 
+  const motionValue = useMemo(
+    () => ({
+      reduceMotion,
+      toggleReduceMotion,
+    }),
+    [reduceMotion, toggleReduceMotion],
+  );
+
   const [currentSection, setCurrentSection] = useState("home");
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [projectFilter, setProjectFilter] = useState("all");
@@ -238,11 +259,13 @@ export function AppProviders({ children }: AppProvidersProps) {
   );
 
   return (
-    <VideoControlContext.Provider value={videoValue}>
-      <NavigationContext.Provider value={navigationValue}>
-        {children}
-      </NavigationContext.Provider>
-    </VideoControlContext.Provider>
+    <MotionContext.Provider value={motionValue}>
+      <VideoControlContext.Provider value={videoValue}>
+        <NavigationContext.Provider value={navigationValue}>
+          {children}
+        </NavigationContext.Provider>
+      </VideoControlContext.Provider>
+    </MotionContext.Provider>
   );
 }
 

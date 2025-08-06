@@ -75,16 +75,26 @@ export const useTransitionState = ({
     if (transitionState !== 'fadingOut') return;
     const duration = reduceMotion ? 80 : 180;
     const timer = setTimeout(() => {
-      setTransitionState('loading');
-      if (!reduceMotion) setShowSpinner(true);
-      setPageOpacity(0);
+      if (reduceMotion) {
+        // Skip loading state and spinner, go directly to fadingIn
+        setTransitionState('fadingIn');
+        setDisplayedLocation(pendingLocation || location);
+        setPageOpacity(0);
+        setTimeout(() => setPageOpacity(1), 10);
+        setPendingLocation(null);
+      } else {
+        setTransitionState('loading');
+        setShowSpinner(true);
+        setPageOpacity(0);
+      }
     }, duration);
     return () => clearTimeout(timer);
-  }, [transitionState, reduceMotion]);
+  }, [transitionState, reduceMotion, location, pendingLocation, setDisplayedLocation]);
 
   useEffect(() => {
+    if (reduceMotion) return; // skip loading state for reduced motion
     if (transitionState !== 'loading' || !pendingLocation) return;
-    const duration = reduceMotion ? 120 : 800;
+    const duration = 800;
     const timer = setTimeout(() => {
       setTransitionState('fadingIn');
       setDisplayedLocation(pendingLocation);

@@ -13,7 +13,7 @@
 import { Toaster } from "@/components/ui/feedback";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter } from "react-router-dom";
-import React, { useState } from "react";
+import React from "react";
 import ErrorBoundary from "@/components/errors/ErrorBoundary";
 import AppProviders from "@/components/core/AppProviders";
 import { FadeRoutes } from "@/components/transitions";
@@ -34,8 +34,6 @@ const App = () => {
     return shouldShow;
   });
 
-  // State for reduced motion accessibility setting (will be moved to cookies later)
-  const [reduceMotion, setReduceMotion] = useState(false);
 
   // Clean up old cookies on app initialization
   React.useEffect(() => {
@@ -62,33 +60,11 @@ const App = () => {
         <AppProviders>
           <Toaster />
           
-          {/* Test toggle for reduced motion (temporary - will move to settings later) */}
-          <button
-            style={{ 
-              position: 'fixed', 
-              top: 10, 
-              left: 10, 
-              zIndex: 9999, 
-              background: reduceMotion ? '#2563eb' : '#222',
-              color: 'white', 
-              padding: '8px 12px', 
-              border: 'none',
-              borderRadius: '4px',
-              fontSize: '12px',
-              cursor: 'pointer',
-              fontFamily: 'system-ui'
-            }}
-            onClick={() => setReduceMotion((v: boolean) => !v)}
-            aria-pressed={reduceMotion}
-            title="Toggle animation mode"
-          >
-            {reduceMotion ? 'Reduce Motion: ON' : 'Reduce Motion: OFF'}
-          </button>
+          {/* Temporary reduceMotion toggle button removed */}
 
           <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
             <FadeRoutes 
               showOnboarding={showOnboarding} 
-              reduceMotion={reduceMotion} 
             />
           </BrowserRouter>
         </AppProviders>
