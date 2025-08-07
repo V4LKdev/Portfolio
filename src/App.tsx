@@ -16,7 +16,7 @@ import { BrowserRouter } from "react-router-dom";
 import React from "react";
 import ErrorBoundary from "@/components/errors/ErrorBoundary";
 import AppProviders from "@/components/core/AppProviders";
-import { FadeRoutes } from "@/components/transitions";
+import { TransitionManager } from "@/components/transitions";
 import { UserPreferences } from "@/lib/cookies";
 
 // Initialize React Query client for server state management
@@ -28,12 +28,10 @@ const queryClient = new QueryClient();
  * @returns JSX element containing the entire application structure
  */
 const App = () => {
-  // State to track onboarding status reactively
+  // State to track onboarding status - only read cookie once on mount
   const [showOnboarding, setShowOnboarding] = React.useState(() => {
-    const shouldShow = UserPreferences.getShowOnboarding();
-    return shouldShow;
+    return UserPreferences.getShowOnboarding();
   });
-
 
   // Clean up old cookies on app initialization
   React.useEffect(() => {
@@ -63,7 +61,7 @@ const App = () => {
           {/* Temporary reduceMotion toggle button removed */}
 
           <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-            <FadeRoutes 
+            <TransitionManager 
               showOnboarding={showOnboarding} 
             />
           </BrowserRouter>

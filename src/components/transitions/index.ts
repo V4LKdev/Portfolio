@@ -1,17 +1,6 @@
 /**
- * index.ts
- *
- * Modern transition system exports - pure component architecture
+ * Transition system exports
  */
 
-// Main routing with transitions
-export { FadeRoutes } from './FadeRoutes';
-
-// Individual transition components
-export { SimpleTransition } from './SimpleTransition';
-export { PageTransition } from './PageTransition';
-export { SectionTransition } from './SectionTransition';
-
-// Utilities
+export { TransitionManager } from './TransitionManager';
 export { CornerSpinner } from './CornerSpinner';
-export * from './TransitionManager';
