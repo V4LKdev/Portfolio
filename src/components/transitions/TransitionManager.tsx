@@ -24,14 +24,13 @@ type TransitionType = 'page' | 'section' | 'none' | 'simple';
  * @returns Transition type and path information
  */
 function getTransitionType(from: Location | null, to: Location): { type: TransitionType; fromPath: string; toPath: string } {
-  if (!from) {
-    return { type: 'none', fromPath: '', toPath: to.pathname };
-  }
-
-  const fromPath = from.pathname;
+  const fromPath = from?.pathname ?? '/';
   const toPath = to.pathname;
   
+  console.log('getTransitionType:', { fromPath, toPath });
+  
   if (fromPath === toPath) {
+    console.log('Same path - no transition');
     return { type: 'none', fromPath, toPath };
   }
   
@@ -46,16 +45,20 @@ function getTransitionType(from: Location | null, to: Location): { type: Transit
   
   // Page transitions for major navigation
   if (isFromPage || isToPage || (!isFromPortfolio || !isToPortfolio)) {
+    console.log('Page transition detected!');
     return { type: 'page', fromPath, toPath };
   }
   
   // Section transitions within portfolio
   if (isFromPortfolio && isToPortfolio) {
+    console.log('Section transition detected!');
     return { type: 'section', fromPath, toPath };
   }
   
-  return { type: 'none', fromPath, toPath };
+  console.log('Simple transition (fallback)');
+  return { type: 'simple', fromPath, toPath };
 }
+
 
 /**
  * Unified transition wrapper that handles all transition types with a single stable component.
@@ -66,6 +69,8 @@ const AdaptiveTransition: React.FC<{
   showOnboarding: boolean;
 }> = ({ transitionType, showOnboarding }) => {
   const location = useLocation();
+  const { reduceMotion } = useMotion();
+  
   // The location whose content is currently displayed - this controls what Routes renders
   const [displayedLocation, setDisplayedLocation] = useState(location);
   // The previous location, for transition type calculation
@@ -76,11 +81,21 @@ const AdaptiveTransition: React.FC<{
   // Lock to prevent content swap until transition is ready
   const [allowContentSwap, setAllowContentSwap] = useState(true);
 
-  // Calculate transition type for this route change
+  // Calculate transition type for this route change, respecting reduceMotion
   const effectiveTransitionType = React.useMemo(() => {
-    if (transitionType === 'simple') return 'simple';
-    return getTransitionType(prevLocation, location).type;
-  }, [transitionType, prevLocation, location]);
+    if (reduceMotion) return 'simple';
+    const detectedType = getTransitionType(prevLocation, location).type;
+    
+    console.log('AdaptiveTransition:', { 
+      location: location.pathname,
+      prevLocation: prevLocation?.pathname,
+      reduceMotion, 
+      detectedType, 
+      finalType: reduceMotion ? 'simple' : detectedType 
+    });
+    
+    return detectedType;
+  }, [reduceMotion, prevLocation, location]);
 
   // On route change, start transition
   useEffect(() => {
@@ -143,21 +158,12 @@ const AdaptiveTransition: React.FC<{
       }
     }
     
-    // SECTION TRANSITION - within portfolio sections
+    // SECTION TRANSITION - within portfolio sections (instant cut)
     if (effectiveTransitionType === 'section') {
       if (transitionState === 'fadeOut') {
-        const timer = setTimeout(() => {
-          setDisplayedLocation(location);
-          setTransitionState('fadeIn');
-        }, 300);
-        return () => clearTimeout(timer);
-      }
-      
-      if (transitionState === 'fadeIn') {
-        const timer = setTimeout(() => {
-          setTransitionState('idle');
-        }, 300);
-        return () => clearTimeout(timer);
+        // Section transitions are instant - no fade timing
+        setDisplayedLocation(location);
+        setTransitionState('idle');
       }
     }
   }, [transitionState, effectiveTransitionType, location, displayedLocation]);
@@ -165,8 +171,23 @@ const AdaptiveTransition: React.FC<{
   // ANIMATION VALUES - calculated from transition state
   const pageOpacity = React.useMemo(() => {
     if (effectiveTransitionType === 'page') {
-      return (transitionState === 'idle' || transitionState === 'fadeIn') ? 1 : 0;
+      // For page transitions: visible during idle, hidden during fadeOut/loading, visible during fadeIn
+      let pageOpacity: number;
+      if (transitionState === 'idle' || transitionState === 'fadeIn') {
+        pageOpacity = 1;
+      } else {
+        pageOpacity = 0;
+      }
+      
+      return pageOpacity;
     }
+    
+    if (effectiveTransitionType === 'section') {
+      // For section transitions: always visible (instant cut, no fade)
+      return 1;
+    }
+    
+    // For simple transitions: hidden during fadeOut, visible otherwise
     return transitionState === 'fadeOut' ? 0 : 1;
   }, [transitionState, effectiveTransitionType]);
 
@@ -190,7 +211,14 @@ const AdaptiveTransition: React.FC<{
     <div style={{ position: 'relative', height: '100%' }}>
       <motion.div
         animate={{ opacity: pageOpacity }}
-        transition={{ duration: effectiveTransitionType === 'page' ? 0.18 : 0.3, ease: 'linear' }}
+        transition={{ 
+          duration: (() => {
+            if (effectiveTransitionType === 'page') return 0.18;
+            if (effectiveTransitionType === 'section') return 0; // Instant for sections
+            return 0.3; // Simple transitions
+          })(),
+          ease: 'linear' 
+        }}
         style={{ height: '100%', width: '100%' }}
       >
         <div key={displayedLocation.pathname}>
@@ -249,18 +277,17 @@ interface TransitionManagerProps {
   showOnboarding: boolean;
 }
 
+interface TransitionInfo {
+  type: 'page' | 'section' | 'simple';
+  duration: number;
+}
+
 /**
  * Main transition manager - determines transition type and renders the unified transition system.
  */
 export const TransitionManager: React.FC<TransitionManagerProps> = ({ showOnboarding }) => {
-  const { reduceMotion } = useMotion();
-  const location = useLocation();
-
-  // Determine transition type for stable component selection
-  const transitionInfo = getTransitionType(null, location);
-  const transitionType = reduceMotion ? 'simple' : transitionInfo.type;
-  
+  // AdaptiveTransition handles all transition logic internally, including reduceMotion
   return (
-    <AdaptiveTransition transitionType={transitionType} showOnboarding={showOnboarding} />
+    <AdaptiveTransition transitionType={'simple'} showOnboarding={showOnboarding} />
   );
 };
