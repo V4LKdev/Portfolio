@@ -45,10 +45,13 @@ const App = () => {
     };
 
     // Listen for custom event
-    window.addEventListener('onboardingComplete', handleOnboardingComplete);
-    
+    window.addEventListener("onboardingComplete", handleOnboardingComplete);
+
     return () => {
-      window.removeEventListener('onboardingComplete', handleOnboardingComplete);
+      window.removeEventListener(
+        "onboardingComplete",
+        handleOnboardingComplete,
+      );
     };
   }, []);
 
@@ -57,11 +60,11 @@ const App = () => {
       <QueryClientProvider client={queryClient}>
         <AppProviders>
           <Toaster />
-          
-          <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-            <TransitionManager 
-              showOnboarding={showOnboarding} 
-            />
+
+          <BrowserRouter
+            future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+          >
+            <TransitionManager showOnboarding={showOnboarding} />
           </BrowserRouter>
         </AppProviders>
       </QueryClientProvider>

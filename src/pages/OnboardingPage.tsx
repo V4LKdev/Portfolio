@@ -3,10 +3,10 @@
  *
  * A clean, production-ready onboarding page that guides first-time visitors
  * through setting their preferences before entering the portfolio.
- * 
+ *
  * Features:
  * - Video autoplay toggle (ON by default)
- * - Sound effects toggle (OFF by default) 
+ * - Sound effects toggle (OFF by default)
  * - Loading simulation (3-5 seconds)
  * - Blue Moonlight theme styling
  * - Responsive design
@@ -24,15 +24,19 @@ const LOADING_MESSAGES = onboardingContent.loadingMessages;
 const OnboardingPage: React.FC = () => {
   const navigate = useNavigate();
   const { reduceMotion, toggleReduceMotion } = useMotion();
-  
+
   // Local state for preferences (initialize from cookies, will sync back when user clicks Enter)
-  const [videoAutoplay, setVideoAutoplay] = useState(() => UserPreferences.getVideoAutoplayEnabled());
-  const [sfxEnabled, setSfxEnabled] = useState(() => !UserPreferences.getGlobalAudioMuted()); // sfxEnabled is inverse of globalAudioMuted
-  
+  const [videoAutoplay, setVideoAutoplay] = useState(() =>
+    UserPreferences.getVideoAutoplayEnabled(),
+  );
+  const [sfxEnabled, setSfxEnabled] = useState(
+    () => !UserPreferences.getGlobalAudioMuted(),
+  ); // sfxEnabled is inverse of globalAudioMuted
+
   // Loading state
   const [isLoading, setIsLoading] = useState(true);
   const [loadingMessage, setLoadingMessage] = useState(LOADING_MESSAGES[0]);
-  
+
   // Loading simulation with cycling messages - 4 second timer like the experimental version
   useEffect(() => {
     let messageIndex = 0;
@@ -46,7 +50,7 @@ const OnboardingPage: React.FC = () => {
       setIsLoading(false);
       clearInterval(messageInterval);
     }, 3000);
-    
+
     return () => {
       clearInterval(messageInterval);
       clearTimeout(loadingTimeout);
@@ -60,8 +64,8 @@ const OnboardingPage: React.FC = () => {
     UserPreferences.setGlobalAudioMuted(!sfxEnabled); // Note: globalAudioMuted is inverse of sfxEnabled
     // reduceMotion is already handled by the context, no need to save it here
     UserPreferences.setShowOnboarding(false); // Mark onboarding as completed
-    window.dispatchEvent(new CustomEvent('onboardingComplete'));
-    navigate('/', { replace: true });
+    window.dispatchEvent(new CustomEvent("onboardingComplete"));
+    navigate("/", { replace: true });
   }, [navigate, videoAutoplay, sfxEnabled]);
 
   // Handle keyboard events for "press any key to continue"
@@ -70,20 +74,25 @@ const OnboardingPage: React.FC = () => {
 
     const handleKeyPress = (event: KeyboardEvent) => {
       // Ignore modifier keys only
-      if (event.key === 'Meta' || event.key === 'Control' || event.key === 'Alt' || event.key === 'Shift') {
+      if (
+        event.key === "Meta" ||
+        event.key === "Control" ||
+        event.key === "Alt" ||
+        event.key === "Shift"
+      ) {
         return;
       }
       handleEnterPortfolio();
     };
 
-    window.addEventListener('keydown', handleKeyPress);
-    return () => window.removeEventListener('keydown', handleKeyPress);
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
   }, [isLoading, videoAutoplay, sfxEnabled, handleEnterPortfolio]);
 
   useEffect(() => {
     // Hide text caret globally for this page
-    const style = document.createElement('style');
-    style.innerHTML = '* { caret-color: transparent !important; }';
+    const style = document.createElement("style");
+    style.innerHTML = "* { caret-color: transparent !important; }";
     document.head.appendChild(style);
     return () => {
       document.head.removeChild(style);
@@ -93,11 +102,12 @@ const OnboardingPage: React.FC = () => {
   return (
     <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center onboarding-background p-4 select-none">
       <div className="relative z-10 flex flex-col items-center w-full max-w-3xl mx-auto">
-        
         {/* Welcome Header */}
         <div className="flex flex-col items-center mb-10 w-full text-center">
-          <span className="onboarding-title block w-full text-[3rem] sm:text-[4rem] md:text-[5rem] font-extrabold tracking-widest text-[#3b82f6] drop-shadow-lg uppercase leading-tight" 
-                style={{ letterSpacing: '0.10em' }}>
+          <span
+            className="onboarding-title block w-full text-[3rem] sm:text-[4rem] md:text-[5rem] font-extrabold tracking-widest text-[#3b82f6] drop-shadow-lg uppercase leading-tight"
+            style={{ letterSpacing: "0.10em" }}
+          >
             {onboardingContent.title}
           </span>
         </div>
@@ -108,7 +118,7 @@ const OnboardingPage: React.FC = () => {
             Nicolas Martin - Game Dev Portfolio
           </span>
           <span className="text-lg text-white/70 text-center max-w-2xl px-4 leading-relaxed">
-            {onboardingContent.description.split('\n').map((line, index) => (
+            {onboardingContent.description.split("\n").map((line, index) => (
               <React.Fragment key={index}>
                 {line}
                 <br className="hidden sm:inline" />
@@ -131,22 +141,29 @@ const OnboardingPage: React.FC = () => {
                   aria-checked={videoAutoplay}
                   tabIndex={0}
                   className={`relative w-12 h-6 rounded-full flex items-center transition-all duration-300 focus:ring-2 focus:ring-[#3b82f6] focus:outline-none select-none ${
-                    videoAutoplay ? 'bg-[#3b82f6]' : 'bg-gray-600'
+                    videoAutoplay ? "bg-[#3b82f6]" : "bg-gray-600"
                   }`}
                   onClick={() => setVideoAutoplay(!videoAutoplay)}
-                  onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && setVideoAutoplay(!videoAutoplay)}
+                  onKeyDown={(e) =>
+                    (e.key === "Enter" || e.key === " ") &&
+                    setVideoAutoplay(!videoAutoplay)
+                  }
                 >
-                  <div 
+                  <div
                     className={`absolute w-5 h-5 bg-white rounded-full shadow-lg transition-all duration-300 transform ${
-                      videoAutoplay ? 'translate-x-6' : 'translate-x-0.5'
-                    }`} 
-                    style={{ top: '2px' }}
+                      videoAutoplay ? "translate-x-6" : "translate-x-0.5"
+                    }`}
+                    style={{ top: "2px" }}
                   />
                 </div>
-                <span className={`text-base sm:text-lg transition-colors duration-300 inline-block w-[140px] text-left align-middle whitespace-nowrap ${
-                  videoAutoplay ? 'text-white' : 'text-white/60'
-                }`}>
-                  {videoAutoplay ? onboardingContent.videoToggleOn : onboardingContent.videoToggleOff}
+                <span
+                  className={`text-base sm:text-lg transition-colors duration-300 inline-block w-[140px] text-left align-middle whitespace-nowrap ${
+                    videoAutoplay ? "text-white" : "text-white/60"
+                  }`}
+                >
+                  {videoAutoplay
+                    ? onboardingContent.videoToggleOn
+                    : onboardingContent.videoToggleOff}
                 </span>
               </label>
               {/* Sound Effects Toggle */}
@@ -156,22 +173,29 @@ const OnboardingPage: React.FC = () => {
                   aria-checked={sfxEnabled}
                   tabIndex={0}
                   className={`relative w-12 h-6 rounded-full flex items-center transition-all duration-300 focus:ring-2 focus:ring-[#3b82f6] focus:outline-none select-none ${
-                    sfxEnabled ? 'bg-[#3b82f6]' : 'bg-gray-600'
+                    sfxEnabled ? "bg-[#3b82f6]" : "bg-gray-600"
                   }`}
                   onClick={() => setSfxEnabled(!sfxEnabled)}
-                  onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && setSfxEnabled(!sfxEnabled)}
+                  onKeyDown={(e) =>
+                    (e.key === "Enter" || e.key === " ") &&
+                    setSfxEnabled(!sfxEnabled)
+                  }
                 >
-                  <div 
+                  <div
                     className={`absolute w-5 h-5 bg-white rounded-full shadow-lg transition-all duration-300 transform ${
-                      sfxEnabled ? 'translate-x-6' : 'translate-x-0.5'
-                    }`} 
-                    style={{ top: '2px' }}
+                      sfxEnabled ? "translate-x-6" : "translate-x-0.5"
+                    }`}
+                    style={{ top: "2px" }}
                   />
                 </div>
-                <span className={`text-base sm:text-lg transition-colors duration-300 inline-block w-[140px] text-left align-middle whitespace-nowrap ${
-                  sfxEnabled ? 'text-white' : 'text-white/60'
-                }`}>
-                  {sfxEnabled ? onboardingContent.sfxToggleOn : onboardingContent.sfxToggleOff}
+                <span
+                  className={`text-base sm:text-lg transition-colors duration-300 inline-block w-[140px] text-left align-middle whitespace-nowrap ${
+                    sfxEnabled ? "text-white" : "text-white/60"
+                  }`}
+                >
+                  {sfxEnabled
+                    ? onboardingContent.sfxToggleOn
+                    : onboardingContent.sfxToggleOff}
                 </span>
               </label>
               {/* Reduce Motion Toggle */}
@@ -181,22 +205,26 @@ const OnboardingPage: React.FC = () => {
                   aria-checked={reduceMotion}
                   tabIndex={0}
                   className={`relative w-12 h-6 rounded-full flex items-center transition-all duration-300 focus:ring-2 focus:ring-[#3b82f6] focus:outline-none select-none ${
-                    reduceMotion ? 'bg-[#3b82f6]' : 'bg-gray-600'
+                    reduceMotion ? "bg-[#3b82f6]" : "bg-gray-600"
                   }`}
                   onClick={toggleReduceMotion}
-                  onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && toggleReduceMotion()}
+                  onKeyDown={(e) =>
+                    (e.key === "Enter" || e.key === " ") && toggleReduceMotion()
+                  }
                 >
-                  <div 
+                  <div
                     className={`absolute w-5 h-5 bg-white rounded-full shadow-lg transition-all duration-300 transform ${
-                      reduceMotion ? 'translate-x-6' : 'translate-x-0.5'
-                    }`} 
-                    style={{ top: '2px' }}
+                      reduceMotion ? "translate-x-6" : "translate-x-0.5"
+                    }`}
+                    style={{ top: "2px" }}
                   />
                 </div>
-                <span className={`text-base sm:text-lg transition-colors duration-300 inline-block w-[140px] text-left align-middle whitespace-nowrap ${
-                  reduceMotion ? 'text-white' : 'text-white/60'
-                }`}>
-                  {reduceMotion ? 'Reduce Motion ON' : 'Reduce Motion OFF'}
+                <span
+                  className={`text-base sm:text-lg transition-colors duration-300 inline-block w-[140px] text-left align-middle whitespace-nowrap ${
+                    reduceMotion ? "text-white" : "text-white/60"
+                  }`}
+                >
+                  {reduceMotion ? "Reduce Motion ON" : "Reduce Motion OFF"}
                 </span>
               </label>
             </div>
@@ -217,10 +245,10 @@ const OnboardingPage: React.FC = () => {
               <span className="text-[#3b82f6] text-base font-medium h-[22px] flex items-center mb-8">
                 {onboardingContent.ready}
               </span>
-              <button 
+              <button
                 onClick={handleEnterPortfolio}
                 className="bg-[#3b82f6] text-white px-6 py-3 font-bold text-xl tracking-wide uppercase rounded-lg shadow-lg hover:bg-[#2563eb] hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#3b82f6] focus:ring-offset-2 focus:ring-offset-black mb-3"
-                style={{ boxShadow: '0 2px 16px 0 rgba(59,130,246,0.18)' }}
+                style={{ boxShadow: "0 2px 16px 0 rgba(59,130,246,0.18)" }}
               >
                 {onboardingContent.enterButton}
               </button>

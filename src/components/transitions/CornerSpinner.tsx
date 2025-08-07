@@ -5,7 +5,7 @@
  * Features a single white arc animation in the bottom-right corner.
  */
 
-import React from 'react';
+import React from "react";
 
 export const CornerSpinner: React.FC = () => (
   <div

@@ -37,17 +37,20 @@ const MorphingString: React.FC<{
     let timeoutId: NodeJS.Timeout;
 
     const step = () => {
-      setMorphedCharacters(prev => {
+      setMorphedCharacters((prev) => {
         if (isHovered && prev < maxLength) return prev + 1;
         if (!isHovered && prev > 0) return prev - 1;
         return prev;
       });
     };
 
-    if ((isHovered && morphedCharacters < maxLength) || (!isHovered && morphedCharacters > 0)) {
+    if (
+      (isHovered && morphedCharacters < maxLength) ||
+      (!isHovered && morphedCharacters > 0)
+    ) {
       timeoutId = setTimeout(
         step,
-        (ANIMATION_CONFIG.CHAR_DELAY_MULTIPLIER / animationSpeed) * 1000
+        (ANIMATION_CONFIG.CHAR_DELAY_MULTIPLIER / animationSpeed) * 1000,
       );
     }
 
@@ -59,7 +62,7 @@ const MorphingString: React.FC<{
   const displayText = useMemo(() => {
     let result = "";
     for (let i = 0; i < maxLength; i++) {
-      result += i < morphedCharacters ? toText[i] ?? "" : fromText[i] ?? "";
+      result += i < morphedCharacters ? (toText[i] ?? "") : (fromText[i] ?? "");
     }
     return result;
   }, [morphedCharacters, fromText, toText, maxLength]);
@@ -71,7 +74,8 @@ const MorphingString: React.FC<{
           key={`morph-${fromText}-${toText}-${idx}`}
           animate={{ opacity: char ? 1 : 0 }}
           transition={{
-            duration: ANIMATION_CONFIG.MORPH_CHAR_OPACITY_DURATION / animationSpeed,
+            duration:
+              ANIMATION_CONFIG.MORPH_CHAR_OPACITY_DURATION / animationSpeed,
             ease: ANIMATION_CONFIG.EASE_OUT,
           }}
           style={{ display: "inline-block" }}
@@ -186,9 +190,9 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
   const handleClick = () => {
     playClick();
     setIsActivated(true);
-    
+
     onClick(section, hierarchy);
-    
+
     setTimeout(() => {
       playFeedback();
       setIsActivated(false);
@@ -341,9 +345,7 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
     <motion.span
       className="relative inline-block align-bottom"
       style={{
-        color: (isPressedDown || isActivated)
-          ? "rgba(0, 0, 0, 0.9)"
-          : undefined,
+        color: isPressedDown || isActivated ? "rgba(0, 0, 0, 0.9)" : undefined,
       }}
     >
       <span className="block relative z-10">{renderAnimatedText()}</span>

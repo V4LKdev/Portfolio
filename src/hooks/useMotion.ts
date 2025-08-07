@@ -10,4 +10,4 @@ export const useMotion = () => {
     );
   }
   return context;
-}
+};

@@ -38,7 +38,7 @@ const PortfolioContent: React.FC = () => {
 
   const getCurrentSectionFromPath = (pathname: string): string => {
     const path = pathname.slice(1);
-    if (!path || path === '') return 'home';
+    if (!path || path === "") return "home";
     return path;
   };
 
@@ -69,7 +69,7 @@ const PortfolioContent: React.FC = () => {
       }, 250);
       return;
     }
-    
+
     const sectionRoutes: Record<string, string> = {
       home: "/",
       projects: "/projects",
@@ -78,11 +78,11 @@ const PortfolioContent: React.FC = () => {
       contact: "/contact",
       additional: "/additional",
     };
-    
+
     const route = sectionRoutes[sectionId] || "/";
-    
+
     const shouldDelay = hierarchy === "primary" || hierarchy === "secondary";
-    
+
     if (shouldDelay) {
       setTimeout(() => {
         navigate(route);

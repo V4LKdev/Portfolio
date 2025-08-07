@@ -4,16 +4,29 @@
 
 /* Enhanced Blue Moonlight gradient background */
 .onboarding-background {
-  background: 
-    radial-gradient(ellipse at 20% 50%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 20%, rgba(37, 99, 235, 0.12) 0%, transparent 50%),
-    radial-gradient(ellipse at 40% 80%, rgba(29, 78, 216, 0.08) 0%, transparent 50%),
-    linear-gradient(135deg, 
-      rgb(2, 6, 23) 0%,           /* Very dark blue-gray */
-      rgb(15, 23, 42) 25%,        /* Slate-900 */
-      rgb(30, 41, 59) 50%,        /* Slate-800 */
-      rgb(15, 23, 42) 75%,        /* Back to slate-900 */
-      rgb(2, 6, 23) 100%          /* Back to very dark */
+  background:
+    radial-gradient(
+      ellipse at 20% 50%,
+      rgba(59, 130, 246, 0.15) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse at 80% 20%,
+      rgba(37, 99, 235, 0.12) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse at 40% 80%,
+      rgba(29, 78, 216, 0.08) 0%,
+      transparent 50%
+    ),
+    linear-gradient(
+      135deg,
+      rgb(2, 6, 23) 0%,
+      /* Very dark blue-gray */ rgb(15, 23, 42) 25%,
+      /* Slate-900 */ rgb(30, 41, 59) 50%,
+      /* Slate-800 */ rgb(15, 23, 42) 75%,
+      /* Back to slate-900 */ rgb(2, 6, 23) 100% /* Back to very dark */
     );
   background-attachment: fixed;
   background-size: cover;
@@ -47,7 +60,7 @@
 /* Welcome title with proper game-style font */
 .onboarding-title {
   font-family: "Good Timing", serif;
-  text-shadow: 
+  text-shadow:
     0 0 10px rgba(59, 130, 246, 0.8),
     0 0 20px rgba(59, 130, 246, 0.6),
     0 0 40px rgba(59, 130, 246, 0.4),
@@ -66,6 +79,10 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }

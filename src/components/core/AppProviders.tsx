@@ -10,9 +10,7 @@ import React, {
   useRef,
 } from "react";
 import { UserPreferences } from "../../lib/cookies";
-import {
-  VideoControlContext,
-} from "../../contexts/VideoControlContext";
+import { VideoControlContext } from "../../contexts/VideoControlContext";
 import {
   NavigationContext,
   type NavigationContextType,
@@ -26,7 +24,9 @@ interface AppProvidersProps {
 
 export function AppProviders({ children }: AppProvidersProps) {
   // Accessibility: Reduce motion state, initialized from UserPreferences
-  const [reduceMotion, setReduceMotion] = useState(() => UserPreferences.getReduceMotion());
+  const [reduceMotion, setReduceMotion] = useState(() =>
+    UserPreferences.getReduceMotion(),
+  );
 
   // Listen for cookie changes and sync the context state
   useEffect(() => {
@@ -39,14 +39,14 @@ export function AppProviders({ children }: AppProvidersProps) {
 
     // Check for changes periodically (every 500ms)
     const interval = setInterval(checkForCookieChanges, 500);
-    
+
     // Also check on window focus (when user comes back to tab)
     const handleFocus = () => checkForCookieChanges();
-    window.addEventListener('focus', handleFocus);
+    window.addEventListener("focus", handleFocus);
 
     return () => {
       clearInterval(interval);
-      window.removeEventListener('focus', handleFocus);
+      window.removeEventListener("focus", handleFocus);
     };
   }, [reduceMotion]);
 
@@ -59,7 +59,7 @@ export function AppProviders({ children }: AppProvidersProps) {
     });
   }, []);
   const lastVideoTimeRef = useRef(0);
-  
+
   const [isPaused, setIsPaused] = useState(() => {
     const autoplayEnabled = UserPreferences.getVideoAutoplayEnabled();
     return !autoplayEnabled;
@@ -129,25 +129,25 @@ export function AppProviders({ children }: AppProvidersProps) {
   useEffect(() => {
     const video = document.querySelector("video");
     if (!video) return;
-    
+
     if (lastVideoTimeRef.current > 0) {
       video.currentTime = lastVideoTimeRef.current;
     }
-    
+
     video.muted = isMuted;
-    
+
     if (isPaused && !video.paused) {
       video.pause();
     } else if (!isPaused && video.paused) {
       video.play().catch(() => {});
     }
-    
+
     const handleBeforeUnload = () => {
       lastVideoTimeRef.current = video.currentTime;
     };
-    
+
     window.addEventListener("beforeunload", handleBeforeUnload);
-    
+
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
       if (!video.paused) {
@@ -229,18 +229,21 @@ export function AppProviders({ children }: AppProvidersProps) {
     }
   }, [currentSection, pauseStateBeforeNavigation, setManualPause]);
 
-  const handleMenuClick = useCallback((sectionId: string, hierarchy?: string) => {
-    const doNav = () => {
-      setCurrentSection(sectionId);
-      setSelectedProject(null);
-      setIsMobileMenuOpen(false);
-    };
-    if (hierarchy === "primary" || hierarchy === "secondary") {
-      setTimeout(doNav, 250);
-    } else {
-      doNav();
-    }
-  }, []);
+  const handleMenuClick = useCallback(
+    (sectionId: string, hierarchy?: string) => {
+      const doNav = () => {
+        setCurrentSection(sectionId);
+        setSelectedProject(null);
+        setIsMobileMenuOpen(false);
+      };
+      if (hierarchy === "primary" || hierarchy === "secondary") {
+        setTimeout(doNav, 250);
+      } else {
+        doNav();
+      }
+    },
+    [],
+  );
 
   const handleProjectClick = useCallback((project: Project) => {
     setSelectedProject(project);

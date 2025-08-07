@@ -2,5 +2,5 @@
  * Transition system exports
  */
 
-export { TransitionManager } from './TransitionManager';
-export { CornerSpinner } from './CornerSpinner';
+export { TransitionManager } from "./TransitionManager";
+export { CornerSpinner } from "./CornerSpinner";

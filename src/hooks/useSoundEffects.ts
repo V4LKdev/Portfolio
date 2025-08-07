@@ -73,7 +73,7 @@ export function useSoundEffects(
 
         oscillator.start(audioContext.currentTime);
         oscillator.stop(audioContext.currentTime + duration);
-      } catch (error) {
+      } catch {
         // Audio context may not be available in some browsers
       }
     },

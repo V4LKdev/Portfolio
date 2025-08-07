@@ -30,8 +30,6 @@
  * ```
  */
 
-
-
 export interface UserPreferenceDefinitions {
   videoAutoplayEnabled: boolean;
 
@@ -378,12 +376,12 @@ export const UserPreferences = {
   cleanupOldCookies: (): void => {
     const oldCookieNames = [
       "portfolio-sound-volume",
-      "portfolio-music-volume", 
+      "portfolio-music-volume",
       "portfolio-music-enabled",
       "portfolio-theme",
       "portfolio-reduce-motion",
     ];
-    
+
     oldCookieNames.forEach((cookieName) => {
       deleteCookie(cookieName);
     });
@@ -402,4 +400,3 @@ export const UserPreferences = {
     };
   },
 } as const;
-

@@ -68,7 +68,9 @@ const MainNavigation: React.FC<MainNavigationProps> = ({
             }
             section={item.section}
             isActive={currentSection === item.section}
-            onClick={(sectionId, hierarchy) => onMenuClick(sectionId, hierarchy)}
+            onClick={(sectionId, hierarchy) =>
+              onMenuClick(sectionId, hierarchy)
+            }
             animationType="letter-morph"
             animationSpeed={1.2}
             enableEnhancedAnimations={true}

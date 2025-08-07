@@ -51,7 +51,6 @@ export type NavigableSectionComponent<P = object> = React.FC<
   NavigableSectionProps & P
 >;
 
-
 /**
  * Strict readonly wrapper for configuration objects
  * Ensures immutability of config data

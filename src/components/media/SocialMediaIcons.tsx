@@ -38,7 +38,12 @@ const SocialMediaIcons: React.FC<SocialMediaIconsProps> = ({
       name: "The Rookies",
       url: "https://www.therookies.co/u/NicM", // Updated to correct The Rookies profile
       icon: (
-        <img src="/TheRookies-White.png" alt="The Rookies Logo" className="w-5 h-5" style={{ display: 'inline', verticalAlign: 'middle' }} />
+        <img
+          src="/TheRookies-White.png"
+          alt="The Rookies Logo"
+          className="w-5 h-5"
+          style={{ display: "inline", verticalAlign: "middle" }}
+        />
       ),
     },
     {
@@ -73,7 +78,8 @@ const SocialMediaIcons: React.FC<SocialMediaIconsProps> = ({
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.color = "#fff";
-              e.currentTarget.style.filter = "drop-shadow(0 0 8px rgba(255,255,255,0.5))";
+              e.currentTarget.style.filter =
+                "drop-shadow(0 0 8px rgba(255,255,255,0.5))";
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.color = "#fff";

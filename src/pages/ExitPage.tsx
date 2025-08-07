@@ -12,8 +12,8 @@ const ExitPage: React.FC = () => {
       document.activeElement.blur();
     }
     // Hide text caret globally for this page
-    const style = document.createElement('style');
-    style.innerHTML = '* { caret-color: transparent !important; }';
+    const style = document.createElement("style");
+    style.innerHTML = "* { caret-color: transparent !important; }";
     document.head.appendChild(style);
     return () => {
       document.head.removeChild(style);
@@ -21,16 +21,19 @@ const ExitPage: React.FC = () => {
   }, []);
 
   return (
-    <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center onboarding-background p-4 select-none cursor-default" tabIndex={-1}>
+    <div
+      className="fixed inset-0 z-[9999] flex flex-col items-center justify-center onboarding-background p-4 select-none cursor-default"
+      tabIndex={-1}
+    >
       <div className="relative z-10 flex flex-col items-center w-full max-w-3xl mx-auto">
         {/* Exit Header */}
         <div className="flex flex-col items-center mb-10 w-full text-center">
           <span
             className="onboarding-title block w-full text-[2.5rem] sm:text-[3.5rem] md:text-[4.5rem] font-extrabold tracking-widest text-[#3b82f6] drop-shadow-lg uppercase leading-tight select-none focus:outline-none"
-            style={{ letterSpacing: '0.10em' }}
+            style={{ letterSpacing: "0.10em" }}
             tabIndex={-1}
             aria-hidden="true"
-            onMouseDown={e => e.preventDefault()}
+            onMouseDown={(e) => e.preventDefault()}
           >
             {exitContent.title}
           </span>
@@ -41,7 +44,7 @@ const ExitPage: React.FC = () => {
             {exitContent.subtitle}
           </span>
           <span className="text-lg text-white/70 text-center max-w-2xl px-4 leading-relaxed">
-            {exitContent.description.split('\n').map((line, index) => (
+            {exitContent.description.split("\n").map((line, index) => (
               <React.Fragment key={index}>
                 {line}
                 <br className="hidden sm:inline" />
@@ -54,14 +57,14 @@ const ExitPage: React.FC = () => {
           <button
             onClick={() => navigate("/", { replace: true })}
             className="w-full sm:w-80 bg-white/10 text-white px-8 py-4 font-extrabold text-xl tracking-wider uppercase shadow-xl hover:bg-white/20 hover:text-blue-200 hover:scale-[1.03] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:ring-offset-2 focus:ring-offset-black rounded-md"
-            style={{ boxShadow: '0 4px 32px 0 rgba(100,116,139,0.10)' }}
+            style={{ boxShadow: "0 4px 32px 0 rgba(100,116,139,0.10)" }}
           >
             RETURN TO HOMEPAGE
           </button>
           <button
             onClick={() => navigate("/onboarding", { replace: true })}
             className="w-full sm:w-80 bg-gradient-to-r from-blue-500 via-blue-400 to-blue-600 text-white px-8 py-4 font-extrabold text-xl tracking-wider uppercase shadow-xl hover:from-blue-600 hover:to-blue-700 hover:scale-[1.03] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-black backdrop-blur-sm bg-opacity-90 border border-blue-400 rounded-md"
-            style={{ boxShadow: '0 4px 32px 0 rgba(59,130,246,0.18)' }}
+            style={{ boxShadow: "0 4px 32px 0 rgba(59,130,246,0.18)" }}
           >
             {exitContent.returnButton}
           </button>

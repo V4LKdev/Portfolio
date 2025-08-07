@@ -45,7 +45,6 @@ const LocalVideoBackground: React.FC<LocalVideoBackgroundProps> = ({
   const [showPoster, setShowPoster] = useState(true);
   const [wasPlayingBeforeHidden, setWasPlayingBeforeHidden] = useState(false);
 
-
   // Set playback time on mount and on loadedmetadata
   useEffect(() => {
     const video = videoRef.current;

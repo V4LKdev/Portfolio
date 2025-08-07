@@ -51,7 +51,7 @@
     --sidebar-ring: 59 130 246; /* Blue-500 */
 
     /* Moonlight Theme Variables - Centralized Color Management */
-    
+
     /* Primary Colors (Blue-based) */
     --theme-primary: rgb(59 130 246); /* Blue-500 */
     --theme-primary-light: rgb(125 211 252); /* Sky-300 */
@@ -93,7 +93,12 @@
     --theme-panel-bg: rgba(30, 41, 59, 0.9); /* Dark slate background */
     --theme-panel-border: rgb(59 130 246); /* Blue border */
     --theme-panel-text: rgb(248 250 252); /* Light text */
-    --theme-settings-panel-bg: rgba(30, 41, 59, 0.9); /* Dark slate background */
+    --theme-settings-panel-bg: rgba(
+      30,
+      41,
+      59,
+      0.9
+    ); /* Dark slate background */
     --theme-settings-panel-border: rgb(59 130 246); /* Blue border */
 
     /* Menu & Navigation */
@@ -108,7 +113,9 @@
     --theme-heading-text: rgb(125 211 252); /* Sky-300 */
 
     /* Content Text Colors */
-    --theme-content-text: rgb(248 250 252 / 0.9); /* Semi-transparent light text */
+    --theme-content-text: rgb(
+      248 250 252 / 0.9
+    ); /* Semi-transparent light text */
     --theme-content-text-muted: rgb(248 250 252 / 0.7); /* More transparent */
     --theme-content-text-subtle: rgb(248 250 252 / 0.6); /* Very subtle */
 
@@ -118,8 +125,18 @@
     --theme-back-button-hover: rgb(59 130 246); /* Blue-500 */
 
     /* Effects & Visual Elements */
-    --theme-atmospheric-glow: rgba(14, 165, 233, 0.15); /* Sky-500 atmospheric */
-    --theme-video-overlay: linear-gradient(45deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.4) 100%);
+    --theme-atmospheric-glow: rgba(
+      14,
+      165,
+      233,
+      0.15
+    ); /* Sky-500 atmospheric */
+    --theme-video-overlay: linear-gradient(
+      45deg,
+      rgba(0, 0, 0, 0.6) 0%,
+      rgba(0, 0, 0, 0.2) 50%,
+      rgba(0, 0, 0, 0.4) 100%
+    );
 
     /* Social & Icon Colors */
     --theme-social-icon: rgb(248 250 252 / 0.6); /* Semi-transparent */
@@ -130,7 +147,9 @@
     --theme-signal-good: rgb(34 197 94); /* Green-500 */
     --theme-signal-medium: rgb(245 158 11); /* Amber-500 */
     --theme-signal-poor: rgb(239 68 68); /* Red-500 */
-    --theme-signal-inactive: rgb(75 85 99 / 0.5); /* Gray-600 semi-transparent */
+    --theme-signal-inactive: rgb(
+      75 85 99 / 0.5
+    ); /* Gray-600 semi-transparent */
 
     /* Special Elements */
     --theme-build-id: rgb(148 163 184); /* Slate-400 */
