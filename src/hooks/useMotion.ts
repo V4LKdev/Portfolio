@@ -1,3 +1,10 @@
+
+/**
+ * useMotion.ts
+ *
+ * Custom React hook to access the motion context, providing motion/reduceMotion settings.
+ * Throws if used outside of <AppProviders>.
+ */
 import { useContext } from "react";
 import { MotionContext } from "../contexts/MotionContext";
 

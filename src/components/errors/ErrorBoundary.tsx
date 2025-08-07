@@ -1,3 +1,10 @@
+
+/**
+ * ErrorBoundary.tsx
+ *
+ * React error boundary component for catching and displaying errors in the UI.
+ * Provides a fallback UI and reload option when an error is encountered.
+ */
 import React, { Component, ReactNode } from "react";
 
 interface Props {
@@ -9,18 +16,24 @@ interface State {
 }
 
 class ErrorBoundary extends Component<Props, State> {
-  public state: State = {
+  public override state: State = {
     hasError: false,
   };
 
+
+  /**
+   * React lifecycle: update state to show fallback UI on error.
+   */
   public static getDerivedStateFromError(_: Error): State {
-    // Update state so the next render will show the fallback UI.
     return { hasError: true };
   }
 
+
+  /**
+   * React lifecycle: can be used to log errors to a reporting service.
+   */
   public override componentDidCatch() {
-    // You can also log the error to an error reporting service
-    // ...removed console.error...
+    // Intentionally left blank; implement logging if needed.
   }
 
   public override render() {

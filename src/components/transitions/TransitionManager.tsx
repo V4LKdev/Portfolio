@@ -159,6 +159,34 @@ const AdaptiveTransition: React.FC<{
     }
 
     // SECTION TRANSITION - within portfolio sections (instant cut)
+    /**
+     * SECTION TRANSITION DEVELOPER NOTE:
+     * -----------------------------------
+     * This block currently implements a "snap" (instant) transition between portfolio sections.
+     * To implement a proper animated section transition in the future, replace this logic with a state machine
+     * similar to the page transition above. You will need to:
+     *
+     * 1. Define the desired animation (e.g., slide, fade, scale, etc.) and its timing.
+     * 2. Use setTimeout or animation callbacks to control when the content swap (setDisplayedLocation) occurs.
+     * 3. Ensure the transitionState cycles through the necessary phases (e.g., 'fadeOut', 'animating', 'fadeIn', 'idle').
+     * 4. Coordinate the animation with the displayed content so that the outgoing section animates out,
+     *    then the new section animates in, just like the page transition above.
+     * 5. Make sure to respect the allowContentSwap lock to avoid race conditions.
+     *
+     * Example pseudocode:
+     *   if (transitionState === 'fadeOut') {
+     *     // Start your animation here
+     *     setTimeout(() => {
+     *       setDisplayedLocation(location);
+     *       setTransitionState('fadeIn');
+     *     }, ANIMATION_DURATION);
+     *   }
+     *   if (transitionState === 'fadeIn') {
+     *     setTimeout(() => setTransitionState('idle'), ANIMATION_DURATION);
+     *   }
+     *
+     * See the page transition logic above for a robust example.
+     */
     if (effectiveTransitionType === "section") {
       if (transitionState === "fadeOut") {
         // Section transitions are instant - no fade timing
