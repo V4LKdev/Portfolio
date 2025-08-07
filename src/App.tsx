@@ -58,8 +58,6 @@ const App = () => {
         <AppProviders>
           <Toaster />
           
-          {/* Temporary reduceMotion toggle button removed */}
-
           <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
             <TransitionManager 
               showOnboarding={showOnboarding} 

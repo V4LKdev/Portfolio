@@ -52,7 +52,6 @@ const PortfolioContent: React.FC = () => {
     setCurrentSection,
     setProjectFilter,
     setIsMobileMenuOpen,
-    handleMenuClick: _handleMenuClick,
     handleProjectClick,
     handleBackClick,
   } = useNavigation();

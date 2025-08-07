@@ -27,10 +27,7 @@ function getTransitionType(from: Location | null, to: Location): { type: Transit
   const fromPath = from?.pathname ?? '/';
   const toPath = to.pathname;
   
-  console.log('getTransitionType:', { fromPath, toPath });
-  
   if (fromPath === toPath) {
-    console.log('Same path - no transition');
     return { type: 'none', fromPath, toPath };
   }
   
@@ -45,17 +42,14 @@ function getTransitionType(from: Location | null, to: Location): { type: Transit
   
   // Page transitions for major navigation
   if (isFromPage || isToPage || (!isFromPortfolio || !isToPortfolio)) {
-    console.log('Page transition detected!');
     return { type: 'page', fromPath, toPath };
   }
   
   // Section transitions within portfolio
   if (isFromPortfolio && isToPortfolio) {
-    console.log('Section transition detected!');
     return { type: 'section', fromPath, toPath };
   }
   
-  console.log('Simple transition (fallback)');
   return { type: 'simple', fromPath, toPath };
 }
 
@@ -65,9 +59,8 @@ function getTransitionType(from: Location | null, to: Location): { type: Transit
  * Uses a state machine to control timing and ensure content swaps happen at the right moment.
  */
 const AdaptiveTransition: React.FC<{ 
-  transitionType: TransitionType;
   showOnboarding: boolean;
-}> = ({ transitionType, showOnboarding }) => {
+}> = ({ showOnboarding }) => {
   const location = useLocation();
   const { reduceMotion } = useMotion();
   
@@ -84,17 +77,7 @@ const AdaptiveTransition: React.FC<{
   // Calculate transition type for this route change, respecting reduceMotion
   const effectiveTransitionType = React.useMemo(() => {
     if (reduceMotion) return 'simple';
-    const detectedType = getTransitionType(prevLocation, location).type;
-    
-    console.log('AdaptiveTransition:', { 
-      location: location.pathname,
-      prevLocation: prevLocation?.pathname,
-      reduceMotion, 
-      detectedType, 
-      finalType: reduceMotion ? 'simple' : detectedType 
-    });
-    
-    return detectedType;
+    return getTransitionType(prevLocation, location).type;
   }, [reduceMotion, prevLocation, location]);
 
   // On route change, start transition
@@ -277,17 +260,11 @@ interface TransitionManagerProps {
   showOnboarding: boolean;
 }
 
-interface TransitionInfo {
-  type: 'page' | 'section' | 'simple';
-  duration: number;
-}
-
 /**
  * Main transition manager - determines transition type and renders the unified transition system.
  */
 export const TransitionManager: React.FC<TransitionManagerProps> = ({ showOnboarding }) => {
-  // AdaptiveTransition handles all transition logic internally, including reduceMotion
   return (
-    <AdaptiveTransition transitionType={'simple'} showOnboarding={showOnboarding} />
+    <AdaptiveTransition showOnboarding={showOnboarding} />
   );
 };
