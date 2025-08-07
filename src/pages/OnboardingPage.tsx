@@ -15,6 +15,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserPreferences } from "../lib/cookies";
+import { useMotion } from "../hooks/useMotion";
 import { onboardingContent } from "../content/onboarding-exit";
 import "../styles/onboarding.css";
 
@@ -22,11 +23,11 @@ const LOADING_MESSAGES = onboardingContent.loadingMessages;
 
 const OnboardingPage: React.FC = () => {
   const navigate = useNavigate();
+  const { reduceMotion, toggleReduceMotion } = useMotion();
   
   // Local state for preferences (initialize from cookies, will sync back when user clicks Enter)
   const [videoAutoplay, setVideoAutoplay] = useState(() => UserPreferences.getVideoAutoplayEnabled());
   const [sfxEnabled, setSfxEnabled] = useState(() => !UserPreferences.getGlobalAudioMuted()); // sfxEnabled is inverse of globalAudioMuted
-  const [reduceMotion, setReduceMotion] = useState(() => UserPreferences.getReduceMotion());
   
   // Loading state
   const [isLoading, setIsLoading] = useState(true);
@@ -57,11 +58,11 @@ const OnboardingPage: React.FC = () => {
     // Save preferences to cookies
     UserPreferences.setVideoAutoplayEnabled(videoAutoplay);
     UserPreferences.setGlobalAudioMuted(!sfxEnabled); // Note: globalAudioMuted is inverse of sfxEnabled
-    UserPreferences.setReduceMotion(reduceMotion);
+    // reduceMotion is already handled by the context, no need to save it here
     UserPreferences.setShowOnboarding(false); // Mark onboarding as completed
     window.dispatchEvent(new CustomEvent('onboardingComplete'));
     navigate('/', { replace: true });
-  }, [navigate, videoAutoplay, sfxEnabled, reduceMotion]);
+  }, [navigate, videoAutoplay, sfxEnabled]);
 
   // Handle keyboard events for "press any key to continue"
   useEffect(() => {
@@ -182,8 +183,8 @@ const OnboardingPage: React.FC = () => {
                   className={`relative w-12 h-6 rounded-full flex items-center transition-all duration-300 focus:ring-2 focus:ring-[#3b82f6] focus:outline-none select-none ${
                     reduceMotion ? 'bg-[#3b82f6]' : 'bg-gray-600'
                   }`}
-                  onClick={() => setReduceMotion(!reduceMotion)}
-                  onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && setReduceMotion(!reduceMotion)}
+                  onClick={toggleReduceMotion}
+                  onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && toggleReduceMotion()}
                 >
                   <div 
                     className={`absolute w-5 h-5 bg-white rounded-full shadow-lg transition-all duration-300 transform ${

@@ -27,7 +27,28 @@ interface AppProvidersProps {
 export function AppProviders({ children }: AppProvidersProps) {
   // Accessibility: Reduce motion state, initialized from UserPreferences
   const [reduceMotion, setReduceMotion] = useState(() => UserPreferences.getReduceMotion());
-  // ...existing code...
+
+  // Listen for cookie changes and sync the context state
+  useEffect(() => {
+    const checkForCookieChanges = () => {
+      const cookieValue = UserPreferences.getReduceMotion();
+      if (cookieValue !== reduceMotion) {
+        setReduceMotion(cookieValue);
+      }
+    };
+
+    // Check for changes periodically (every 500ms)
+    const interval = setInterval(checkForCookieChanges, 500);
+    
+    // Also check on window focus (when user comes back to tab)
+    const handleFocus = () => checkForCookieChanges();
+    window.addEventListener('focus', handleFocus);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('focus', handleFocus);
+    };
+  }, [reduceMotion]);
 
   // Toggle reduce motion and persist to cookies
   const toggleReduceMotion = useCallback(() => {

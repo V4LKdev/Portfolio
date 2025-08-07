@@ -7,7 +7,7 @@
  * - React Router for client-side routing
  * - Error boundary for graceful error handling
  * - Toast notifications for user feedback
- * - Configurable route transitions (full animation vs reduced motion)
+ * - Modern transition system with real-time reduce motion support
  */
 
 import { Toaster } from "@/components/ui/feedback";
