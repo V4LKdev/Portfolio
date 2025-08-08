@@ -224,6 +224,31 @@ const AdaptiveTransition: React.FC<{
     return 1;
   }, [transitionState, effectiveTransitionType]);
 
+  // Richer section animation: zoom-in with opacity change (no translate)
+  const contentAnimate = React.useMemo(() => {
+    if (effectiveTransitionType === "section") {
+      const isFadingOut = transitionState === "fadeOut";
+      return {
+        opacity: isFadingOut ? 0.15 : 1,
+        scale: isFadingOut ? 1.04 : 1,
+      } as const;
+    }
+    if (effectiveTransitionType === "page") {
+      return { opacity: pageOpacity } as const;
+    }
+    return { opacity: 1 } as const;
+  }, [effectiveTransitionType, transitionState, pageOpacity]);
+
+  const contentTransition = React.useMemo(() => {
+    if (effectiveTransitionType === "page") {
+      return { duration: 0.18, ease: "linear" } as const;
+    }
+    if (effectiveTransitionType === "section") {
+      return { duration: 0.28, ease: "easeInOut" } as const;
+    }
+    return { duration: 0, ease: "linear" } as const;
+  }, [effectiveTransitionType]);
+
   const overlayOpacity = React.useMemo(() => {
     if (effectiveTransitionType === "page") {
       // During fadeOut and loading keep overlay fully visible (1);
@@ -256,15 +281,8 @@ const AdaptiveTransition: React.FC<{
         <BackgroundRoot />
       )}
       <motion.div
-        animate={{ opacity: pageOpacity }}
-        transition={{
-          duration: (() => {
-            if (effectiveTransitionType === "page") return 0.18;
-            if (effectiveTransitionType === "section") return 0.14;
-            return 0; // No other transition types
-          })(),
-          ease: "linear",
-        }}
+        animate={contentAnimate}
+        transition={contentTransition}
         style={{ height: "100%", width: "100%" }}
       >
         <div>
