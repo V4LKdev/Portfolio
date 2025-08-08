@@ -212,22 +212,8 @@ export function AppProviders({ children }: AppProvidersProps) {
   const [projectFilter, setProjectFilter] = useState("all");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const [pauseStateBeforeNavigation, setPauseStateBeforeNavigation] =
-    React.useState<boolean | null>(null);
-
-  useEffect(() => {
-    if (currentSection !== "home") {
-      setPauseStateBeforeNavigation(isManuallyPaused);
-      setIsPaused(true);
-    }
-  }, [currentSection, isManuallyPaused]);
-
-  useEffect(() => {
-    if (currentSection === "home" && pauseStateBeforeNavigation !== null) {
-      setManualPause(pauseStateBeforeNavigation);
-      setPauseStateBeforeNavigation(null);
-    }
-  }, [currentSection, pauseStateBeforeNavigation, setManualPause]);
+  // Keep background video playback consistent across inner sections.
+  // We no longer auto-pause when leaving Home; user preference controls playback.
 
   const handleMenuClick = useCallback(
     (sectionId: string, hierarchy?: string) => {

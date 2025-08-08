@@ -27,7 +27,7 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({
 }) => {
   return (
     <Layout
-      showVideoBackground={true}
+      showVideoBackground={false}
       showSidePanels={false} // We'll handle side panels differently for home
       isInnerPage={false}
       className={className}

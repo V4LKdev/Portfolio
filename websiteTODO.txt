@@ -7,14 +7,4 @@ settings option for reduced motion doesnt seem to be saved in the cookie?
 Transition for sections:
 seperate the background from home out. remove background images of sections. then when going in, fade out home content, fade in new content, and have it have a blur layer behind that blurs the background and darkens it a bit. this can stack too
 
-Hey this is my portfolio website project, aimed to look and behave like a AAA video game main menu. right now I am working on the Inner menu transitions, also called SectionTransition.
-
-I was thinking that a cool transition where the background gets blurred and darkened that .could be amazing, so basicly seperate the background from home out. remove background images of sections. then when going in, fade out home content, fade in new content, and have it have a blur layer behind that blurs the background and darkens it a bit. this can stack too
-
-so this file here is my transition manager that already handles page transitions, aswells as a simplified transition animation for any case in case the user prefers reduced motion. so your task would be two things right now:
-
-First, check out the current transition logic or the entire file for that matter to gain an understanding of how the transition system is implemented, and how / where the SectionTransition would go instead of the current placeholder. on that same vein you can do a brief code review of that file too :D
-
-in The second step we need to plan how to refactor the sections, so that the background video and fallback image are no longer part of the home section but rather an always present background, and then we can render home and other sections on top.
-
 

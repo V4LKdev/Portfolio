@@ -10,7 +10,7 @@ export { projects } from "./projects";
 export { personalInfo } from "./personal";
 export { aboutContent } from "./about";
 export { skillsContent } from "./skills";
-export { backgroundImages, navigationItems, videoConfig } from "./ui-config";
+export { navigationItems, videoConfig } from "./ui-config";
 
 // --- Content File Locations ---
 // projects.ts      - Portfolio project data

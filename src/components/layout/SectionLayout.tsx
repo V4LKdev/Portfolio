@@ -5,15 +5,17 @@
 import React from "react";
 import Layout from "./Layout";
 import { SectionProps } from "../../types/SharedProps";
-import { backgroundImages } from "../../content";
+// Background images removed in favor of persistent shared background
 
 interface SectionLayoutProps extends SectionProps {
   /** Child content to render within the section layout */
   children: React.ReactNode;
-  /** Section name for background selection */
-  section: keyof typeof backgroundImages;
+  /** Section name (kept for semantics, no longer used to select background) */
+  section: string;
   /** Optional custom background image (overrides section default) */
   customBackground?: string;
+  /** Optional overlay variant for inner pages */
+  overlayVariant?: "default" | "deep";
 }
 
 /**
@@ -22,17 +24,16 @@ interface SectionLayoutProps extends SectionProps {
  */
 const SectionLayout: React.FC<SectionLayoutProps> = ({
   children,
-  section,
-  customBackground,
+  section: _section,
+  customBackground: _customBackground,
   className,
   id,
+  overlayVariant,
 }) => {
-  const backgroundImage = customBackground || backgroundImages[section];
-
   return (
     <Layout
       showVideoBackground={false}
-      backgroundImage={backgroundImage}
+      innerOverlayVariant={overlayVariant}
       isInnerPage={true}
       className={className}
       id={id}

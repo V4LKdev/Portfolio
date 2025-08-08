@@ -254,7 +254,7 @@ const AdaptiveTransition: React.FC<{
         }}
         style={{ height: "100%", width: "100%" }}
       >
-        <div key={displayedLocation.pathname}>
+        <div>
           <Routes location={displayedLocation}>
             <Route path="/onboarding" element={<OnboardingPage />} />
             <Route
@@ -266,57 +266,15 @@ const AdaptiveTransition: React.FC<{
                   <Portfolio />
                 )
               }
-            />
-            <Route
-              path="/projects"
-              element={
-                showOnboarding ? (
-                  <Navigate to="/onboarding" replace />
-                ) : (
-                  <Portfolio />
-                )
-              }
-            />
-            <Route
-              path="/about"
-              element={
-                showOnboarding ? (
-                  <Navigate to="/onboarding" replace />
-                ) : (
-                  <Portfolio />
-                )
-              }
-            />
-            <Route
-              path="/skills"
-              element={
-                showOnboarding ? (
-                  <Navigate to="/onboarding" replace />
-                ) : (
-                  <Portfolio />
-                )
-              }
-            />
-            <Route
-              path="/contact"
-              element={
-                showOnboarding ? (
-                  <Navigate to="/onboarding" replace />
-                ) : (
-                  <Portfolio />
-                )
-              }
-            />
-            <Route
-              path="/additional"
-              element={
-                showOnboarding ? (
-                  <Navigate to="/onboarding" replace />
-                ) : (
-                  <Portfolio />
-                )
-              }
-            />
+            >
+              {/* Nested section routes ensure Portfolio stays mounted across section navigation */}
+              <Route index element={<></>} />
+              <Route path="projects" element={<></>} />
+              <Route path="about" element={<></>} />
+              <Route path="skills" element={<></>} />
+              <Route path="contact" element={<></>} />
+              <Route path="additional" element={<></>} />
+            </Route>
             <Route path="/exit" element={<ExitPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

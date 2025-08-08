@@ -9,6 +9,7 @@ import * as React from "react";
 import { useEffect, Suspense } from "react";
 import { Menu, X } from "lucide-react";
 import { HomeLayout, SectionLayout } from "../layout";
+import BackgroundRoot from "../layout/BackgroundRoot";
 import { MainNavigation } from "../navigation";
 import ServerConnectionPanel from "../panels/ServerConnectionPanel";
 import SocialMediaIcons from "../media/SocialMediaIcons";
@@ -105,7 +106,11 @@ const PortfolioContent: React.FC = () => {
   const renderContent = () => {
     if (selectedProject) {
       return (
-        <SectionLayout section="projects" className="fixed inset-0 z-50">
+        <SectionLayout
+          section="projects"
+          overlayVariant="deep"
+          className="fixed inset-0 z-50"
+        >
           <Suspense
             fallback={
               <div className="flex items-center justify-center h-full">
@@ -207,7 +212,9 @@ const PortfolioContent: React.FC = () => {
     }
   };
   return (
-    <div className="min-h-screen bg-black text-foreground overflow-x-hidden">
+    <div className="min-h-screen bg-transparent text-foreground overflow-x-hidden">
+      {/* Persistent background for portfolio sections */}
+      <BackgroundRoot />
       {currentSection === "home" && (
         <button
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}

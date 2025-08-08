@@ -1,4 +1,3 @@
-
 /**
  * ErrorBoundary.tsx
  *
@@ -20,14 +19,12 @@ class ErrorBoundary extends Component<Props, State> {
     hasError: false,
   };
 
-
   /**
    * React lifecycle: update state to show fallback UI on error.
    */
   public static getDerivedStateFromError(_: Error): State {
     return { hasError: true };
   }
-
 
   /**
    * React lifecycle: can be used to log errors to a reporting service.
