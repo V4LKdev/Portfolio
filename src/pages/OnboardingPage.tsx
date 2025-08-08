@@ -130,7 +130,7 @@ const OnboardingPage: React.FC = () => {
             <span className="text-lg sm:text-xl text-[#3b82f6] font-bold mb-2 tracking-wide uppercase">
               {onboardingContent.preferences}
             </span>
-            <div className="flex flex-row flex-wrap gap-8 items-center justify-center w-full mt-2 max-w-md mx-auto">
+            <div className="flex flex-row gap-8 items-center justify-center w-full mt-2">
               {/* Video Autoplay Toggle */}
               <label className="flex items-center gap-3 cursor-pointer group">
                 <div
@@ -154,7 +154,7 @@ const OnboardingPage: React.FC = () => {
                   />
                 </div>
                 <span
-                  className={`text-base sm:text-lg transition-colors duration-300 inline-block w-[160px] text-center align-middle whitespace-nowrap ${
+                  className={`text-base sm:text-lg transition-colors duration-300 inline-block w-[90px] text-left align-middle whitespace-nowrap ${
                     videoAutoplay ? "text-white" : "text-white/60"
                   }`}
                 >
@@ -186,7 +186,7 @@ const OnboardingPage: React.FC = () => {
                   />
                 </div>
                 <span
-                  className={`text-base sm:text-lg transition-colors duration-300 inline-block w-[160px] text-center align-middle whitespace-nowrap ${
+                  className={`text-base sm:text-lg transition-colors duration-300 inline-block w-[90px] text-left align-middle whitespace-nowrap ${
                     sfxEnabled ? "text-white" : "text-white/60"
                   }`}
                 >
