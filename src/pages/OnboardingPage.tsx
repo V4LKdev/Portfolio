@@ -15,7 +15,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserPreferences } from "../lib/cookies";
-import { useMotion } from "../hooks/useMotion";
 import { onboardingContent } from "../content/onboarding-exit";
 import "../styles/onboarding.css";
 
@@ -23,7 +22,6 @@ const LOADING_MESSAGES = onboardingContent.loadingMessages;
 
 const OnboardingPage: React.FC = () => {
   const navigate = useNavigate();
-  const { reduceMotion, toggleReduceMotion } = useMotion();
 
   // Local state for preferences (initialize from cookies, will sync back when user clicks Enter)
   const [videoAutoplay, setVideoAutoplay] = useState(() =>
@@ -62,7 +60,6 @@ const OnboardingPage: React.FC = () => {
     // Save preferences to cookies
     UserPreferences.setVideoAutoplayEnabled(videoAutoplay);
     UserPreferences.setGlobalAudioMuted(!sfxEnabled); // Note: globalAudioMuted is inverse of sfxEnabled
-    // reduceMotion is already handled by the context, no need to save it here
     UserPreferences.setShowOnboarding(false); // Mark onboarding as completed
     window.dispatchEvent(new CustomEvent("onboardingComplete"));
     navigate("/", { replace: true });
@@ -118,8 +115,8 @@ const OnboardingPage: React.FC = () => {
             Nicolas Martin - Game Dev Portfolio
           </span>
           <span className="text-lg text-white/70 text-center max-w-2xl px-4 leading-relaxed">
-            {onboardingContent.description.split("\n").map((line, index) => (
-              <React.Fragment key={index}>
+            {onboardingContent.description.split("\n").map((line) => (
+              <React.Fragment key={line}>
                 {line}
                 <br className="hidden sm:inline" />
               </React.Fragment>
@@ -128,12 +125,12 @@ const OnboardingPage: React.FC = () => {
         </div>
 
         {/* Preferences */}
-        <div className="w-full max-w-xl mx-auto mb-6 bg-black/20 p-8 border-t-2 border-b-2 border-[#3b82f6]/40">
+        <div className="w-full max-w-xl mx-auto mb-4 bg-black/20 p-8 border-t-2 border-b-2 border-[#3b82f6]/40">
           <div className="flex flex-col items-center gap-4">
             <span className="text-lg sm:text-xl text-[#3b82f6] font-bold mb-2 tracking-wide uppercase">
               {onboardingContent.preferences}
             </span>
-            <div className="flex flex-col gap-6 items-center w-full mt-2">
+            <div className="flex flex-row flex-wrap gap-8 items-center justify-center w-full mt-2 max-w-md mx-auto">
               {/* Video Autoplay Toggle */}
               <label className="flex items-center gap-3 cursor-pointer group">
                 <div
@@ -157,7 +154,7 @@ const OnboardingPage: React.FC = () => {
                   />
                 </div>
                 <span
-                  className={`text-base sm:text-lg transition-colors duration-300 inline-block w-[140px] text-left align-middle whitespace-nowrap ${
+                  className={`text-base sm:text-lg transition-colors duration-300 inline-block w-[160px] text-center align-middle whitespace-nowrap ${
                     videoAutoplay ? "text-white" : "text-white/60"
                   }`}
                 >
@@ -189,7 +186,7 @@ const OnboardingPage: React.FC = () => {
                   />
                 </div>
                 <span
-                  className={`text-base sm:text-lg transition-colors duration-300 inline-block w-[140px] text-left align-middle whitespace-nowrap ${
+                  className={`text-base sm:text-lg transition-colors duration-300 inline-block w-[160px] text-center align-middle whitespace-nowrap ${
                     sfxEnabled ? "text-white" : "text-white/60"
                   }`}
                 >
@@ -198,41 +195,12 @@ const OnboardingPage: React.FC = () => {
                     : onboardingContent.sfxToggleOff}
                 </span>
               </label>
-              {/* Reduce Motion Toggle */}
-              <label className="flex items-center gap-3 cursor-pointer group">
-                <div
-                  role="switch"
-                  aria-checked={reduceMotion}
-                  tabIndex={0}
-                  className={`relative w-12 h-6 rounded-full flex items-center transition-all duration-300 focus:ring-2 focus:ring-[#3b82f6] focus:outline-none select-none ${
-                    reduceMotion ? "bg-[#3b82f6]" : "bg-gray-600"
-                  }`}
-                  onClick={toggleReduceMotion}
-                  onKeyDown={(e) =>
-                    (e.key === "Enter" || e.key === " ") && toggleReduceMotion()
-                  }
-                >
-                  <div
-                    className={`absolute w-5 h-5 bg-white rounded-full shadow-lg transition-all duration-300 transform ${
-                      reduceMotion ? "translate-x-6" : "translate-x-0.5"
-                    }`}
-                    style={{ top: "2px" }}
-                  />
-                </div>
-                <span
-                  className={`text-base sm:text-lg transition-colors duration-300 inline-block w-[140px] text-left align-middle whitespace-nowrap ${
-                    reduceMotion ? "text-white" : "text-white/60"
-                  }`}
-                >
-                  {reduceMotion ? "Reduce Motion ON" : "Reduce Motion OFF"}
-                </span>
-              </label>
             </div>
           </div>
         </div>
 
         {/* Loading or Enter Button */}
-        <div className="flex flex-col items-center mt-8 w-full h-[140px] justify-center">
+        <div className="flex flex-col items-center mt-4 w-full h-[140px] justify-center">
           {isLoading ? (
             <div className="flex flex-col items-center">
               <div className="loading-spinner mb-4"></div>

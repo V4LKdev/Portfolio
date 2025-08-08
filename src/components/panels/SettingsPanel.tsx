@@ -11,11 +11,8 @@ import {
   Pause,
   Volume2,
   VolumeX,
-  Zap,
-  ZapOff,
 } from "lucide-react";
 import { useVideoControls } from "../../hooks/useVideoControls";
-import { useMotion } from "../../hooks/useMotion";
 
 interface SettingsPanelProps {
   className?: string;
@@ -31,7 +28,6 @@ interface SettingsPanelProps {
  */
 const SettingsPanel: React.FC<SettingsPanelProps> = ({ className = "" }) => {
   const { isPaused, isMuted, togglePlayback, toggleMute } = useVideoControls();
-  const { reduceMotion, toggleReduceMotion } = useMotion();
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
@@ -149,35 +145,7 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ className = "" }) => {
             )}
           </button>
 
-          {/* Reduce Motion Toggle */}
-          <button
-            onClick={() => {
-              toggleReduceMotion();
-            }}
-            className="p-3 transition-all duration-300 hover:scale-110"
-            aria-label={
-              reduceMotion
-                ? "Disable simple animations"
-                : "Enable simple animations"
-            }
-            title={
-              reduceMotion
-                ? "Simple animations enabled"
-                : "Simple animations disabled"
-            }
-          >
-            {reduceMotion ? (
-              <ZapOff
-                className="w-5 h-5 settings-panel-icon"
-                style={{ color: "#fff" }}
-              />
-            ) : (
-              <Zap
-                className="w-5 h-5 settings-panel-icon"
-                style={{ color: "#fff" }}
-              />
-            )}
-          </button>
+          {/* Reduce Motion toggle removed per design simplification */}
         </div>
       )}
     </div>

@@ -18,10 +18,9 @@ import Portfolio from "../core/Portfolio";
 import NotFound from "../errors/NotFound";
 import OnboardingPage from "../../pages/OnboardingPage";
 import ExitPage from "../../pages/ExitPage";
-import { useMotion } from "../../hooks/useMotion";
 import { CornerSpinner } from "./CornerSpinner";
 
-type TransitionType = "page" | "section" | "none" | "simple";
+type TransitionType = "page" | "section" | "none";
 
 /**
  * Determines what type of transition should occur between two routes.
@@ -66,7 +65,8 @@ function getTransitionType(
     return { type: "section", fromPath, toPath };
   }
 
-  return { type: "simple", fromPath, toPath };
+  // Fallback to a page transition for any other route changes
+  return { type: "page", fromPath, toPath };
 }
 
 /**
@@ -77,7 +77,6 @@ const AdaptiveTransition: React.FC<{
   showOnboarding: boolean;
 }> = ({ showOnboarding }) => {
   const location = useLocation();
-  const { reduceMotion } = useMotion();
 
   // The location whose content is currently displayed - this controls what Routes renders
   const [displayedLocation, setDisplayedLocation] = useState(location);
@@ -91,11 +90,10 @@ const AdaptiveTransition: React.FC<{
   // Lock to prevent content swap until transition is ready
   const [allowContentSwap, setAllowContentSwap] = useState(true);
 
-  // Calculate transition type for this route change, respecting reduceMotion
+  // Calculate transition type for this route change
   const effectiveTransitionType = React.useMemo(() => {
-    if (reduceMotion) return "simple";
     return getTransitionType(prevLocation, location).type;
-  }, [reduceMotion, prevLocation, location]);
+  }, [prevLocation, location]);
 
   // On route change, start transition
   useEffect(() => {
@@ -110,17 +108,19 @@ const AdaptiveTransition: React.FC<{
   /*
    * TRANSITION STATE MACHINE
    *
-   * Handles all three transition types with proper timing.
+   * Handles page and section transition types with proper timing.
    * Key insight: Routes uses displayedLocation, so content only swaps when we update it.
    */
   useEffect(() => {
+    let cleanup: (() => void) | undefined = undefined;
+
     // PAGE TRANSITION - fade out, loading spinner, fade in
     if (effectiveTransitionType === "page") {
       if (transitionState === "fadeOut") {
         const timer = setTimeout(() => {
           setTransitionState("loading");
         }, 180);
-        return () => clearTimeout(timer);
+        cleanup = () => clearTimeout(timer);
       }
 
       if (transitionState === "loading") {
@@ -129,55 +129,39 @@ const AdaptiveTransition: React.FC<{
           setDisplayedLocation(location);
           setTransitionState("fadeIn");
         }, 800);
-        return () => clearTimeout(timer);
+        cleanup = () => clearTimeout(timer);
       }
 
       if (transitionState === "fadeIn") {
         const timer = setTimeout(() => {
           setTransitionState("idle");
         }, 180);
-        return () => clearTimeout(timer);
+        cleanup = () => clearTimeout(timer);
       }
     }
 
-    // SIMPLE TRANSITION - reduced motion
-    if (effectiveTransitionType === "simple") {
-      if (transitionState === "fadeOut") {
-        const timer = setTimeout(() => {
-          setDisplayedLocation(location);
-          setTransitionState("fadeIn");
-        }, 300);
-        return () => clearTimeout(timer);
-      }
-
-      if (transitionState === "fadeIn") {
-        const timer = setTimeout(() => {
-          setTransitionState("idle");
-        }, 300);
-        return () => clearTimeout(timer);
-      }
-    }
-
-    // SECTION TRANSITION - within portfolio sections (instant cut)
+    // SECTION TRANSITION - within portfolio sections (simple fade-out/in)
     /**
      * SECTION TRANSITION DEVELOPER NOTE:
      * -----------------------------------
      * This block currently implements a "snap" (instant) transition between portfolio sections.
-     * To implement a proper animated section transition in the future, replace this logic with a state machine
-     * similar to the page transition above. You will need to:
+     * To implement a proper animated section transition (e.g., crossfade old and new) in the future,
+     * replace this logic with a state machine similar to the page transition above. You will need to:
      *
-     * 1. Define the desired animation (e.g., slide, fade, scale, etc.) and its timing.
-     * 2. Use setTimeout or animation callbacks to control when the content swap (setDisplayedLocation) occurs.
-     * 3. Ensure the transitionState cycles through the necessary phases (e.g., 'fadeOut', 'animating', 'fadeIn', 'idle').
-     * 4. Coordinate the animation with the displayed content so that the outgoing section animates out,
-     *    then the new section animates in, just like the page transition above.
-     * 5. Make sure to respect the allowContentSwap lock to avoid race conditions.
+     * 1. Define the desired animation timing (e.g., crossfade 200–300ms).
+     * 2. Render BOTH layers temporarily:
+     *    - OLD: bound to `displayedLocation` (outgoing)
+     *    - NEW: bound to current `location` (incoming) in a transient overlay layer
+     * 3. In 'fadeOut' (or 'animating') start the crossfade; at its midpoint, call setDisplayedLocation(location)
+     *    so Routes swaps to the new content when users can't notice the swap.
+     * 4. Complete with a 'fadeIn' and then set state to 'idle'.
+     * 5. Respect the allowContentSwap lock to avoid race conditions.
      *
      * Example pseudocode:
      *   if (transitionState === 'fadeOut') {
-     *     // Start your animation here
+     *     // Start crossfade here (outgoing opacity 1->0; incoming opacity 0->1)
      *     setTimeout(() => {
-     *       setDisplayedLocation(location);
+     *       setDisplayedLocation(location); // swap content near midpoint
      *       setTransitionState('fadeIn');
      *     }, ANIMATION_DURATION);
      *   }
@@ -189,11 +173,20 @@ const AdaptiveTransition: React.FC<{
      */
     if (effectiveTransitionType === "section") {
       if (transitionState === "fadeOut") {
-        // Section transitions are instant - no fade timing
-        setDisplayedLocation(location);
-        setTransitionState("idle");
+        const timer = setTimeout(() => {
+          setDisplayedLocation(location);
+          setTransitionState("fadeIn");
+        }, 140);
+        cleanup = () => clearTimeout(timer);
+      }
+      if (transitionState === "fadeIn") {
+        const timer = setTimeout(() => {
+          setTransitionState("idle");
+        }, 140);
+        cleanup = () => clearTimeout(timer);
       }
     }
+    return cleanup;
   }, [transitionState, effectiveTransitionType, location, displayedLocation]);
 
   // ANIMATION VALUES - calculated from transition state
@@ -211,21 +204,26 @@ const AdaptiveTransition: React.FC<{
     }
 
     if (effectiveTransitionType === "section") {
-      // For section transitions: always visible (instant cut, no fade)
+      // For section transitions: fade container out then back in
+      if (transitionState === "fadeOut") return 0;
       return 1;
     }
 
-    // For simple transitions: hidden during fadeOut, visible otherwise
-    return transitionState === "fadeOut" ? 0 : 1;
+    // For 'none': keep visible
+    return 1;
   }, [transitionState, effectiveTransitionType]);
 
   const overlayOpacity = React.useMemo(() => {
     if (effectiveTransitionType === "page") {
-      return transitionState === "fadeOut" ||
-        transitionState === "loading" ||
-        transitionState === "fadeIn"
-        ? 1
-        : 0;
+      // During fadeOut and loading keep overlay fully visible (1);
+      // During fadeIn fade the overlay out to 0 to reveal content smoothly.
+      if (transitionState === "fadeOut" || transitionState === "loading") {
+        return 1;
+      }
+      if (transitionState === "fadeIn") {
+        return 0;
+      }
+      return 0;
     }
     return 0;
   }, [transitionState, effectiveTransitionType]);
@@ -247,8 +245,8 @@ const AdaptiveTransition: React.FC<{
         transition={{
           duration: (() => {
             if (effectiveTransitionType === "page") return 0.18;
-            if (effectiveTransitionType === "section") return 0; // Instant for sections
-            return 0.3; // Simple transitions
+            if (effectiveTransitionType === "section") return 0.14;
+            return 0; // No other transition types
           })(),
           ease: "linear",
         }}
