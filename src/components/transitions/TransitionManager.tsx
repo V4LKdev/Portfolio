@@ -19,8 +19,19 @@ import NotFound from "../errors/NotFound";
 import OnboardingPage from "../../pages/OnboardingPage";
 import ExitPage from "../../pages/ExitPage";
 import { CornerSpinner } from "./CornerSpinner";
+import BackgroundRoot from "../layout/BackgroundRoot";
 
 type TransitionType = "page" | "section" | "none";
+
+// Portfolio sections where the shared background should remain visible
+const PORTFOLIO_SECTIONS = [
+  "/",
+  "/projects",
+  "/about",
+  "/skills",
+  "/contact",
+  "/additional",
+];
 
 /**
  * Determines what type of transition should occur between two routes.
@@ -240,6 +251,10 @@ const AdaptiveTransition: React.FC<{
 
   return (
     <div style={{ position: "relative", height: "100%" }}>
+      {/* Persistent background for portfolio routes, rendered outside the fading layer */}
+      {PORTFOLIO_SECTIONS.includes(displayedLocation.pathname) && (
+        <BackgroundRoot />
+      )}
       <motion.div
         animate={{ opacity: pageOpacity }}
         transition={{

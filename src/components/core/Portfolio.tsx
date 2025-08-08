@@ -9,7 +9,6 @@ import * as React from "react";
 import { useEffect, Suspense } from "react";
 import { Menu, X } from "lucide-react";
 import { HomeLayout, SectionLayout } from "../layout";
-import BackgroundRoot from "../layout/BackgroundRoot";
 import { MainNavigation } from "../navigation";
 import ServerConnectionPanel from "../panels/ServerConnectionPanel";
 import SocialMediaIcons from "../media/SocialMediaIcons";
@@ -20,7 +19,6 @@ import SkillsSection from "../sections/SkillsSection";
 import ContactSection from "../sections/ContactSection";
 import AdditionalSection from "../sections/AdditionalSection";
 import BUILD_VERSION from "../../config/version";
-import AppProviders from "./AppProviders";
 import { useNavigation } from "../../hooks/useNavigation";
 import { getProjects } from "../../lib/contentLoader";
 import { type Project } from "../../content";
@@ -213,8 +211,6 @@ const PortfolioContent: React.FC = () => {
   };
   return (
     <div className="min-h-screen bg-transparent text-foreground overflow-x-hidden">
-      {/* Persistent background for portfolio sections */}
-      <BackgroundRoot />
       {currentSection === "home" && (
         <button
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -252,10 +248,6 @@ const PortfolioContent: React.FC = () => {
   );
 };
 
-const Portfolio: React.FC = () => (
-  <AppProviders>
-    <PortfolioContent />
-  </AppProviders>
-);
+const Portfolio: React.FC = () => <PortfolioContent />;
 
 export default Portfolio;
