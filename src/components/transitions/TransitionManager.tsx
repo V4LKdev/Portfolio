@@ -1,8 +1,9 @@
+
 /**
  * TransitionManager.tsx
  *
- * Unified transition system that handles all route transitions with a single, robust component.
- * Uses a state machine approach to ensure smooth, properly-timed transitions.
+ * Unified transition system for all route transitions (page and section) using a state machine.
+ * Handles timing, content swapping, and animation overlays for a seamless navigation experience.
  */
 
 import React, { useState, useEffect } from "react";
@@ -33,6 +34,17 @@ const PORTFOLIO_SECTIONS = [
   "/additional",
 ];
 
+// Animation and transition timing constants
+const PAGE_FADE_DURATION = 180; // ms
+const PAGE_LOADING_DURATION = 900; // ms
+const SECTION_FADE_DURATION = 280; // ms
+const PAGE_FADE_DURATION_S = PAGE_FADE_DURATION / 1000; // seconds
+const SECTION_FADE_DURATION_S = SECTION_FADE_DURATION / 1000; // seconds
+const SECTION_ZOOM_SCALE = 1.04;
+const SECTION_FADE_OPACITY = 0.15;
+const VIGNETTE_OPACITY_OUT = 0.18;
+const VIGNETTE_OPACITY_IN = 0.08;
+
 /**
  * Determines what type of transition should occur between two routes.
  * @param from - Previous location (null for initial render)
@@ -50,7 +62,7 @@ function getTransitionType(
     return { type: "none", fromPath, toPath };
   }
 
-  // Route categorization
+  // Route categorization (portfolio vs. page routes)
   const portfolioSections = [
     "/",
     "/projects",
@@ -89,17 +101,13 @@ const AdaptiveTransition: React.FC<{
 }> = ({ showOnboarding }) => {
   const location = useLocation();
 
-  // The location whose content is currently displayed - this controls what Routes renders
-  const [displayedLocation, setDisplayedLocation] = useState(location);
-  // The previous location, for transition type calculation
-  const [prevLocation, setPrevLocation] = useState<Location | null>(null);
-  // State machine: idle, fadeOut, loading, fadeIn
+  // State for transition management
+  const [displayedLocation, setDisplayedLocation] = useState(location); // Controls what Routes renders
+  const [prevLocation, setPrevLocation] = useState<Location | null>(null); // For transition type calculation
   const [transitionState, setTransitionState] = useState<
     "idle" | "fadeOut" | "loading" | "fadeIn"
   >("idle");
-
-  // Lock to prevent content swap until transition is ready
-  const [allowContentSwap, setAllowContentSwap] = useState(true);
+  const [allowContentSwap, setAllowContentSwap] = useState(true); // Prevents content swap until transition is ready
 
   // Calculate transition type for this route change
   const effectiveTransitionType = React.useMemo(() => {
@@ -109,19 +117,15 @@ const AdaptiveTransition: React.FC<{
   // On route change, start transition
   useEffect(() => {
     if (location !== displayedLocation && allowContentSwap) {
-      // Lock content swapping until transition completes
+  // Lock content swapping until transition completes
       setAllowContentSwap(false);
       setPrevLocation(displayedLocation);
       setTransitionState("fadeOut");
     }
   }, [location, displayedLocation, allowContentSwap]);
 
-  /*
-   * TRANSITION STATE MACHINE
-   *
-   * Handles page and section transition types with proper timing.
-   * Key insight: Routes uses displayedLocation, so content only swaps when we update it.
-   */
+  // TRANSITION STATE MACHINE
+  // Handles page and section transitions with proper timing.
   useEffect(() => {
     let cleanup: (() => void) | undefined = undefined;
 
@@ -130,107 +134,62 @@ const AdaptiveTransition: React.FC<{
       if (transitionState === "fadeOut") {
         const timer = setTimeout(() => {
           setTransitionState("loading");
-        }, 180);
+        }, PAGE_FADE_DURATION);
         cleanup = () => clearTimeout(timer);
       }
-
       if (transitionState === "loading") {
         const timer = setTimeout(() => {
-          // Content swap happens here - when user can't see the old content
           setDisplayedLocation(location);
           setTransitionState("fadeIn");
-        }, 800);
+        }, PAGE_LOADING_DURATION);
         cleanup = () => clearTimeout(timer);
       }
-
       if (transitionState === "fadeIn") {
         const timer = setTimeout(() => {
           setTransitionState("idle");
-        }, 180);
+        }, PAGE_FADE_DURATION);
         cleanup = () => clearTimeout(timer);
       }
     }
-
-    // SECTION TRANSITION - within portfolio sections (simple fade-out/in)
-    /**
-     * SECTION TRANSITION DEVELOPER NOTE:
-     * -----------------------------------
-     * This block currently implements a "snap" (instant) transition between portfolio sections.
-     * To implement a proper animated section transition (e.g., crossfade old and new) in the future,
-     * replace this logic with a state machine similar to the page transition above. You will need to:
-     *
-     * 1. Define the desired animation timing (e.g., crossfade 200–300ms).
-     * 2. Render BOTH layers temporarily:
-     *    - OLD: bound to `displayedLocation` (outgoing)
-     *    - NEW: bound to current `location` (incoming) in a transient overlay layer
-     * 3. In 'fadeOut' (or 'animating') start the crossfade; at its midpoint, call setDisplayedLocation(location)
-     *    so Routes swaps to the new content when users can't notice the swap.
-     * 4. Complete with a 'fadeIn' and then set state to 'idle'.
-     * 5. Respect the allowContentSwap lock to avoid race conditions.
-     *
-     * Example pseudocode:
-     *   if (transitionState === 'fadeOut') {
-     *     // Start crossfade here (outgoing opacity 1->0; incoming opacity 0->1)
-     *     setTimeout(() => {
-     *       setDisplayedLocation(location); // swap content near midpoint
-     *       setTransitionState('fadeIn');
-     *     }, ANIMATION_DURATION);
-     *   }
-     *   if (transitionState === 'fadeIn') {
-     *     setTimeout(() => setTransitionState('idle'), ANIMATION_DURATION);
-     *   }
-     *
-     * See the page transition logic above for a robust example.
-     */
+    // SECTION TRANSITION - fade out, swap, fade in
     if (effectiveTransitionType === "section") {
       if (transitionState === "fadeOut") {
         const timer = setTimeout(() => {
           setDisplayedLocation(location);
           setTransitionState("fadeIn");
-        }, 280);
+        }, SECTION_FADE_DURATION);
         cleanup = () => clearTimeout(timer);
       }
       if (transitionState === "fadeIn") {
         const timer = setTimeout(() => {
           setTransitionState("idle");
-        }, 280);
+        }, SECTION_FADE_DURATION);
         cleanup = () => clearTimeout(timer);
       }
     }
     return cleanup;
   }, [transitionState, effectiveTransitionType, location, displayedLocation]);
 
-  // ANIMATION VALUES - calculated from transition state
+  // Animation values for content
   const pageOpacity = React.useMemo(() => {
     if (effectiveTransitionType === "page") {
-      // For page transitions: visible during idle, hidden during fadeOut/loading, visible during fadeIn
-      let pageOpacity: number;
-      if (transitionState === "idle" || transitionState === "fadeIn") {
-        pageOpacity = 1;
-      } else {
-        pageOpacity = 0;
-      }
-
-      return pageOpacity;
+      // For page transitions: visible during idle/fadeIn, hidden during fadeOut/loading
+      return (transitionState === "idle" || transitionState === "fadeIn") ? 1 : 0;
     }
-
     if (effectiveTransitionType === "section") {
       // For section transitions: fade container out then back in
-      if (transitionState === "fadeOut") return 0;
-      return 1;
+      return transitionState === "fadeOut" ? 0 : 1;
     }
-
-    // For 'none': keep visible
     return 1;
   }, [transitionState, effectiveTransitionType]);
 
-  // Richer section animation: zoom-in with opacity change (no translate)
+  // Section transition: zoom-in with opacity change
   const contentAnimate = React.useMemo(() => {
     if (effectiveTransitionType === "section") {
       const isFadingOut = transitionState === "fadeOut";
       return {
-        opacity: isFadingOut ? 0.15 : 1,
-        scale: isFadingOut ? 1.04 : 1,
+        opacity: isFadingOut ? SECTION_FADE_OPACITY : 1,
+        scale: isFadingOut ? SECTION_ZOOM_SCALE : 1,
       } as const;
     }
     if (effectiveTransitionType === "page") {
@@ -239,26 +198,22 @@ const AdaptiveTransition: React.FC<{
     return { opacity: 1 } as const;
   }, [effectiveTransitionType, transitionState, pageOpacity]);
 
+  // Animation timing for framer-motion
   const contentTransition = React.useMemo(() => {
     if (effectiveTransitionType === "page") {
-      return { duration: 0.18, ease: "linear" } as const;
+      return { duration: PAGE_FADE_DURATION_S, ease: "linear" } as const;
     }
     if (effectiveTransitionType === "section") {
-      return { duration: 0.28, ease: "easeInOut" } as const;
+      return { duration: SECTION_FADE_DURATION_S, ease: "easeInOut" } as const;
     }
     return { duration: 0, ease: "linear" } as const;
   }, [effectiveTransitionType]);
 
+  // Overlay opacity for page transitions
   const overlayOpacity = React.useMemo(() => {
     if (effectiveTransitionType === "page") {
-      // During fadeOut and loading keep overlay fully visible (1);
-      // During fadeIn fade the overlay out to 0 to reveal content smoothly.
-      if (transitionState === "fadeOut" || transitionState === "loading") {
-        return 1;
-      }
-      if (transitionState === "fadeIn") {
-        return 0;
-      }
+      if (transitionState === "fadeOut" || transitionState === "loading") return 1;
+      if (transitionState === "fadeIn") return 0;
       return 0;
     }
     return 0;
@@ -274,16 +229,25 @@ const AdaptiveTransition: React.FC<{
     }
   }, [transitionState]);
 
-  // Section vignette overlay opacity (avoid nested ternaries in JSX)
+  // Section vignette overlay opacity
   const sectionVignetteOpacity = React.useMemo(() => {
     if (effectiveTransitionType !== "section") return 0;
-    if (transitionState === "fadeOut") return 0.18;
-    if (transitionState === "fadeIn") return 0.08;
+    if (transitionState === "fadeOut") return VIGNETTE_OPACITY_OUT;
+    if (transitionState === "fadeIn") return VIGNETTE_OPACITY_IN;
     return 0;
   }, [effectiveTransitionType, transitionState]);
 
+  // Hide scrollbars during both fadeOut and fadeIn for section transitions
+  const shouldHideOverflow =
+    effectiveTransitionType === "section" && (transitionState === "fadeOut" || transitionState === "fadeIn");
   return (
-    <div style={{ position: "relative", height: "100%" }}>
+    <div
+      style={{
+        position: "relative",
+        height: "100%",
+        ...(shouldHideOverflow ? { overflow: "hidden" } : {}),
+      }}
+    >
       {/* Persistent background for portfolio routes, rendered outside the fading layer */}
       {PORTFOLIO_SECTIONS.includes(displayedLocation.pathname) && (
         <BackgroundRoot />

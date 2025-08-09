@@ -1,9 +1,12 @@
 /**
  * Portfolio.tsx
  *
- * This is the main component that renders the entire portfolio.
- * It uses the AppProviders to provide context to all the other components.
+ * Main component that renders the entire portfolio, including navigation, sections, and overlays.
+ * Uses AppProviders to provide context to all other components.
  */
+// Animation and UI timing constants
+const MENU_NAV_DELAY = 250; // ms
+const HOME_FOCUS_DELAY = 100; // ms
 
 import * as React from "react";
 import { useEffect, Suspense } from "react";
@@ -61,14 +64,14 @@ const PortfolioContent: React.FC = () => {
     }
   }, [urlSection, currentSection, setCurrentSection]);
 
+  // Handles navigation menu clicks, with optional delay for animated menus
   const handleMenuClick = (sectionId: string, hierarchy?: string) => {
     if (sectionId === "exit") {
       setTimeout(() => {
         navigate("/exit");
-      }, 250);
+      }, MENU_NAV_DELAY);
       return;
     }
-
     const sectionRoutes: Record<string, string> = {
       home: "/",
       projects: "/projects",
@@ -77,20 +80,18 @@ const PortfolioContent: React.FC = () => {
       contact: "/contact",
       additional: "/additional",
     };
-
     const route = sectionRoutes[sectionId] || "/";
-
     const shouldDelay = hierarchy === "primary" || hierarchy === "secondary";
-
     if (shouldDelay) {
       setTimeout(() => {
         navigate(route);
-      }, 250);
+      }, MENU_NAV_DELAY);
     } else {
       navigate(route);
     }
   };
 
+  // Focuses the main menu anchor when returning to home section (for accessibility)
   useEffect(() => {
     if (currentSection === "home") {
       setTimeout(() => {
@@ -98,7 +99,7 @@ const PortfolioContent: React.FC = () => {
         if (anchor) {
           anchor.focus({ preventScroll: true });
         }
-      }, 100);
+      }, HOME_FOCUS_DELAY);
     }
   }, [currentSection]);
   const renderBaseContent = () => {

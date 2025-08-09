@@ -1,13 +1,11 @@
 /**
  * OnboardingPage.tsx
  *
- * A clean, production-ready onboarding page that guides first-time visitors
- * through setting their preferences before entering the portfolio.
- *
+ * Guides first-time visitors through setting preferences before entering the portfolio.
  * Features:
  * - Video autoplay toggle (ON by default)
  * - Sound effects toggle (OFF by default)
- * - Loading simulation (3-5 seconds)
+ * - Loading simulation (3 seconds)
  * - Blue Moonlight theme styling
  * - Responsive design
  */
@@ -19,6 +17,10 @@ import { onboardingContent } from "../content/onboarding-exit";
 import "../styles/onboarding.css";
 
 const LOADING_MESSAGES = onboardingContent.loadingMessages;
+
+// Animation and timing constants
+const LOADING_MESSAGE_INTERVAL = 550; // ms
+const LOADING_TIMEOUT = 3000; // ms
 
 const OnboardingPage: React.FC = () => {
   const navigate = useNavigate();
@@ -35,19 +37,19 @@ const OnboardingPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [loadingMessage, setLoadingMessage] = useState(LOADING_MESSAGES[0]);
 
-  // Loading simulation with cycling messages - 4 second timer like the experimental version
+  // Loading simulation with cycling messages
   useEffect(() => {
     let messageIndex = 0;
     const messageInterval = setInterval(() => {
       messageIndex = (messageIndex + 1) % LOADING_MESSAGES.length;
       setLoadingMessage(LOADING_MESSAGES[messageIndex]);
-    }, 550); // Change message every 700ms
+    }, LOADING_MESSAGE_INTERVAL);
 
-    // Complete loading after 2.5 seconds
+    // Complete loading after timeout
     const loadingTimeout = setTimeout(() => {
       setIsLoading(false);
       clearInterval(messageInterval);
-    }, 3000);
+    }, LOADING_TIMEOUT);
 
     return () => {
       clearInterval(messageInterval);
@@ -59,7 +61,7 @@ const OnboardingPage: React.FC = () => {
   const handleEnterPortfolio = useCallback(() => {
     // Save preferences to cookies
     UserPreferences.setVideoAutoplayEnabled(videoAutoplay);
-    UserPreferences.setGlobalAudioMuted(!sfxEnabled); // Note: globalAudioMuted is inverse of sfxEnabled
+    UserPreferences.setGlobalAudioMuted(!sfxEnabled); // globalAudioMuted is inverse of sfxEnabled
     UserPreferences.setShowOnboarding(false); // Mark onboarding as completed
     window.dispatchEvent(new CustomEvent("onboardingComplete"));
     navigate("/", { replace: true });
@@ -68,9 +70,8 @@ const OnboardingPage: React.FC = () => {
   // Handle keyboard events for "press any key to continue"
   useEffect(() => {
     if (isLoading) return;
-
     const handleKeyPress = (event: KeyboardEvent) => {
-      // Ignore modifier keys only
+      // Ignore modifier keys
       if (
         event.key === "Meta" ||
         event.key === "Control" ||
@@ -81,13 +82,12 @@ const OnboardingPage: React.FC = () => {
       }
       handleEnterPortfolio();
     };
-
     window.addEventListener("keydown", handleKeyPress);
     return () => window.removeEventListener("keydown", handleKeyPress);
   }, [isLoading, videoAutoplay, sfxEnabled, handleEnterPortfolio]);
 
+  // Hide text caret globally for this page
   useEffect(() => {
-    // Hide text caret globally for this page
     const style = document.createElement("style");
     style.innerHTML = "* { caret-color: transparent !important; }";
     document.head.appendChild(style);
