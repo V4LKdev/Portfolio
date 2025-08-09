@@ -1,7 +1,7 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { User, Users, Trophy, Wrench } from "lucide-react";
-import "./gamemodecard-grain.css";
+
 
 interface GamemodeCardProps {
   gameLabel: string; // e.g., "Singleplayer"
@@ -108,8 +108,6 @@ const GamemodeCard: React.FC<GamemodeCardProps> = ({
           <Icon size={20} strokeWidth={2.1} className="text-white/90 drop-shadow-[0_1px_2px_rgba(0,0,0,0.45)]" />
         </div>
       )}
-  {/* Subtle animated grain overlay for tactile depth */}
-  <div className="gamemode-grain" aria-hidden="true" />
       {/* Background image */}
       <div className="absolute inset-0">
         <img
