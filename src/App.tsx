@@ -11,6 +11,7 @@
  */
 
 import { Toaster } from "@/components/ui/feedback";
+import MobileWarning from "@/components/ui/MobileWarning";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter } from "react-router-dom";
 import React from "react";
@@ -59,8 +60,8 @@ const App = () => {
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
         <AppProviders>
+          <MobileWarning />
           <Toaster />
-
           <BrowserRouter
             future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
           >

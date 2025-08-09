@@ -1,4 +1,5 @@
 // Projects Section Component
+// TODO: For mobile, implement an autocycle carousel (one card at a time, arrows, dots, auto-advance) in a future pass.
 // Visual-only Gamemode Hub for projects
 // Replaces filter/grid with four large gamemode cards (no functionality yet)
 
