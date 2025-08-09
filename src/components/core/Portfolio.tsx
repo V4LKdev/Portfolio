@@ -7,7 +7,6 @@
 
 import * as React from "react";
 import { useEffect, Suspense } from "react";
-import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { HomeLayout, SectionLayout } from "../layout";
 import { MainNavigation } from "../navigation";
@@ -205,45 +204,31 @@ const PortfolioContent: React.FC = () => {
           )}
         </button>
       )}
-      {/* Base section content */}
-      {renderBaseContent()}
-
-      {/* Project detail overlay with enter/exit animation */}
-      <AnimatePresence>
-        {selectedProject && (
-          <SectionLayout
-            section="projects"
-            overlayVariant="deep"
-            className="fixed inset-0 z-50"
+      {/* Content or project detail (no overlay animation) */}
+      {selectedProject ? (
+        <SectionLayout
+          section="projects"
+          overlayVariant="deep"
+          className="fixed inset-0 z-50"
+        >
+          <Suspense
+            fallback={
+              <div className="flex items-center justify-center h-full">
+                <div className="flex items-center space-x-3 theme-text bg-black/60 backdrop-blur-sm rounded-lg px-6 py-4">
+                  <div className="animate-spin rounded-full h-6 w-6 border-2 border-amber-200 border-t-transparent"></div>
+                  <span className="text-sm font-medium">
+                    Loading project details...
+                  </span>
+                </div>
+              </div>
+            }
           >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.98 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.98 }}
-              transition={{ duration: 0.22, ease: "easeOut" }}
-              className="h-full"
-            >
-              <Suspense
-                fallback={
-                  <div className="flex items-center justify-center h-full">
-                    <div className="flex items-center space-x-3 theme-text bg-black/60 backdrop-blur-sm rounded-lg px-6 py-4">
-                      <div className="animate-spin rounded-full h-6 w-6 border-2 border-amber-200 border-t-transparent"></div>
-                      <span className="text-sm font-medium">
-                        Loading project details...
-                      </span>
-                    </div>
-                  </div>
-                }
-              >
-                <ProjectDetail
-                  project={selectedProject}
-                  onBack={handleBackClick}
-                />
-              </Suspense>
-            </motion.div>
-          </SectionLayout>
-        )}
-      </AnimatePresence>
+            <ProjectDetail project={selectedProject} onBack={handleBackClick} />
+          </Suspense>
+        </SectionLayout>
+      ) : (
+        renderBaseContent()
+      )}
       {currentSection === "home" && (
         <div className="fixed bottom-4 left-8 md:bottom-6 md:left-12 z-50 build-id text-xs font-mono select-none pointer-events-none">
           {BUILD_VERSION}

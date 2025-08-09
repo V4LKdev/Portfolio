@@ -187,13 +187,13 @@ const AdaptiveTransition: React.FC<{
         const timer = setTimeout(() => {
           setDisplayedLocation(location);
           setTransitionState("fadeIn");
-        }, 140);
+        }, 280);
         cleanup = () => clearTimeout(timer);
       }
       if (transitionState === "fadeIn") {
         const timer = setTimeout(() => {
           setTransitionState("idle");
-        }, 140);
+        }, 280);
         cleanup = () => clearTimeout(timer);
       }
     }
@@ -274,6 +274,14 @@ const AdaptiveTransition: React.FC<{
     }
   }, [transitionState]);
 
+  // Section vignette overlay opacity (avoid nested ternaries in JSX)
+  const sectionVignetteOpacity = React.useMemo(() => {
+    if (effectiveTransitionType !== "section") return 0;
+    if (transitionState === "fadeOut") return 0.18;
+    if (transitionState === "fadeIn") return 0.08;
+    return 0;
+  }, [effectiveTransitionType, transitionState]);
+
   return (
     <div style={{ position: "relative", height: "100%" }}>
       {/* Persistent background for portfolio routes, rendered outside the fading layer */}
@@ -285,32 +293,46 @@ const AdaptiveTransition: React.FC<{
         transition={contentTransition}
         style={{ height: "100%", width: "100%" }}
       >
-        <div>
-          <Routes location={displayedLocation}>
-            <Route path="/onboarding" element={<OnboardingPage />} />
-            <Route
-              path="/"
-              element={
-                showOnboarding ? (
-                  <Navigate to="/onboarding" replace />
-                ) : (
-                  <Portfolio />
-                )
-              }
-            >
-              {/* Nested section routes ensure Portfolio stays mounted across section navigation */}
-              <Route index element={<></>} />
-              <Route path="projects" element={<></>} />
-              <Route path="about" element={<></>} />
-              <Route path="skills" element={<></>} />
-              <Route path="contact" element={<></>} />
-              <Route path="additional" element={<></>} />
-            </Route>
-            <Route path="/exit" element={<ExitPage />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </div>
+        <Routes location={displayedLocation}>
+          <Route path="/onboarding" element={<OnboardingPage />} />
+          <Route
+            path="/"
+            element={
+              showOnboarding ? (
+                <Navigate to="/onboarding" replace />
+              ) : (
+                <Portfolio />
+              )
+            }
+          >
+            {/* Nested section routes ensure Portfolio stays mounted across section navigation */}
+            <Route index element={<></>} />
+            <Route path="projects" element={<></>} />
+            <Route path="about" element={<></>} />
+            <Route path="skills" element={<></>} />
+            <Route path="contact" element={<></>} />
+            <Route path="additional" element={<></>} />
+          </Route>
+          <Route path="/exit" element={<ExitPage />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
       </motion.div>
+
+      {/* Subtle vignette overlay for section transitions only */}
+    {effectiveTransitionType === "section" && (
+        <motion.div
+          style={{
+            position: "fixed",
+            inset: 0,
+            pointerEvents: "none",
+            zIndex: 900,
+            background:
+              "radial-gradient(120% 120% at 50% 50%, rgba(0,0,0,0) 45%, rgba(0,0,0,0.35) 100%)",
+          }}
+      animate={{ opacity: sectionVignetteOpacity }}
+          transition={{ duration: 0.28, ease: "easeInOut" }}
+        />
+      )}
       {/* Overlay for page transition */}
       {effectiveTransitionType === "page" && (
         <motion.div
