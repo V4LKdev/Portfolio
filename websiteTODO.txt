@@ -1,10 +1,3 @@
-audio config
 profile
 Search bar
 Ready to proceed checkmark on onboarding isnt loaded fast enough? other icons too?
-onboarding and exit fade in is instant
-settings option for reduced motion doesnt seem to be saved in the cookie?
-Transition for sections:
-seperate the background from home out. remove background images of sections. then when going in, fade out home content, fade in new content, and have it have a blur layer behind that blurs the background and darkens it a bit. this can stack too
-
-

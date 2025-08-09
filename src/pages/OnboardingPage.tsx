@@ -211,7 +211,7 @@ const OnboardingPage: React.FC = () => {
           ) : (
             <div className="flex flex-col items-center w-full">
               <span className="text-[#3b82f6] text-base font-medium h-[22px] flex items-center mb-8">
-                {onboardingContent.ready}
+                <span style={{ fontFamily: 'Arial, Segoe UI, sans-serif', marginRight: 6 }}>✓</span> Ready to proceed
               </span>
               <button
                 onClick={handleEnterPortfolio}
