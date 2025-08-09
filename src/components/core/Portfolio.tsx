@@ -143,13 +143,7 @@ const PortfolioContent: React.FC = () => {
       case "projects":
         return (
           <SectionLayout section="projects">
-            <ProjectsSection
-              projects={projects}
-              onBack={() => handleMenuClick("home")}
-              onProjectClick={handleProjectClick}
-              projectFilter={projectFilter}
-              onFilterChange={setProjectFilter}
-            />
+            <ProjectsSection onBack={() => handleMenuClick("home")} />
           </SectionLayout>
         );
       case "about":
