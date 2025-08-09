@@ -5,6 +5,7 @@
 import { BackButton } from "../ui/navigation";
 import { NavigableSectionComponent } from "../../types/SharedProps";
 import GamemodeCard from "../projects/GamemodeCard";
+import { User, Users, Trophy, Wrench } from "lucide-react";
 
 interface AdditionalProjectsProps {}
 
@@ -40,6 +41,7 @@ const ProjectsSection: NavigableSectionComponent<AdditionalProjectsProps> = ({
           image="https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1470&auto=format&fit=crop"
           accent="rgb(59 130 246)"  // blue
           morphSpeed={1.8}
+          icon={User}
         />
         <GamemodeCard
           gameLabel="Multiplayer"
@@ -48,6 +50,7 @@ const ProjectsSection: NavigableSectionComponent<AdditionalProjectsProps> = ({
           image="https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?q=80&w=1470&auto=format&fit=crop"
           accent="rgb(234 179 8)"   // amber / orange
           morphSpeed={1.8}
+          icon={Users}
         />
         <GamemodeCard
           gameLabel="Competitive"
@@ -56,6 +59,7 @@ const ProjectsSection: NavigableSectionComponent<AdditionalProjectsProps> = ({
           image="https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1470&auto=format&fit=crop"
           accent="rgb(168 85 247)"  // purple
           morphSpeed={1.8}
+          icon={Trophy}
         />
         <GamemodeCard
           gameLabel="Sandbox"
@@ -64,6 +68,7 @@ const ProjectsSection: NavigableSectionComponent<AdditionalProjectsProps> = ({
           image="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=1470&auto=format&fit=crop"
           accent="rgb(34 197 94)"   // green
           morphSpeed={1.8}
+          icon={Wrench}
         />
       </div>
     </div>

@@ -1,5 +1,6 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { User, Users, Trophy, Wrench } from "lucide-react";
 import "./gamemodecard-grain.css";
 
 interface GamemodeCardProps {
@@ -11,6 +12,7 @@ interface GamemodeCardProps {
   fillGradient?: [string, string]; // optional explicit gradient stops
   morphSpeed?: number; // speed multiplier for text morph (1 = default)
   className?: string;
+  icon?: React.ElementType;
 }
 
 // Small inline morphing text (inspired by main menu item)
@@ -67,6 +69,7 @@ const GamemodeCard: React.FC<GamemodeCardProps> = ({
   fillGradient,
   morphSpeed = 1.6,
   className,
+  icon: Icon,
 }) => {
   const [hovered, setHovered] = React.useState(false);
   const [clicked, setClicked] = React.useState(false);
@@ -87,7 +90,6 @@ const GamemodeCard: React.FC<GamemodeCardProps> = ({
         setClicked(true);
       }}
       whileHover={{ scale: 1.11 }}
-  // No pop on click; keep scale only on hover
       transition={{ type: "spring", stiffness: 320, damping: 26 }}
       style={{
         // expose accent color to CSS via custom property for color-mix usage
@@ -100,6 +102,12 @@ const GamemodeCard: React.FC<GamemodeCardProps> = ({
       role="group"
       tabIndex={0}
     >
+      {/* Mode icon in top-left */}
+      {Icon && (
+        <div className="absolute top-2 left-2 z-30 flex items-center justify-center">
+          <Icon size={20} strokeWidth={2.1} className="text-white/90 drop-shadow-[0_1px_2px_rgba(0,0,0,0.45)]" />
+        </div>
+      )}
   {/* Subtle animated grain overlay for tactile depth */}
   <div className="gamemode-grain" aria-hidden="true" />
       {/* Background image */}
@@ -142,9 +150,9 @@ const GamemodeCard: React.FC<GamemodeCardProps> = ({
         </div>
       </motion.div>
 
-      {/* Content (title) */}
+      {/* Content (title + icon) */}
       <div className="relative z-20 h-full p-4 md:p-5 flex flex-col justify-start items-center">
-        <div className="relative w-full text-center mt-2 md:mt-3 overflow-visible">
+        <div className="relative w-full text-center mt-2 md:mt-3 overflow-visible flex flex-col items-center">
           {/* Title halo to avoid boxy glow */}
           <motion.div
             className="pointer-events-none absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2"
@@ -170,6 +178,12 @@ const GamemodeCard: React.FC<GamemodeCardProps> = ({
               speed={morphSpeed}
             />
           </h3>
+          {/* Centered large icon below title */}
+          {Icon && (
+            <div className="mt-8 flex items-center justify-center">
+              <Icon size={38} strokeWidth={2.1} className="text-white/90 drop-shadow-[0_1px_2px_rgba(0,0,0,0.45)]" />
+            </div>
+          )}
         </div>
       </div>
 
