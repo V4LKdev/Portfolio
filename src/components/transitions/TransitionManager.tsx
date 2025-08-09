@@ -24,15 +24,25 @@ import BackgroundRoot from "../layout/BackgroundRoot";
 
 type TransitionType = "page" | "section" | "none";
 
-// Portfolio sections where the shared background should remain visible
-const PORTFOLIO_SECTIONS = [
+// Portfolio base sections where the shared background should remain visible
+const PORTFOLIO_BASE_PATHS = [
   "/",
   "/projects",
   "/about",
   "/skills",
   "/contact",
   "/additional",
-];
+] as const;
+
+function isPortfolioPath(pathname: string): boolean {
+  // Root must match exactly
+  if (pathname === "/") return true;
+  // Any path that starts with a base section (e.g., "/projects" or "/projects/...")
+  return PORTFOLIO_BASE_PATHS.some((base) => {
+    if (base === "/") return false;
+    return pathname === base || pathname.startsWith(base + "/");
+  });
+}
 
 // Animation and transition timing constants
 const PAGE_FADE_DURATION = 180; // ms
@@ -63,18 +73,10 @@ function getTransitionType(
   }
 
   // Route categorization (portfolio vs. page routes)
-  const portfolioSections = [
-    "/",
-    "/projects",
-    "/about",
-    "/skills",
-    "/contact",
-    "/additional",
-  ];
   const pageRoutes = ["/onboarding", "/exit"];
 
-  const isFromPortfolio = portfolioSections.includes(fromPath);
-  const isToPortfolio = portfolioSections.includes(toPath);
+  const isFromPortfolio = isPortfolioPath(fromPath);
+  const isToPortfolio = isPortfolioPath(toPath);
   const isFromPage = pageRoutes.includes(fromPath);
   const isToPage = pageRoutes.includes(toPath);
 
@@ -249,7 +251,7 @@ const AdaptiveTransition: React.FC<{
       }}
     >
       {/* Persistent background for portfolio routes, rendered outside the fading layer */}
-      {PORTFOLIO_SECTIONS.includes(displayedLocation.pathname) && (
+  {isPortfolioPath(displayedLocation.pathname) && (
         <BackgroundRoot />
       )}
       <motion.div
@@ -272,6 +274,8 @@ const AdaptiveTransition: React.FC<{
             {/* Nested section routes ensure Portfolio stays mounted across section navigation */}
             <Route index element={<></>} />
             <Route path="projects" element={<></>} />
+            {/* Support nested project routes like /projects/singleplayer */}
+            <Route path="projects/*" element={<></>} />
             <Route path="about" element={<></>} />
             <Route path="skills" element={<></>} />
             <Route path="contact" element={<></>} />

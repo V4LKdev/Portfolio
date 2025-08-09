@@ -13,6 +13,7 @@ interface GamemodeCardProps {
   morphSpeed?: number; // speed multiplier for text morph (1 = default)
   className?: string;
   icon?: React.ElementType;
+  onActivate?: () => void; // navigate or run action on click/Enter/Space
 }
 
 // Small inline morphing text (inspired by main menu item)
@@ -70,6 +71,7 @@ const GamemodeCard: React.FC<GamemodeCardProps> = ({
   morphSpeed = 1.6,
   className,
   icon: Icon,
+  onActivate,
 }) => {
   const [hovered, setHovered] = React.useState(false);
   const [clicked, setClicked] = React.useState(false);
@@ -88,6 +90,14 @@ const GamemodeCard: React.FC<GamemodeCardProps> = ({
       }}
       onClick={() => {
         setClicked(true);
+        onActivate?.();
+      }}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          setClicked(true);
+          onActivate?.();
+        }
       }}
       whileHover={{ scale: 1.11 }}
       transition={{ type: "spring", stiffness: 320, damping: 26 }}
@@ -99,8 +109,9 @@ const GamemodeCard: React.FC<GamemodeCardProps> = ({
         background:
           "radial-gradient(120% 120% at 50% 50%, rgba(255,255,255,0.06) 0%, rgba(0,0,0,0.4) 100%)",
       }}
-      role="group"
-      tabIndex={0}
+  role="button"
+  aria-label={`${portfolioLabel} mode`}
+  tabIndex={0}
     >
       {/* Mode icon in top-left */}
       {Icon && (

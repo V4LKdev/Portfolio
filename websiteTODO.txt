@@ -1,5 +1,7 @@
 profile
 Search bar
+both on a top bar page with the logo / title
 Ready to proceed checkmark on onboarding isnt loaded fast enough? other icons too?
 add cycle carusel to the gamnemode cards for mobile
 fix main page on mobile not able to click anything
+

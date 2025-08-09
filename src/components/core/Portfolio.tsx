@@ -39,9 +39,10 @@ const PortfolioContent: React.FC = () => {
   }, []);
 
   const getCurrentSectionFromPath = (pathname: string): string => {
-    const path = pathname.slice(1);
-    if (!path || path === "") return "home";
-    return path;
+    const trimmed = pathname.replace(/^\/+/, "");
+    if (!trimmed) return "home";
+    const first = trimmed.split("/")[0];
+    return first || "home";
   };
 
   const urlSection = getCurrentSectionFromPath(location.pathname);
