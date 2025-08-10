@@ -1,6 +1,7 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { User, Users, Trophy, Wrench } from "lucide-react";
+import { useSoundEffects } from "../../hooks/useSoundEffects";
 
 
 interface GamemodeCardProps {
@@ -75,6 +76,26 @@ const GamemodeCard: React.FC<GamemodeCardProps> = ({
 }) => {
   const [hovered, setHovered] = React.useState(false);
   const [clicked, setClicked] = React.useState(false);
+  const { playHover, playUnhover, playClick } = useSoundEffects();
+
+  // Measure the widest of the two labels to prevent layout shift during morphing
+  const measureARef = React.useRef<HTMLSpanElement | null>(null);
+  const measureBRef = React.useRef<HTMLSpanElement | null>(null);
+  const [titleWidth, setTitleWidth] = React.useState<number | null>(null);
+
+  const measure = React.useCallback(() => {
+    const wa = measureARef.current?.getBoundingClientRect().width ?? 0;
+    const wb = measureBRef.current?.getBoundingClientRect().width ?? 0;
+    const max = Math.ceil(Math.max(wa, wb));
+    if (!titleWidth || Math.abs(titleWidth - max) > 0.5) setTitleWidth(max);
+  }, [titleWidth]);
+
+  React.useLayoutEffect(() => {
+    measure();
+    const onResize = () => measure();
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, [measure, gameLabel, portfolioLabel]);
 
   const accentColor = accent ?? "rgb(59 130 246)"; // tailwind blue-500
   const glow = accentColor;
@@ -83,22 +104,30 @@ const GamemodeCard: React.FC<GamemodeCardProps> = ({
   return (
     <motion.div
       className={`relative overflow-hidden rounded-xl select-none will-change-transform aspect-[4/5] cursor-pointer ${className ?? ""}`}
-      onMouseEnter={() => setHovered(true)}
+      onMouseEnter={() => {
+        setHovered(true);
+        playHover();
+      }}
       onMouseLeave={() => {
         setHovered(false);
         setClicked(false); // Reset clicked state on mouse leave
+        playUnhover();
       }}
       onClick={() => {
         setClicked(true);
+        playClick();
         onActivate?.();
       }}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
           setClicked(true);
+          playClick();
           onActivate?.();
         }
       }}
+      onFocus={() => playHover()}
+      onBlur={() => playUnhover()}
       whileHover={{ scale: 1.11 }}
       transition={{ type: "spring", stiffness: 320, damping: 26 }}
       style={{
@@ -170,17 +199,38 @@ const GamemodeCard: React.FC<GamemodeCardProps> = ({
               filter: "blur(10px)",
             }}
           />
-          <h3
-            className="game-title text-sm md:text-lg font-extrabold tracking-widest uppercase truncate text-white px-2 leading-tight"
-            style={{ textShadow: hovered ? `0 0 4px ${glow}` : "none" }}
+          {/* Lock width to widest label to avoid jump during morph */}
+          <div
+            className="mx-auto"
+            style={{ width: titleWidth ? `${titleWidth}px` : undefined }}
           >
-            <MorphingString
-              fromText={gameLabel}
-              toText={portfolioLabel}
-              isHovered={hovered}
-              speed={morphSpeed}
-            />
-          </h3>
+            <h3
+              className="game-title text-sm md:text-lg font-extrabold tracking-widest uppercase whitespace-nowrap text-white px-2 leading-tight"
+              style={{ textShadow: hovered ? `0 0 4px ${glow}` : "none" }}
+            >
+              <MorphingString
+                fromText={gameLabel}
+                toText={portfolioLabel}
+                isHovered={hovered}
+                speed={morphSpeed}
+              />
+            </h3>
+          </div>
+          {/* Invisible measurers with identical styles */}
+          <div className="absolute opacity-0 pointer-events-none select-none">
+            <span
+              ref={measureARef}
+              className="game-title text-sm md:text-lg font-extrabold tracking-widest uppercase whitespace-nowrap px-2 leading-tight"
+            >
+              {gameLabel}
+            </span>
+            <span
+              ref={measureBRef}
+              className="game-title text-sm md:text-lg font-extrabold tracking-widest uppercase whitespace-nowrap px-2 leading-tight"
+            >
+              {portfolioLabel}
+            </span>
+          </div>
           {/* Centered large icon below title */}
           {Icon && (
             <div className="mt-8 flex items-center justify-center">

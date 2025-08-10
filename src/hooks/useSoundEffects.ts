@@ -44,7 +44,14 @@ export function useSoundEffects(
   }, []);
 
   const playTone = useCallback(
-    (frequency: number, duration: number, volume: number = 0.1) => {
+    (
+      frequency: number,
+      duration: number,
+      volume: number = 0.1,
+      waveform?: OscillatorType,
+      glideTo?: number,
+      glideTime?: number,
+    ) => {
       if (!effectivelyEnabled) return;
 
       try {
@@ -59,7 +66,7 @@ export function useSoundEffects(
           frequency,
           audioContext.currentTime,
         );
-        oscillator.type = AUDIO_CONFIG.WAVEFORM;
+        oscillator.type = waveform ?? AUDIO_CONFIG.WAVEFORM;
 
         gainNode.gain.setValueAtTime(0, audioContext.currentTime);
         gainNode.gain.linearRampToValueAtTime(
@@ -71,6 +78,13 @@ export function useSoundEffects(
           audioContext.currentTime + duration,
         );
 
+        if (typeof glideTo === "number" && glideTime && glideTime > 0) {
+          oscillator.frequency.linearRampToValueAtTime(
+            glideTo,
+            audioContext.currentTime + glideTime,
+          );
+        }
+
         oscillator.start(audioContext.currentTime);
         oscillator.stop(audioContext.currentTime + duration);
       } catch {
@@ -81,28 +95,41 @@ export function useSoundEffects(
   );
 
   const playHover = useCallback(() => {
-    const { frequency, duration, volume } = AUDIO_CONFIG.HOVER;
-    playTone(frequency, duration, volume);
+    const { frequency, duration, volume, waveform } = AUDIO_CONFIG.HOVER as any;
+    playTone(frequency, duration, volume, waveform);
   }, [playTone]);
 
   const playUnhover = useCallback(() => {
-    const { frequency, duration, volume } = AUDIO_CONFIG.UNHOVER;
-    playTone(frequency, duration, volume);
+    const { frequency, duration, volume, waveform } = AUDIO_CONFIG.UNHOVER as any;
+    playTone(frequency, duration, volume, waveform);
   }, [playTone]);
 
   const playClick = useCallback(() => {
-    const { primary, secondary } = AUDIO_CONFIG.CLICK;
-    playTone(primary.frequency, primary.duration, primary.volume);
+    const { primary, secondary, glide } = AUDIO_CONFIG.CLICK as any;
+    // Start with primary, glide toward secondary for polish
+    playTone(
+      primary.frequency,
+      primary.duration,
+      primary.volume,
+      primary.waveform,
+      secondary.frequency,
+      glide,
+    );
     setTimeout(() => {
-      playTone(secondary.frequency, secondary.duration, secondary.volume);
+      playTone(
+        secondary.frequency,
+        secondary.duration,
+        secondary.volume,
+        secondary.waveform,
+      );
     }, secondary.delay);
   }, [playTone]);
 
   const playFeedback = useCallback(() => {
-    const { primary, secondary } = AUDIO_CONFIG.FEEDBACK;
-    playTone(primary.frequency, primary.duration, primary.volume);
+    const { primary, secondary } = AUDIO_CONFIG.FEEDBACK as any;
+    playTone(primary.frequency, primary.duration, primary.volume, primary.waveform);
     setTimeout(() => {
-      playTone(secondary.frequency, secondary.duration, secondary.volume);
+      playTone(secondary.frequency, secondary.duration, secondary.volume, secondary.waveform);
     }, secondary.delay);
   }, [playTone]);
 

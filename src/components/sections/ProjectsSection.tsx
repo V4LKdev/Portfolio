@@ -3,15 +3,170 @@
 // Visual-only Gamemode Hub for projects
 // Replaces filter/grid with four large gamemode cards (no functionality yet)
 
+import React, { useContext } from "react";
 import { BackButton } from "../ui/navigation";
 import { NavigableSectionComponent } from "../../types/SharedProps";
 import GamemodeCard from "../projects/GamemodeCard";
-import { User, Users, Trophy, Wrench } from "lucide-react";
+import { User, Users, Trophy, Wrench, ChevronLeft, ChevronRight } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
-// No local React hooks needed here; keep lightweight
+import { MotionContext } from "../../contexts/MotionContext";
 import { GAMEMODES, isGamemodeSlug } from "../../content/gamemodes";
+import { useSoundEffects } from "../../hooks/useSoundEffects";
 
 interface AdditionalProjectsProps {}
+
+type Slide = {
+  id: string;
+  kind: "featured" | "new";
+  title: string;
+  subtitle?: string;
+  image: string;
+};
+
+const FeaturedCarousel: React.FC<{
+  slides: Slide[];
+  className?: string;
+}> = ({ slides, className }) => {
+  const motion = useContext(MotionContext);
+  const reduce = motion?.reduceMotion;
+  const [index, setIndex] = React.useState(0);
+  const timerRef = React.useRef<number | null>(null);
+  const count = slides.length;
+  const { playHover, playUnhover, playClick } = useSoundEffects();
+
+  const clear = () => {
+    if (timerRef.current) {
+      window.clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  };
+  const start = () => {
+    if (reduce || count <= 1) return;
+    clear();
+    timerRef.current = window.setInterval(() => {
+      setIndex((i) => (i + 1) % count);
+    }, 6000);
+  };
+
+  React.useEffect(() => {
+    start();
+    return clear;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [count, reduce]);
+
+  const go = (i: number) => setIndex(((i % count) + count) % count);
+  const next = () => {
+    playClick();
+    go(index + 1);
+  };
+  const prev = () => {
+    playClick();
+    go(index - 1);
+  };
+
+  return (
+    <div className={`relative w-full ${className ?? ""}`}>
+      <div className="flex items-center justify-center gap-2 md:gap-3">
+        {count > 1 && (
+          <button
+            type="button"
+            onClick={prev}
+            className="p-2 rounded-md bg-black/35 hover:bg-black/50 text-white"
+            aria-label="Previous"
+          >
+            <ChevronLeft size={18} />
+          </button>
+        )}
+        <div
+          className="group relative w-[92%] md:w-[86%] lg:w-[72%] h-16 md:h-20 lg:h-24 overflow-hidden transform-gpu origin-center will-change-transform transition-transform duration-150 hover:scale-[1.015] motion-reduce:transform-none motion-reduce:transition-none"
+          onMouseEnter={clear}
+          onMouseLeave={start}
+          onFocus={clear}
+          onBlur={start}
+          role="region"
+          aria-roledescription="carousel"
+          aria-label="Featured projects"
+        >
+          <div
+            className="absolute inset-0 flex transition-transform duration-200 ease-out"
+            style={{ transform: `translateX(-${index * 100}%)` }}
+          >
+            {slides.map((s) => (
+              <div key={s.id} className="relative w-full h-full flex-shrink-0">
+                <button
+                  className="absolute inset-0 w-full h-full cursor-pointer text-left"
+                  onClick={() => {
+                    playClick();
+                  }}
+                  onMouseEnter={() => playHover()}
+                  onMouseLeave={() => playUnhover()}
+                  onFocus={() => playHover()}
+                  onBlur={() => playUnhover()}
+                  aria-label={`${s.kind === "featured" ? "Featured" : "New"}: ${s.title}`}
+                >
+                  <img
+                    src={s.image}
+                    alt=""
+                    className="absolute inset-0 w-full h-full object-cover"
+                    draggable={false}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/35 to-transparent" />
+                  <div className="absolute inset-y-0 left-6 md:left-8 flex items-center" style={{ transform: "translateZ(0)" }}>
+                    <div>
+                      <div className="uppercase tracking-[0.25em] text-[12px] md:text-xs font-bold text-white/85 mb-1">
+                      {s.kind === "featured" ? "Featured" : "New"}
+                      </div>
+                      <div
+                        className="game-title text-xl md:text-2xl lg:text-3xl font-extrabold leading-none"
+                        style={{ WebkitFontSmoothing: "antialiased", textRendering: "optimizeLegibility" as any }}
+                      >
+                        {s.title}
+                      </div>
+                      {s.subtitle && (
+                        <div className="theme-text-muted text-[11px] md:text-xs mt-0.5 leading-snug">
+                          {s.subtitle}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </button>
+              </div>
+            ))}
+          </div>
+          {/* subtle hover glow without scaling */}
+          <div className="pointer-events-none absolute inset-0 ring-0 transition-all duration-150 group-hover:ring-1 group-hover:ring-white/60 group-hover:shadow-[0_0_12px_rgba(255,255,255,0.35)]" />
+        </div>
+        {count > 1 && (
+          <button
+            type="button"
+            onClick={next}
+            className="p-2 rounded-md bg-black/35 hover:bg-black/50 text-white"
+            aria-label="Next"
+          >
+            <ChevronRight size={18} />
+          </button>
+        )}
+      </div>
+      {count > 1 && (
+        <div className="mt-2 flex items-center justify-center gap-2">
+          {slides.map((_, i) => (
+            <button
+              key={`dot-${i}`}
+              className={`h-1.5 w-1.5 rounded-full ${i === index ? "bg-white" : "bg-white/50"}`}
+              aria-label={`Go to slide ${i + 1}`}
+              onClick={() => {
+                playClick();
+                go(i);
+              }}
+              onMouseEnter={() => playHover()}
+              onMouseLeave={() => playUnhover()}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
 
 /**
  * Projects section component - displays portfolio projects in a grid
@@ -81,30 +236,28 @@ const ProjectsSection: NavigableSectionComponent<AdditionalProjectsProps> = ({
           Browse Projects by Category
         </p>
       </div>
-      {/* Featured/New banner (rectangular strip, skewed corners) */}
-  <div className="relative w-full mb-12 md:mb-16 select-none" aria-hidden>
-        {/* TODO: Turn this into an auto-cycling carousel of featured/new projects.
-            Consider adding `featured?: boolean` and `createdAt?: string` to Project. */}
-  <div className="relative overflow-hidden" style={{ borderRadius: 0 }}>
-          <div className="relative w-full h-16 md:h-20 lg:h-24">
-            <img
-              src="https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?q=80&w=1920&auto=format&fit=crop"
-              alt="Featured banner background"
-              className="absolute inset-0 w-full h-full object-cover"
-              draggable={false}
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/35 to-transparent" />
-            <div className="absolute left-6 md:left-8 top-1/2 -translate-y-1/2">
-              <div className="uppercase tracking-[0.25em] text-[12px] md:text-xs font-bold text-white/85 mb-1">
-                Featured
-              </div>
-              <div className="game-title text-xl md:text-2xl lg:text-3xl font-extrabold">
-                Spotlight coming soon
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* Featured/New banner carousel */}
+      <FeaturedCarousel
+        className="mb-12 md:mb-16"
+        slides={[
+          {
+            id: "s1",
+            kind: "featured",
+            title: "Spotlight coming soon",
+            subtitle: undefined,
+            image:
+              "https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?q=80&w=1920&auto=format&fit=crop",
+          },
+          {
+            id: "s2",
+            kind: "new",
+            title: "New project coming soon",
+            subtitle: undefined,
+            image:
+              "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1920&auto=format&fit=crop",
+          },
+        ]}
+      />
 
   {/* Gamemode Cards row */}
   <div className="mx-auto max-w-7xl grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 md:gap-6 mt-16 md:mt-20">

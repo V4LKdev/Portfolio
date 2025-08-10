@@ -7,3 +7,7 @@ fix main page on mobile not able to click anything
 
 put back button at the bottom and a home icon on the header bar 
 
+Gamemode card sounds
+
+main menu gradient is too short again
+
