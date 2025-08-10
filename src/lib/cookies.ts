@@ -7,7 +7,7 @@
  *
  * Features:
  * - Type-safe preference definitions with validation
- * - Secure cookie management with proper flags (SameSite, Secure)
+ * - Cookie-based persistence with proper flags (SameSite, Secure)
  * - Extensible architecture for easy addition of new preferences
  * - Single source of truth with centralized getter/setter APIs
  * - Default value management with explicit fallbacks
@@ -24,17 +24,18 @@
  * const isAutoplayEnabled = UserPreferences.getVideoAutoplayEnabled();
  *
  * // Set a preference with automatic validation and persistence
- * UserPreferences.setGlobalAudioMuted(true);
+ * UserPreferences.setSfxEnabled(true);
  *
  * // Check if a preference has been explicitly set by the user
  * ```
  */
 
 export interface UserPreferenceDefinitions {
+  /** Whether video should autoplay when user visits/returns to home section */
   videoAutoplayEnabled: boolean;
 
-  /** Global site-wide audio mute setting (affects video sound + UI sound effects) */
-  globalAudioMuted: boolean;
+  /** Sound effects enabled/disabled (button hover, clicks, etc.) */
+  sfxEnabled: boolean;
 
   // ---- UI & UX Preferences ----
 
@@ -50,9 +51,11 @@ export interface UserPreferenceDefinitions {
  * These are used when no user preference has been set or when resetting to defaults
  */
 export const DEFAULT_PREFERENCES: UserPreferenceDefinitions = {
-  // Video defaults: Autoplay ON, start muted for better UX
+  // Video defaults: Autoplay ON for better UX
   videoAutoplayEnabled: true,
-  globalAudioMuted: true, // SFX OFF by default (muted = true)
+  
+  // SFX defaults: OFF by default for better UX (user must explicitly enable)
+  sfxEnabled: false,
 
   // UI defaults: Show onboarding for new users
   showOnboarding: true,
@@ -70,7 +73,7 @@ export const PREFERENCE_COOKIE_NAMES: Record<
   string
 > = {
   videoAutoplayEnabled: "portfolio-video-autoplay",
-  globalAudioMuted: "portfolio-audio-muted",
+  sfxEnabled: "portfolio-sfx-enabled",
   showOnboarding: "portfolio-show-onboarding",
   reduceMotion: "portfolio-reduce-motion",
 };
@@ -261,26 +264,26 @@ export const UserPreferences = {
   },
 
   /**
-   * Get global site-wide audio mute setting (affects video sound + UI sound effects)
-   * @returns true if audio is muted globally, false otherwise
+   * Get sound effects enabled/disabled setting
+   * @returns true if SFX should play, false if disabled
    */
-  getGlobalAudioMuted: (): boolean => {
-    const cookieValue = getCookie(PREFERENCE_COOKIE_NAMES.globalAudioMuted);
+  getSfxEnabled: (): boolean => {
+    const cookieValue = getCookie(PREFERENCE_COOKIE_NAMES.sfxEnabled);
     return deserializePreferenceValue(
       cookieValue,
       "boolean",
-      DEFAULT_PREFERENCES.globalAudioMuted,
+      DEFAULT_PREFERENCES.sfxEnabled,
     );
   },
 
   /**
-   * Set global site-wide audio mute setting (affects video sound + UI sound effects)
-   * @param muted - true to mute all audio, false to unmute
+   * Set sound effects enabled/disabled setting
+   * @param enabled - true to enable SFX, false to disable
    */
-  setGlobalAudioMuted: (muted: boolean): void => {
+  setSfxEnabled: (enabled: boolean): void => {
     setCookie(
-      PREFERENCE_COOKIE_NAMES.globalAudioMuted,
-      serializePreferenceValue(muted),
+      PREFERENCE_COOKIE_NAMES.sfxEnabled,
+      serializePreferenceValue(enabled),
     );
   },
 
@@ -380,6 +383,7 @@ export const UserPreferences = {
       "portfolio-music-enabled",
       "portfolio-theme",
       "portfolio-reduce-motion",
+      "portfolio-audio-muted", // Old globalAudioMuted cookie
     ];
 
     oldCookieNames.forEach((cookieName) => {
@@ -394,7 +398,7 @@ export const UserPreferences = {
   getAllPreferences: (): UserPreferenceDefinitions => {
     return {
       videoAutoplayEnabled: UserPreferences.getVideoAutoplayEnabled(),
-      globalAudioMuted: UserPreferences.getGlobalAudioMuted(),
+      sfxEnabled: UserPreferences.getSfxEnabled(),
       showOnboarding: UserPreferences.getShowOnboarding(),
       reduceMotion: UserPreferences.getReduceMotion(),
     };

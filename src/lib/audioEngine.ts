@@ -1,10 +1,9 @@
 /**
  * audioEngine.ts
  *
- * Centralized AudioContext + master gain controller with unlock + fade-in support.
+ * Centralized AudioContext + master gain controller for SFX only.
+ * Simple unlock and volume control without fades.
  */
-
-const MASTER_TARGET = 0.3; // Keep master gain consistent with background target loudness
 
 class AudioEngine {
   private ctx: AudioContext | null = null;
@@ -37,19 +36,13 @@ class AudioEngine {
     return this.unlocked;
   }
 
-  async unlock(fadeMs = 800) {
+  async unlock() {
     try {
       this.ensureContext();
       if (!this.ctx) return;
       if (this.unlocked && this.ctx.state === "running") return;
       await this.ctx.resume();
       this.unlocked = true;
-      // Smoothly ramp master gain to 1
-      const now = this.ctx.currentTime;
-      const g = this.getMasterGain().gain;
-      g.cancelScheduledValues(now);
-      g.setValueAtTime(g.value ?? 0, now);
-  g.linearRampToValueAtTime(MASTER_TARGET, now + fadeMs / 1000);
     } catch {
       // ignore
     }

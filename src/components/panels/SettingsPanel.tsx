@@ -22,7 +22,7 @@ interface SettingsPanelProps {
  * Professional settings panel component
  * Features:
  * - Video playback controls
- * - Audio controls
+ * - SFX (Sound Effects) controls
  * - Click-outside-to-close functionality
  * - Accessible keyboard navigation
  */
@@ -131,12 +131,12 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ className = "" }) => {
             )}
           </button>
 
-          {/* Audio Toggle */}
+          {/* SFX Toggle */}
           <button
             onClick={toggleMute}
             className="p-3 transition-all duration-300 hover:scale-110"
-            aria-label={isMuted ? "Unmute video audio" : "Mute video audio"}
-            title={isMuted ? "Unmute video audio" : "Mute video audio"}
+            aria-label={isMuted ? "Enable sound effects" : "Disable sound effects"}
+            title={isMuted ? "Enable sound effects" : "Disable sound effects"}
           >
             {isMuted ? (
               <VolumeX className="w-5 h-5 settings-panel-icon" />
@@ -144,8 +144,6 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ className = "" }) => {
               <Volume2 className="w-5 h-5 settings-panel-icon" />
             )}
           </button>
-
-          {/* Reduce Motion toggle removed per design simplification */}
         </div>
       )}
     </div>

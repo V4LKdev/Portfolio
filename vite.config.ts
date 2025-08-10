@@ -14,4 +14,13 @@ export default defineConfig(() => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  // Reduce noisy sourcemap warnings from prebundled deps in some browsers
+  optimizeDeps: {
+    esbuildOptions: {
+      sourcemap: false,
+    },
+  },
+  build: {
+    sourcemap: false,
+  },
 }));

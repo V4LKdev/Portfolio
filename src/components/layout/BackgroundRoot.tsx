@@ -16,7 +16,7 @@ interface BackgroundRootProps {
 }
 
 const BackgroundRoot: React.FC<BackgroundRootProps> = ({ className }) => {
-  const { isPaused, isMuted, lastVideoTime, setLastVideoTime } =
+  const { isPaused, lastVideoTime, setLastVideoTime } =
     useVideoControls();
 
   return (
@@ -24,8 +24,7 @@ const BackgroundRoot: React.FC<BackgroundRootProps> = ({ className }) => {
       <LocalVideoBackground
         videoSrc={videoConfig.localVideoSrc}
         posterSrc={videoConfig.posterSrc}
-        isPaused={isPaused}
-        isMuted={isMuted}
+  isPaused={isPaused}
         lastPlaybackTime={lastVideoTime}
         setLastPlaybackTime={setLastVideoTime}
         className="video-responsive"

@@ -29,9 +29,9 @@ const OnboardingPage: React.FC = () => {
   const [videoAutoplay, setVideoAutoplay] = useState(() =>
     UserPreferences.getVideoAutoplayEnabled(),
   );
-  const [sfxEnabled, setSfxEnabled] = useState(
-    () => !UserPreferences.getGlobalAudioMuted(),
-  ); // sfxEnabled is inverse of globalAudioMuted
+  const [sfxEnabled, setSfxEnabled] = useState(() =>
+    UserPreferences.getSfxEnabled(),
+  );
 
   // Loading state
   const [isLoading, setIsLoading] = useState(true);
@@ -61,7 +61,7 @@ const OnboardingPage: React.FC = () => {
   const handleEnterPortfolio = useCallback(() => {
     // Save preferences to cookies
     UserPreferences.setVideoAutoplayEnabled(videoAutoplay);
-    UserPreferences.setGlobalAudioMuted(!sfxEnabled); // globalAudioMuted is inverse of sfxEnabled
+    UserPreferences.setSfxEnabled(sfxEnabled);
     UserPreferences.setShowOnboarding(false); // Mark onboarding as completed
     window.dispatchEvent(new CustomEvent("onboardingComplete"));
     navigate("/", { replace: true });

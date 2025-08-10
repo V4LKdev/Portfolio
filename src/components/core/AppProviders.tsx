@@ -64,10 +64,10 @@ export function AppProviders({ children }: AppProvidersProps) {
   useEffect(() => {
     const syncFromCookies = () => {
       const autoplayEnabled = UserPreferences.getVideoAutoplayEnabled();
-      const muted = UserPreferences.getGlobalAudioMuted();
+      const sfxEnabled = UserPreferences.getSfxEnabled();
       setIsPaused(!autoplayEnabled);
       setIsManuallyPaused(!autoplayEnabled);
-      setIsMuted(muted);
+      setIsMuted(!sfxEnabled);
     };
 
     const handleOnboardingComplete = () => {
@@ -75,8 +75,8 @@ export function AppProviders({ children }: AppProvidersProps) {
       syncFromCookies();
       // If user enabled SFX during onboarding, unlock audio right away
       try {
-        const muted = UserPreferences.getGlobalAudioMuted();
-        if (!muted) {
+        const sfxEnabled = UserPreferences.getSfxEnabled();
+        if (sfxEnabled) {
           unlockAudio();
         }
       } catch {
@@ -110,7 +110,7 @@ export function AppProviders({ children }: AppProvidersProps) {
   });
 
   const [isMuted, setIsMuted] = useState(() =>
-    UserPreferences.getGlobalAudioMuted(),
+    !UserPreferences.getSfxEnabled(),
   );
 
   const [isManuallyPaused, setIsManuallyPaused] = useState(() => {
@@ -121,10 +121,10 @@ export function AppProviders({ children }: AppProvidersProps) {
   // Audio unlock state: true once AudioContext has been successfully resumed (via MEI or user gesture)
   const [audioUnlocked, setAudioUnlocked] = useState<boolean>(false);
 
-  // Attempt to unlock audio (resume AudioContext) and fade in the master gain
+  // Attempt to unlock audio (resume AudioContext) for SFX
   const unlockAudio = useCallback(async () => {
     try {
-      await audioEngine.unlock(800);
+      await audioEngine.unlock();
       setAudioUnlocked(true);
     } catch {
       // Ignore; remains locked until a valid gesture
@@ -141,7 +141,7 @@ export function AppProviders({ children }: AppProvidersProps) {
   const toggleMute = useCallback(() => {
     const newMutedState = !isMuted;
     setIsMuted(newMutedState);
-    UserPreferences.setGlobalAudioMuted(newMutedState);
+    UserPreferences.setSfxEnabled(!newMutedState);
   }, [isMuted]);
 
   const setManualPause = useCallback((paused: boolean) => {
@@ -187,42 +187,11 @@ export function AppProviders({ children }: AppProvidersProps) {
     const video = document.querySelector("video");
     if (!video) return;
 
-    if (lastVideoTimeRef.current > 0) {
-      video.currentTime = lastVideoTimeRef.current;
-    }
+    // Always keep video muted (we don't want video audio, only SFX)
+    video.muted = true;
+    video.volume = 0;
 
-    // Always keep video muted until audio is unlocked to avoid autoplay errors
-    const shouldBeMuted = isMuted || !audioUnlocked;
-  const targetVolume = 0.3; // desired background video volume when unmuted
-
-    // If transitioning from muted to unmuted, apply a small volume ramp to target
-    const applyVolumeRamp = () => {
-      try {
-        const start = performance.now();
-        const durationMs = 600;
-        const to = targetVolume;
-        const step = (now: number) => {
-          const t = Math.min(1, (now - start) / durationMs);
-          video.volume = to * t;
-          if (t < 1) requestAnimationFrame(step);
-        };
-        // Always start from 0 to avoid blast
-        video.volume = 0;
-        requestAnimationFrame(step);
-      } catch {
-        // Non-fatal
-      }
-    };
-
-    const wasMuted = video.muted;
-    video.muted = shouldBeMuted;
-    if (!shouldBeMuted && wasMuted) {
-  // Ensure starting at 0 before ramp
-  video.volume = 0;
-      applyVolumeRamp();
-    }
-
-  if (isPaused && !video.paused) {
+    if (isPaused && !video.paused) {
       video.pause();
     } else if (!isPaused && video.paused) {
       video.play().catch(() => {});
@@ -240,11 +209,11 @@ export function AppProviders({ children }: AppProvidersProps) {
         lastVideoTimeRef.current = video.currentTime;
       }
     };
-  }, [isPaused, isMuted, audioUnlocked]);
+  }, [isPaused]);
 
-  // Keep AudioEngine master gain in sync with global mute and unlock state
+  // Keep AudioEngine master gain in sync with SFX preference and unlock state
   useEffect(() => {
-    // If globally muted or still locked, keep master at 0; otherwise at 0.3
+    // If SFX disabled or still locked, keep master at 0; otherwise at 0.3
     const desired = !isMuted && audioUnlocked ? 0.3 : 0;
     try {
       audioEngine.setMasterVolume(desired);
@@ -253,7 +222,7 @@ export function AppProviders({ children }: AppProvidersProps) {
     }
   }, [isMuted, audioUnlocked]);
 
-  // Optimistic MEI-based unlock attempt on mount if preference is unmuted
+  // Optimistic MEI-based unlock attempt on mount if SFX preference is enabled
   useEffect(() => {
     if (!isMuted) {
       // Try once; browsers that disallow will keep context suspended without throwing

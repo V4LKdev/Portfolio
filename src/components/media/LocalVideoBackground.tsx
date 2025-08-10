@@ -9,7 +9,6 @@ interface LocalVideoBackgroundProps {
   videoSrc: string;
   posterSrc?: string;
   isPaused: boolean;
-  isMuted: boolean;
   lastPlaybackTime?: number;
   setLastPlaybackTime?: (t: number) => void;
   onLoadStart?: () => void;
@@ -31,7 +30,6 @@ const LocalVideoBackground: React.FC<LocalVideoBackgroundProps> = ({
   videoSrc,
   posterSrc,
   isPaused,
-  isMuted,
   lastPlaybackTime,
   setLastPlaybackTime,
   onLoadStart,
@@ -95,10 +93,12 @@ const LocalVideoBackground: React.FC<LocalVideoBackgroundProps> = ({
     } else {
       // Hide poster immediately when resuming
       setShowPoster(false);
-  // Always ensure muted attribute for autoplay safety; AppProviders will control effective mute
-  video.muted = true;
-  video.volume = 0.05;
-  video.play().catch(() => {
+      // Keep initial play safe for autoplay by ensuring element has muted attribute
+      // Effective mute and volume is controlled centrally in AppProviders.
+      if (!video.hasAttribute("muted")) {
+        video.muted = true;
+      }
+      video.play().catch(() => {
         // Video autoplay failed - show poster and set error state
         setHasError(true);
         onError?.();
@@ -106,14 +106,8 @@ const LocalVideoBackground: React.FC<LocalVideoBackgroundProps> = ({
     }
   }, [isPaused, hasError, onError]);
 
-  // Handle mute state changes
-  useEffect(() => {
-    const video = videoRef.current;
-    if (video) {
-  // AppProviders enforces locked-muted pre-gesture. Reflect desired isMuted here but do not force unmuted start.
-  video.muted = isMuted;
-    }
-  }, [isMuted]);
+  // Do not directly change mute/volume here – AppProviders syncs these on the single video element
+  // to avoid double control and unintended restarts.
 
   // Video event handlers
   const handleLoadStart = () => {
@@ -165,7 +159,8 @@ const LocalVideoBackground: React.FC<LocalVideoBackgroundProps> = ({
         className="absolute inset-0 w-full h-full object-cover"
         src={videoSrc}
         poster={posterSrc}
-        muted={isMuted}
+        // Keep muted attribute present for autoplay safety; actual mute is managed by provider
+        muted
         loop
         playsInline
         preload="auto"
