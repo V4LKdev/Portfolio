@@ -17,7 +17,7 @@ import {
 } from "../../contexts/NavigationContext";
 import { MotionContext } from "../../contexts/MotionContext";
 import { type Project } from "../../content";
-import { audioEngine } from "../../lib/audioEngine";
+// Purge: remove audio engine and video coupling for this refactor branch
 
 interface AppProvidersProps {
   readonly children: React.ReactNode;
@@ -60,222 +60,24 @@ export function AppProviders({ children }: AppProvidersProps) {
     });
   }, []);
 
-  // Sync preference changes after onboarding completes and on window focus/visibility
-  useEffect(() => {
-    const syncFromCookies = () => {
-      const autoplayEnabled = UserPreferences.getVideoAutoplayEnabled();
-      const sfxEnabled = UserPreferences.getSfxEnabled();
-      setIsPaused(!autoplayEnabled);
-      setIsManuallyPaused(!autoplayEnabled);
-      setIsMuted(!sfxEnabled);
-    };
-
-    const handleOnboardingComplete = () => {
-      // Apply cookie values immediately
-      syncFromCookies();
-      // If user enabled SFX during onboarding, unlock audio right away
-      try {
-        const sfxEnabled = UserPreferences.getSfxEnabled();
-        if (sfxEnabled) {
-          unlockAudio();
-        }
-      } catch {
-        // ignore
-      }
-    };
-
-    const handleFocus = () => syncFromCookies();
-    const handleVisibility = () => {
-      if (!document.hidden) syncFromCookies();
-    };
-
-    window.addEventListener("onboardingComplete", handleOnboardingComplete);
-    window.addEventListener("focus", handleFocus);
-    document.addEventListener("visibilitychange", handleVisibility);
-
-    return () => {
-      window.removeEventListener(
-        "onboardingComplete",
-        handleOnboardingComplete,
-      );
-      window.removeEventListener("focus", handleFocus);
-      document.removeEventListener("visibilitychange", handleVisibility);
-    };
-  }, []);
+  // Purged video/audio feature: provide static, no-op values for VideoControlContext
   const lastVideoTimeRef = useRef(0);
-
-  const [isPaused, setIsPaused] = useState(() => {
-    const autoplayEnabled = UserPreferences.getVideoAutoplayEnabled();
-    return !autoplayEnabled;
-  });
-
-  const [isMuted, setIsMuted] = useState(() =>
-    !UserPreferences.getSfxEnabled(),
-  );
-
-  const [isManuallyPaused, setIsManuallyPaused] = useState(() => {
-    const autoplayEnabled = UserPreferences.getVideoAutoplayEnabled();
-    return !autoplayEnabled;
-  });
-
-  // Audio unlock state: true once AudioContext has been successfully resumed (via MEI or user gesture)
-  const [audioUnlocked, setAudioUnlocked] = useState<boolean>(false);
-
-  // Attempt to unlock audio (resume AudioContext) for SFX
-  const unlockAudio = useCallback(async () => {
-    try {
-      await audioEngine.unlock();
-      setAudioUnlocked(true);
-    } catch {
-      // Ignore; remains locked until a valid gesture
-    }
-  }, []);
-
-  const togglePlayback = useCallback(() => {
-    const newPausedState = !isPaused;
-    setIsPaused(newPausedState);
-    setIsManuallyPaused(newPausedState);
-    UserPreferences.setVideoAutoplayEnabled(!newPausedState);
-  }, [isPaused]);
-
-  const toggleMute = useCallback(() => {
-    const newMutedState = !isMuted;
-    setIsMuted(newMutedState);
-    UserPreferences.setSfxEnabled(!newMutedState);
-  }, [isMuted]);
-
-  const setManualPause = useCallback((paused: boolean) => {
-    setIsPaused(paused);
-    setIsManuallyPaused(paused);
-    UserPreferences.setVideoAutoplayEnabled(!paused);
-  }, []);
-
-  useEffect(() => {
-    if ("mediaSession" in navigator) {
-      navigator.mediaSession.setActionHandler("play", () => {
-        if (isPaused) togglePlayback();
-      });
-      navigator.mediaSession.setActionHandler("pause", () => {
-        if (!isPaused) togglePlayback();
-      });
-      return () => {
-        navigator.mediaSession.setActionHandler("play", null);
-        navigator.mediaSession.setActionHandler("pause", null);
-      };
-    }
-    return undefined;
-  }, [isPaused, togglePlayback]);
-
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      const shouldHandleSpace =
-        event.code === "Space" && event.target === document.body;
-      const shouldHandleMediaKey =
-        event.code === "MediaPlayPause" ||
-        (event.code === "MediaPlay" && isPaused) ||
-        (event.code === "MediaPause" && !isPaused);
-      if (shouldHandleSpace || shouldHandleMediaKey) {
-        event.preventDefault();
-        togglePlayback();
-      }
-    };
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [isPaused, togglePlayback]);
-
-  useEffect(() => {
-    const video = document.querySelector("video");
-    if (!video) return;
-
-    // Always keep video muted (we don't want video audio, only SFX)
-    video.muted = true;
-    video.volume = 0;
-
-    if (isPaused && !video.paused) {
-      video.pause();
-    } else if (!isPaused && video.paused) {
-      video.play().catch(() => {});
-    }
-
-    const handleBeforeUnload = () => {
-      lastVideoTimeRef.current = video.currentTime;
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-      if (!video.paused) {
-        lastVideoTimeRef.current = video.currentTime;
-      }
-    };
-  }, [isPaused]);
-
-  // Keep AudioEngine master gain in sync with SFX preference and unlock state
-  useEffect(() => {
-    // If SFX disabled or still locked, keep master at 0; otherwise at 0.3
-    const desired = !isMuted && audioUnlocked ? 0.3 : 0;
-    try {
-      audioEngine.setMasterVolume(desired);
-    } catch {
-      // Ignore if engine not available yet
-    }
-  }, [isMuted, audioUnlocked]);
-
-  // Optimistic MEI-based unlock attempt on mount if SFX preference is enabled
-  useEffect(() => {
-    if (!isMuted) {
-      // Try once; browsers that disallow will keep context suspended without throwing
-      unlockAudio();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    const handleVisibilityChange = () => {
-      if (!document.hidden) {
-        const autoplayEnabled = UserPreferences.getVideoAutoplayEnabled();
-        const shouldBePaused = !autoplayEnabled;
-        setIsPaused(shouldBePaused);
-        setIsManuallyPaused(shouldBePaused);
-        if (!shouldBePaused) {
-          const video = document.querySelector("video");
-          if (video?.paused) {
-            video.play().catch(() => {});
-          }
-        }
-      }
-    };
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-    return () =>
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-  }, []);
-
   const videoValue = useMemo(
     () => ({
-      isPaused,
-      isMuted,
-      isManuallyPaused,
-  audioUnlocked,
-      togglePlayback,
-      toggleMute,
-      setManualPause,
-  unlockAudio,
+      isPaused: true,
+      isMuted: true,
+      isManuallyPaused: true,
+      audioUnlocked: false,
+      togglePlayback: () => {},
+      toggleMute: () => {},
+      setManualPause: () => {},
+      unlockAudio: () => {},
       lastVideoTime: lastVideoTimeRef.current,
       setLastVideoTime: (t: number) => {
         lastVideoTimeRef.current = t;
       },
     }),
-    [
-      isPaused,
-      isMuted,
-      isManuallyPaused,
-  audioUnlocked,
-      togglePlayback,
-      toggleMute,
-      setManualPause,
-  unlockAudio,
-    ],
+    [],
   );
 
   const motionValue = useMemo(

@@ -21,27 +21,19 @@
  * Usage Examples:
  * ```typescript
  * // Get a preference with automatic type safety and default fallback
- * const isAutoplayEnabled = UserPreferences.getVideoAutoplayEnabled();
+ * const showOnboarding = UserPreferences.getShowOnboarding();
  *
  * // Set a preference with automatic validation and persistence
- * UserPreferences.setSfxEnabled(true);
+ * UserPreferences.setReduceMotion(true);
  *
  * // Check if a preference has been explicitly set by the user
  * ```
  */
 
 export interface UserPreferenceDefinitions {
-  /** Whether video should autoplay when user visits/returns to home section */
-  videoAutoplayEnabled: boolean;
-
-  /** Sound effects enabled/disabled (button hover, clicks, etc.) */
-  sfxEnabled: boolean;
-
   // ---- UI & UX Preferences ----
-
   /** Whether to show onboarding/tutorial on first visit */
   showOnboarding: boolean;
-
   /** Whether to reduce motion/animations for accessibility */
   reduceMotion: boolean;
 }
@@ -51,15 +43,8 @@ export interface UserPreferenceDefinitions {
  * These are used when no user preference has been set or when resetting to defaults
  */
 export const DEFAULT_PREFERENCES: UserPreferenceDefinitions = {
-  // Video defaults: Autoplay ON for better UX
-  videoAutoplayEnabled: true,
-  
-  // SFX defaults: OFF by default for better UX (user must explicitly enable)
-  sfxEnabled: false,
-
   // UI defaults: Show onboarding for new users
   showOnboarding: true,
-
   // Accessibility: Reduce motion OFF by default
   reduceMotion: false,
 };
@@ -72,8 +57,6 @@ export const PREFERENCE_COOKIE_NAMES: Record<
   keyof UserPreferenceDefinitions,
   string
 > = {
-  videoAutoplayEnabled: "portfolio-video-autoplay",
-  sfxEnabled: "portfolio-sfx-enabled",
   showOnboarding: "portfolio-show-onboarding",
   reduceMotion: "portfolio-reduce-motion",
 };
@@ -237,56 +220,6 @@ function deserializePreferenceValue<T>(
  * - Error handling prevents crashes from malformed cookie data
  */
 export const UserPreferences = {
-  // ---- Video & Media Preferences ----
-
-  /**
-   * Get whether video should autoplay when user visits/returns to home section
-   * @returns true if video should autoplay, false otherwise
-   */
-  getVideoAutoplayEnabled: (): boolean => {
-    const cookieValue = getCookie(PREFERENCE_COOKIE_NAMES.videoAutoplayEnabled);
-    return deserializePreferenceValue(
-      cookieValue,
-      "boolean",
-      DEFAULT_PREFERENCES.videoAutoplayEnabled,
-    );
-  },
-
-  /**
-   * Set whether video should autoplay when user visits/returns to home section
-   * @param enabled - true to enable autoplay, false to disable
-   */
-  setVideoAutoplayEnabled: (enabled: boolean): void => {
-    setCookie(
-      PREFERENCE_COOKIE_NAMES.videoAutoplayEnabled,
-      serializePreferenceValue(enabled),
-    );
-  },
-
-  /**
-   * Get sound effects enabled/disabled setting
-   * @returns true if SFX should play, false if disabled
-   */
-  getSfxEnabled: (): boolean => {
-    const cookieValue = getCookie(PREFERENCE_COOKIE_NAMES.sfxEnabled);
-    return deserializePreferenceValue(
-      cookieValue,
-      "boolean",
-      DEFAULT_PREFERENCES.sfxEnabled,
-    );
-  },
-
-  /**
-   * Set sound effects enabled/disabled setting
-   * @param enabled - true to enable SFX, false to disable
-   */
-  setSfxEnabled: (enabled: boolean): void => {
-    setCookie(
-      PREFERENCE_COOKIE_NAMES.sfxEnabled,
-      serializePreferenceValue(enabled),
-    );
-  },
-
   // ---- UI & UX Preferences ----
 
   /**
@@ -382,8 +315,10 @@ export const UserPreferences = {
       "portfolio-music-volume",
       "portfolio-music-enabled",
       "portfolio-theme",
-      "portfolio-reduce-motion",
       "portfolio-audio-muted", // Old globalAudioMuted cookie
+  // Also remove purged cookies from previous versions
+  "portfolio-video-autoplay",
+  "portfolio-sfx-enabled",
     ];
 
     oldCookieNames.forEach((cookieName) => {
@@ -397,8 +332,6 @@ export const UserPreferences = {
    */
   getAllPreferences: (): UserPreferenceDefinitions => {
     return {
-      videoAutoplayEnabled: UserPreferences.getVideoAutoplayEnabled(),
-      sfxEnabled: UserPreferences.getSfxEnabled(),
       showOnboarding: UserPreferences.getShowOnboarding(),
       reduceMotion: UserPreferences.getReduceMotion(),
     };

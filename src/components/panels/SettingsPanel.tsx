@@ -12,7 +12,7 @@ import {
   Volume2,
   VolumeX,
 } from "lucide-react";
-import { useVideoControls } from "../../hooks/useVideoControls";
+// Purge: temporarily disable settings functionality
 
 interface SettingsPanelProps {
   className?: string;
@@ -27,7 +27,8 @@ interface SettingsPanelProps {
  * - Accessible keyboard navigation
  */
 const SettingsPanel: React.FC<SettingsPanelProps> = ({ className = "" }) => {
-  const { isPaused, isMuted, togglePlayback, toggleMute } = useVideoControls();
+  const isPaused = true;
+  const isMuted = true;
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
@@ -115,7 +116,7 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ className = "" }) => {
 
           {/* Video Toggle */}
           <button
-            onClick={togglePlayback}
+            onClick={() => {}}
             className="p-3 transition-all duration-300 hover:scale-110"
             aria-label={
               isPaused ? "Play background video" : "Pause background video"
@@ -133,7 +134,7 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ className = "" }) => {
 
           {/* SFX Toggle */}
           <button
-            onClick={toggleMute}
+            onClick={() => {}}
             className="p-3 transition-all duration-300 hover:scale-110"
             aria-label={isMuted ? "Enable sound effects" : "Disable sound effects"}
             title={isMuted ? "Enable sound effects" : "Disable sound effects"}

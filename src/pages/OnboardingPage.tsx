@@ -25,13 +25,9 @@ const LOADING_TIMEOUT = 3000; // ms
 const OnboardingPage: React.FC = () => {
   const navigate = useNavigate();
 
-  // Local state for preferences (initialize from cookies, will sync back when user clicks Enter)
-  const [videoAutoplay, setVideoAutoplay] = useState(() =>
-    UserPreferences.getVideoAutoplayEnabled(),
-  );
-  const [sfxEnabled, setSfxEnabled] = useState(() =>
-    UserPreferences.getSfxEnabled(),
-  );
+  // Purge: toggles are visual only for now
+  const [videoAutoplay, setVideoAutoplay] = useState(true);
+  const [sfxEnabled, setSfxEnabled] = useState(false);
 
   // Loading state
   const [isLoading, setIsLoading] = useState(true);
@@ -59,13 +55,11 @@ const OnboardingPage: React.FC = () => {
 
   // Handle entering the portfolio
   const handleEnterPortfolio = useCallback(() => {
-    // Save preferences to cookies
-    UserPreferences.setVideoAutoplayEnabled(videoAutoplay);
-    UserPreferences.setSfxEnabled(sfxEnabled);
-    UserPreferences.setShowOnboarding(false); // Mark onboarding as completed
+    // Only mark onboarding as completed; other prefs are purged for now
+    UserPreferences.setShowOnboarding(false);
     window.dispatchEvent(new CustomEvent("onboardingComplete"));
     navigate("/", { replace: true });
-  }, [navigate, videoAutoplay, sfxEnabled]);
+  }, [navigate]);
 
   // Handle keyboard events for "press any key to continue"
   useEffect(() => {
@@ -84,7 +78,7 @@ const OnboardingPage: React.FC = () => {
     };
     window.addEventListener("keydown", handleKeyPress);
     return () => window.removeEventListener("keydown", handleKeyPress);
-  }, [isLoading, videoAutoplay, sfxEnabled, handleEnterPortfolio]);
+  }, [isLoading, handleEnterPortfolio]);
 
   // Hide text caret globally for this page
   useEffect(() => {

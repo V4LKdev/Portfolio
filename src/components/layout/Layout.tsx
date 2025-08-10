@@ -5,13 +5,11 @@
  * It handles the video background, side panels, and other global layout elements.
  */
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import SocialMediaIcons from "../media/SocialMediaIcons";
 import SettingsPanel from "../panels/SettingsPanel";
 import { SectionProps } from "../../types/SharedProps";
-import { useVideoControls } from "../../hooks/useVideoControls";
-import { useAudioUnlock } from "../../hooks/useAudioUnlock";
-import { VolumeX } from "lucide-react";
+// Purged audio/video controls for now
 
 interface LayoutProps extends SectionProps {
   children: React.ReactNode;
@@ -35,19 +33,7 @@ const Layout: React.FC<LayoutProps> = ({
   isInnerPage = false,
   innerOverlayVariant = "default",
 }) => {
-  const { isMuted, audioUnlocked } = useVideoControls();
-  // Attach listeners to unlock on first gesture (passive)
-  useAudioUnlock();
-  // Debounce the indicator so it only shows if lock persists briefly
-  const [showUnlock, setShowUnlock] = useState(false);
-  useEffect(() => {
-    if (!isMuted && !audioUnlocked) {
-      const id = setTimeout(() => setShowUnlock(true), 350);
-      return () => clearTimeout(id);
-    }
-    setShowUnlock(false);
-    return undefined;
-  }, [isMuted, audioUnlocked]);
+  // Audio unlock indicator removed
   const overlayClasses =
     innerOverlayVariant === "deep"
       ? "fixed inset-0 z-10 pointer-events-none bg-black/50 backdrop-blur-md"
@@ -75,17 +61,7 @@ const Layout: React.FC<LayoutProps> = ({
       </div>
 
   {/* Bottom-center audio-locked indicator: only if pref is unmuted but engine still locked (debounced) */}
-  {showUnlock && (
-        <div
-          className="fixed bottom-3 left-1/2 -translate-x-1/2 z-[60] pointer-events-none"
-          aria-hidden
-        >
-          <div className="px-2 py-1 rounded-md bg-black/30 text-gray-300 backdrop-blur-0 shadow-sm flex items-center gap-2">
-            <VolumeX size={16} className="opacity-80" />
-            <span className="text-xs opacity-80 select-none">Tap Anywhere to enable sound</span>
-          </div>
-        </div>
-      )}
+  {/* Audio unlock indicator removed during purge */}
     </div>
   );
 };
