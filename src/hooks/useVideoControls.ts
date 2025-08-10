@@ -1,21 +1,5 @@
-/**
- * useVideoControls.ts
- *
- * Custom hook for accessing the video control context.
- */
-
-import { useContext } from "react";
-import { VideoControlContext } from "../contexts/VideoControlContext";
-
+// Deprecated: useVideoControls was removed during media/SFX/preferences purge.
+// This stub intentionally does nothing and throws if called.
 export const useVideoControls = () => {
-  const context = useContext(VideoControlContext);
-
-  if (!context) {
-    throw new Error(
-      "useVideoControls must be used within AppProviders. " +
-        "Make sure your component is wrapped with <AppProviders>.",
-    );
-  }
-
-  return context;
+  throw new Error("useVideoControls is deprecated and has been removed.");
 };

@@ -2,15 +2,8 @@
  * AppProviders - Global context providers for video and navigation state management
  */
 
-import React, {
-  useState,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-} from "react";
+import React, { useState, useCallback, useEffect, useMemo } from "react";
 import { UserPreferences } from "../../lib/cookies";
-import { VideoControlContext } from "../../contexts/VideoControlContext";
 import {
   NavigationContext,
   type NavigationContextType,
@@ -60,25 +53,7 @@ export function AppProviders({ children }: AppProvidersProps) {
     });
   }, []);
 
-  // Purged video/audio feature: provide static, no-op values for VideoControlContext
-  const lastVideoTimeRef = useRef(0);
-  const videoValue = useMemo(
-    () => ({
-      isPaused: true,
-      isMuted: true,
-      isManuallyPaused: true,
-      audioUnlocked: false,
-      togglePlayback: () => {},
-      toggleMute: () => {},
-      setManualPause: () => {},
-      unlockAudio: () => {},
-      lastVideoTime: lastVideoTimeRef.current,
-      setLastVideoTime: (t: number) => {
-        lastVideoTimeRef.current = t;
-      },
-    }),
-    [],
-  );
+  // Video/audio controls purged in this branch; no provider needed
 
   const motionValue = useMemo(
     () => ({
@@ -151,11 +126,9 @@ export function AppProviders({ children }: AppProvidersProps) {
 
   return (
     <MotionContext.Provider value={motionValue}>
-      <VideoControlContext.Provider value={videoValue}>
-        <NavigationContext.Provider value={navigationValue}>
-          {children}
-        </NavigationContext.Provider>
-      </VideoControlContext.Provider>
+      <NavigationContext.Provider value={navigationValue}>
+        {children}
+      </NavigationContext.Provider>
     </MotionContext.Provider>
   );
 }

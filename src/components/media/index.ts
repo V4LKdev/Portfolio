@@ -1,3 +1,2 @@
-// Media Components - Video backgrounds, social media icons, and other media elements
-export { default as LocalVideoBackground } from "./LocalVideoBackground";
+// Media Components - Social media icons and other media elements
 export { default as SocialMediaIcons } from "./SocialMediaIcons";

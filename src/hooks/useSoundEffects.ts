@@ -1,29 +1,23 @@
 /**
  * useSoundEffects.ts
  *
- * Hook for managing button sound effects with Web Audio API fallback
- * Integrates with global mute setting from VideoControlContext
+ * Thin wrapper for SFX triggers. Currently a no-op; kept for future re-introduction of SFX.
  */
-
-import { useCallback } from "react";
-
-interface SoundEffectsConfig {
-  enabled?: boolean; // Local override, respects global mute when true
-}
 
 interface UseSoundEffectsReturn {
   playHover: () => void;
   playUnhover: () => void;
   playClick: () => void;
-  playFeedback: () => void;
+  playFeedback: (name?: string) => void;
   isEnabled: boolean;
 }
 
 export function useSoundEffects(
-  _config: SoundEffectsConfig = {},
+  _opts?: {
+    category?: string;
+  }
 ): UseSoundEffectsReturn {
-  // Purged SFX implementation: return no-ops for now
-  const noop = useCallback(() => {}, []);
+  const noop = () => {};
   return {
     playHover: noop,
     playUnhover: noop,
