@@ -7,8 +7,7 @@
  */
 
 import React from "react";
-// Purged background video; render a static image with overlay for now
-import { videoConfig } from "../../content";
+import { LocalVideoBackground } from "../media";
 
 interface BackgroundRootProps {
   className?: string;
@@ -17,11 +16,7 @@ interface BackgroundRootProps {
 const BackgroundRoot: React.FC<BackgroundRootProps> = ({ className }) => {
   return (
     <div className={`fixed inset-0 z-0 ${className ?? ""}`} aria-hidden>
-      {/* Static background image placeholder */}
-      <div
-        className="absolute inset-0 w-full h-full bg-cover bg-center"
-        style={{ backgroundImage: `url(${videoConfig.posterSrc})` }}
-      />
+  <LocalVideoBackground />
       {/* Keep the visual overlay to match previous appearance */}
       <div className="absolute inset-0 video-overlay" />
     </div>

@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 import { UserPreferences } from "../lib/cookies";
 import { onboardingContent } from "../content/onboarding-exit";
 import "../styles/onboarding.css";
+import { useVideo } from "../hooks/useVideo";
 
 const LOADING_MESSAGES = onboardingContent.loadingMessages;
 
@@ -25,8 +26,7 @@ const LOADING_TIMEOUT = 3000; // ms
 const OnboardingPage: React.FC = () => {
   const navigate = useNavigate();
 
-  // Purge: toggles are visual only for now
-  const [videoAutoplay, setVideoAutoplay] = useState(true);
+  const { videoEnabled, toggleVideo } = useVideo();
   const [sfxEnabled, setSfxEnabled] = useState(false);
 
   // Loading state
@@ -129,30 +129,29 @@ const OnboardingPage: React.FC = () => {
               <label className="flex items-center gap-3 cursor-pointer group">
                 <div
                   role="switch"
-                  aria-checked={videoAutoplay}
+                  aria-checked={videoEnabled}
                   tabIndex={0}
                   className={`relative w-12 h-6 rounded-full flex items-center transition-all duration-300 focus:ring-2 focus:ring-[#3b82f6] focus:outline-none select-none ${
-                    videoAutoplay ? "bg-[#3b82f6]" : "bg-gray-600"
+                    videoEnabled ? "bg-[#3b82f6]" : "bg-gray-600"
                   }`}
-                  onClick={() => setVideoAutoplay(!videoAutoplay)}
+                  onClick={toggleVideo}
                   onKeyDown={(e) =>
-                    (e.key === "Enter" || e.key === " ") &&
-                    setVideoAutoplay(!videoAutoplay)
+                    (e.key === "Enter" || e.key === " ") && toggleVideo()
                   }
                 >
                   <div
                     className={`absolute w-5 h-5 bg-white rounded-full shadow-lg transition-all duration-300 transform ${
-                      videoAutoplay ? "translate-x-6" : "translate-x-0.5"
+                      videoEnabled ? "translate-x-6" : "translate-x-0.5"
                     }`}
                     style={{ top: "2px" }}
                   />
                 </div>
                 <span
                   className={`text-base sm:text-lg transition-colors duration-300 inline-block w-[90px] text-left align-middle whitespace-nowrap ${
-                    videoAutoplay ? "text-white" : "text-white/60"
+                    videoEnabled ? "text-white" : "text-white/60"
                   }`}
                 >
-                  {videoAutoplay
+                  {videoEnabled
                     ? onboardingContent.videoToggleOn
                     : onboardingContent.videoToggleOff}
                 </span>

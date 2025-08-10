@@ -1,5 +1,5 @@
 /**
- * AppProviders - Global context providers for video and navigation state management
+ * AppProviders - Global context providers for motion, navigation, and video state
  */
 
 import React, { useState, useCallback, useEffect, useMemo } from "react";
@@ -9,6 +9,7 @@ import {
   type NavigationContextType,
 } from "../../contexts/NavigationContext";
 import { MotionContext } from "../../contexts/MotionContext";
+import VideoProvider from "../../contexts/VideoProvider";
 import { type Project } from "../../content";
 // Purge: remove audio engine and video coupling for this refactor branch
 
@@ -127,7 +128,7 @@ export function AppProviders({ children }: AppProvidersProps) {
   return (
     <MotionContext.Provider value={motionValue}>
       <NavigationContext.Provider value={navigationValue}>
-        {children}
+        <VideoProvider>{children}</VideoProvider>
       </NavigationContext.Provider>
     </MotionContext.Provider>
   );

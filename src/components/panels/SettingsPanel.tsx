@@ -4,6 +4,7 @@
 
 import * as React from "react";
 import { useState, useEffect } from "react";
+import { useVideo } from "../../hooks/useVideo";
 import {
   Settings,
   ChevronLeft,
@@ -27,7 +28,9 @@ interface SettingsPanelProps {
  * - Accessible keyboard navigation
  */
 const SettingsPanel: React.FC<SettingsPanelProps> = ({ className = "" }) => {
-  const isPaused = true;
+  const { videoEnabled, toggleVideo } = useVideo();
+  // For now, treat "paused" as the inverse of videoEnabled
+  const isPaused = !videoEnabled;
   const isMuted = true;
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -116,7 +119,7 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ className = "" }) => {
 
           {/* Video Toggle */}
           <button
-            onClick={() => {}}
+            onClick={toggleVideo}
             className="p-3 transition-all duration-300 hover:scale-110"
             aria-label={
               isPaused ? "Play background video" : "Pause background video"

@@ -36,6 +36,8 @@ export interface UserPreferenceDefinitions {
   showOnboarding: boolean;
   /** Whether to reduce motion/animations for accessibility */
   reduceMotion: boolean;
+  /** Whether background video playback is enabled */
+  videoEnabled: boolean;
 }
 
 /**
@@ -47,6 +49,8 @@ export const DEFAULT_PREFERENCES: UserPreferenceDefinitions = {
   showOnboarding: true,
   // Accessibility: Reduce motion OFF by default
   reduceMotion: false,
+  // Media: Background video enabled by default
+  videoEnabled: true,
 };
 
 /**
@@ -59,6 +63,7 @@ export const PREFERENCE_COOKIE_NAMES: Record<
 > = {
   showOnboarding: "portfolio-show-onboarding",
   reduceMotion: "portfolio-reduce-motion",
+  videoEnabled: "portfolio-video-enabled",
 };
 
 // ============================================================================
@@ -270,6 +275,30 @@ export const UserPreferences = {
     );
   },
 
+  /**
+   * Get whether background video playback is enabled
+   * @returns true if video should play, false otherwise
+   */
+  getVideoEnabled: (): boolean => {
+    const cookieValue = getCookie(PREFERENCE_COOKIE_NAMES.videoEnabled);
+    return deserializePreferenceValue(
+      cookieValue,
+      "boolean",
+      DEFAULT_PREFERENCES.videoEnabled,
+    );
+  },
+
+  /**
+   * Set whether background video playback is enabled
+   * @param enabled - true to enable video, false to disable
+   */
+  setVideoEnabled: (enabled: boolean): void => {
+    setCookie(
+      PREFERENCE_COOKIE_NAMES.videoEnabled,
+      serializePreferenceValue(enabled),
+    );
+  },
+
   // ---- Utility Methods ----
 
   /**
@@ -334,6 +363,7 @@ export const UserPreferences = {
     return {
       showOnboarding: UserPreferences.getShowOnboarding(),
       reduceMotion: UserPreferences.getReduceMotion(),
+  videoEnabled: UserPreferences.getVideoEnabled(),
     };
   },
 } as const;
