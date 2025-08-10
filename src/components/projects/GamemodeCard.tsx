@@ -113,12 +113,7 @@ const GamemodeCard: React.FC<GamemodeCardProps> = ({
   aria-label={`${portfolioLabel} mode`}
   tabIndex={0}
     >
-      {/* Mode icon in top-left */}
-      {Icon && (
-        <div className="absolute top-2 left-2 z-30 flex items-center justify-center">
-          <Icon size={20} strokeWidth={2.1} className="text-white/90 drop-shadow-[0_1px_2px_rgba(0,0,0,0.45)]" />
-        </div>
-      )}
+  {/* Top-left mode icon removed for a cleaner look */}
       {/* Background image */}
       <div className="absolute inset-0">
         <img

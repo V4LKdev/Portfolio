@@ -5,3 +5,5 @@ Ready to proceed checkmark on onboarding isnt loaded fast enough? other icons to
 add cycle carusel to the gamnemode cards for mobile
 fix main page on mobile not able to click anything
 
+put back button at the bottom and a home icon on the header bar 
+

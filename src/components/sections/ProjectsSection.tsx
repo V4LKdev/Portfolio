@@ -34,6 +34,8 @@ const ProjectsSection: NavigableSectionComponent<AdditionalProjectsProps> = ({
     window.setTimeout(() => navigate(`/projects/${slug}`), MODE_NAV_DELAY);
   };
 
+  // (Icon row and featured banner removed per request)
+
   // Simple stub view when at /projects/:mode
   if (modeSlug && isGamemodeSlug(modeSlug)) {
     const meta = GAMEMODES[modeSlug];
@@ -43,10 +45,10 @@ const ProjectsSection: NavigableSectionComponent<AdditionalProjectsProps> = ({
         id={id}
       >
         <BackButton onClick={() => navigate("/projects")} label="Back to Modes" />
-        <h2 className="text-5xl font-bold mb-2 text-center game-title">
+        <h2 className="text-5xl font-extrabold mb-2 text-center game-title uppercase tracking-[0.2em]">
           {meta.gameLabel} / {meta.portfolioLabel}
         </h2>
-        <p className="text-center game-subtitle theme-text-muted mb-10 text-lg">
+  <p className="text-center game-subtitle theme-text-muted mb-10 text-lg">
           {meta.description}
         </p>
         <div className="theme-card-static rounded-xl p-8 text-center">
@@ -64,15 +66,48 @@ const ProjectsSection: NavigableSectionComponent<AdditionalProjectsProps> = ({
       id={id}
     >
       <BackButton onClick={onBack} label="Back to Home" />
-      <h2 className="text-5xl font-bold mb-4 text-center game-title">
-        Projects
-      </h2>
-      <p className="text-center game-subtitle theme-text-muted mb-10 text-lg">
-        Choose a mode to explore
-      </p>
+      <div className="text-center mb-8 md:mb-10">
+        <h2 className="game-title uppercase tracking-[0.3em] text-6xl md:text-7xl font-extrabold">
+          Projects
+        </h2>
+        <div
+          className="mx-auto mt-4 h-[3px] w-40 md:w-56 rounded-full opacity-80"
+          style={{
+            background:
+              "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.9) 50%, rgba(255,255,255,0) 100%)",
+          }}
+        />
+        <p className="mt-5 tracking-wide text-base md:text-lg theme-text-muted">
+          Browse Projects by Category
+        </p>
+      </div>
+      {/* Featured/New banner (rectangular strip, skewed corners) */}
+  <div className="relative w-full mb-12 md:mb-16 select-none" aria-hidden>
+        {/* TODO: Turn this into an auto-cycling carousel of featured/new projects.
+            Consider adding `featured?: boolean` and `createdAt?: string` to Project. */}
+  <div className="relative overflow-hidden" style={{ borderRadius: 0 }}>
+          <div className="relative w-full h-16 md:h-20 lg:h-24">
+            <img
+              src="https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?q=80&w=1920&auto=format&fit=crop"
+              alt="Featured banner background"
+              className="absolute inset-0 w-full h-full object-cover"
+              draggable={false}
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/35 to-transparent" />
+            <div className="absolute left-6 md:left-8 top-1/2 -translate-y-1/2">
+              <div className="uppercase tracking-[0.25em] text-[12px] md:text-xs font-bold text-white/85 mb-1">
+                Featured
+              </div>
+              <div className="game-title text-xl md:text-2xl lg:text-3xl font-extrabold">
+                Spotlight coming soon
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
   {/* Gamemode Cards row */}
-  <div className="mx-auto max-w-7xl grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 md:gap-6">
+  <div className="mx-auto max-w-7xl grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 md:gap-6 mt-16 md:mt-20">
         <GamemodeCard
           gameLabel="Singleplayer"
           portfolioLabel="Solo Projects"
