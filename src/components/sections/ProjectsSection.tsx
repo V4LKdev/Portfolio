@@ -29,7 +29,7 @@ const ProjectsSection: NavigableSectionComponent<AdditionalProjectsProps> = ({
   const modeSlug = subpath ? subpath.split("/")[0] : "";
 
   // Match main menu nav feel (Portfolio uses ~250ms). Keep local constant for now.
-  const MODE_NAV_DELAY = 350;
+  const MODE_NAV_DELAY = 400;
   const goMode = (slug: string) => {
     window.setTimeout(() => navigate(`/projects/${slug}`), MODE_NAV_DELAY);
   };

@@ -127,8 +127,7 @@ const GamemodeCard: React.FC<GamemodeCardProps> = ({
           className="w-full h-full object-cover opacity-70 group-focus:opacity-80"
           draggable={false}
         />
-  {/* vignette + blur glass layer to keep page style */}
-        <div className="absolute inset-0 backdrop-blur-sm" />
+  {/* vignette layer (blur removed for performance; prefer pre-blurred imagery) */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/20 to-transparent" />
       </div>
 

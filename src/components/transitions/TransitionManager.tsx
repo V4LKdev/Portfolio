@@ -22,7 +22,7 @@ import ExitPage from "../../pages/ExitPage";
 import { CornerSpinner } from "./CornerSpinner";
 import BackgroundRoot from "../layout/BackgroundRoot";
 
-type TransitionType = "page" | "section" | "none";
+type TransitionType = "page" | "section" | "instant" | "none";
 
 // Portfolio base sections where the shared background should remain visible
 const PORTFOLIO_BASE_PATHS = [
@@ -80,6 +80,12 @@ function getTransitionType(
   const isFromPage = pageRoutes.includes(fromPath);
   const isToPage = pageRoutes.includes(toPath);
 
+  // Special-case: instant transitions within the projects subtree
+  const isProjects = (p: string) => p === "/projects" || p.startsWith("/projects/");
+  if (isProjects(fromPath) && isProjects(toPath) && fromPath !== toPath) {
+    return { type: "instant", fromPath, toPath };
+  }
+
   // Page transitions for major navigation
   if (isFromPage || isToPage || !isFromPortfolio || !isToPortfolio) {
     return { type: "page", fromPath, toPath };
@@ -119,17 +125,34 @@ const AdaptiveTransition: React.FC<{
   // On route change, start transition
   useEffect(() => {
     if (location !== displayedLocation && allowContentSwap) {
-  // Lock content swapping until transition completes
+      // For instant transitions within /projects, swap immediately without locking
+      const willBeInstant = getTransitionType(prevLocation, location).type === "instant";
+      if (willBeInstant) {
+        setPrevLocation(displayedLocation);
+        setDisplayedLocation(location);
+        setTransitionState("idle");
+        return;
+      }
+      // Lock content swapping until transition completes (page/section transitions)
       setAllowContentSwap(false);
       setPrevLocation(displayedLocation);
       setTransitionState("fadeOut");
     }
-  }, [location, displayedLocation, allowContentSwap]);
+  }, [location, displayedLocation, allowContentSwap, prevLocation]);
 
   // TRANSITION STATE MACHINE
   // Handles page and section transitions with proper timing.
   useEffect(() => {
     let cleanup: (() => void) | undefined = undefined;
+
+    // INSTANT TRANSITION - swap immediately, no fade
+    if (effectiveTransitionType === "instant") {
+      if (location !== displayedLocation) {
+        setDisplayedLocation(location);
+        setTransitionState("idle");
+      }
+      return cleanup;
+    }
 
     // PAGE TRANSITION - fade out, loading spinner, fade in
     if (effectiveTransitionType === "page") {
@@ -178,6 +201,9 @@ const AdaptiveTransition: React.FC<{
       // For page transitions: visible during idle/fadeIn, hidden during fadeOut/loading
       return (transitionState === "idle" || transitionState === "fadeIn") ? 1 : 0;
     }
+    if (effectiveTransitionType === "instant") {
+      return 1;
+    }
     if (effectiveTransitionType === "section") {
       // For section transitions: fade container out then back in
       return transitionState === "fadeOut" ? 0 : 1;
@@ -194,6 +220,9 @@ const AdaptiveTransition: React.FC<{
         scale: isFadingOut ? SECTION_ZOOM_SCALE : 1,
       } as const;
     }
+    if (effectiveTransitionType === "instant") {
+      return { opacity: 1 } as const;
+    }
     if (effectiveTransitionType === "page") {
       return { opacity: pageOpacity } as const;
     }
@@ -207,6 +236,9 @@ const AdaptiveTransition: React.FC<{
     }
     if (effectiveTransitionType === "section") {
       return { duration: SECTION_FADE_DURATION_S, ease: "easeInOut" } as const;
+    }
+    if (effectiveTransitionType === "instant") {
+      return { duration: 0, ease: "linear" } as const;
     }
     return { duration: 0, ease: "linear" } as const;
   }, [effectiveTransitionType]);
