@@ -11,6 +11,12 @@ export interface Project {
   description: string;
   details: string;
   image: string;
+  // Optional URL/metadata helpers (backward-compatible)
+  slug?: string; // if omitted, a slug will be derived from the title
+  gamemode?: "singleplayer" | "multiplayer" | "competitive" | "sandbox"; // optional override; otherwise derived from project fields
+  featured?: boolean;
+  createdAt?: string; // ISO date string
+  cover?: string; // optional card cover image (defaults to image)
   // Enhanced project details for detailed view (optional)
   status?: string;
   year?: string;
@@ -62,6 +68,9 @@ export const projects: Project[] = [
       "Custom audio systems • MIDI input handling • C++ and MetaSounds integration • Editor tools",
     image:
       "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=800&q=80",
+    slug: "music-game-framework",
+    createdAt: "2024-06-15",
+    featured: true,
     status: "Complete",
     year: "2024",
     duration: "4 months",
@@ -198,6 +207,8 @@ private:
       "Gameplay programming • Custom shape detection algorithms • C++ and UE5 implementation",
     image:
       "https://images.unsplash.com/photo-1458668383970-8ddd3927deed?auto=format&fit=crop&w=800&q=80",
+    slug: "inkvocation-prototype",
+    createdAt: "2024-08-01",
     status: "In Progress",
     year: "2024",
     duration: "2 months",
@@ -261,6 +272,9 @@ private:
       "Grid system optimization • Networking (Steam & Iris) • Custom Unreal editor tools",
     image:
       "https://images.unsplash.com/photo-1523712999610-f77fbcfc3843?auto=format&fit=crop&w=800&q=80",
+    slug: "asymptomagickal",
+    createdAt: "2024-04-10",
+    featured: true,
     status: "Complete",
     year: "2024",
     duration: "6 months",
@@ -319,6 +333,8 @@ private:
       "Multiplayer systems • Gameplay Ability System (GAS) • Tool development • Version control with Perforce",
     image:
       "https://images.unsplash.com/photo-1470813740244-df37b8c1edcb?auto=format&fit=crop&w=800&q=80",
+    slug: "esoteric-instinct",
+    createdAt: "2024-02-20",
     status: "In Progress",
     year: "2024",
     duration: "8 months",
@@ -365,5 +381,23 @@ private:
         "Reduced build conflicts by 80% through improved Perforce workflows",
       ],
     },
+  },
+  {
+    id: "jam-echo-run",
+    title: "Echo Run (Jam)",
+    category: "Game Jam",
+    type: "solo",
+    tags: ["UE5", "Jam", "48h", "Prototype"],
+    description:
+      "A 48-hour game jam prototype where time-echoes of the player solve puzzles collaboratively.",
+    details: "Time-loop mechanics • Rapid prototyping • Minimalist visuals",
+    image:
+      "https://images.unsplash.com/photo-1542751110-97427bbecf20?auto=format&fit=crop&w=800&q=80",
+    slug: "echo-run-jam",
+    createdAt: "2023-11-05",
+    status: "Complete",
+    year: "2023",
+    duration: "48 hours",
+    role: "Solo Developer",
   },
 ];

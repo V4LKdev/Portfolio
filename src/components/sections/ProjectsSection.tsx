@@ -7,11 +7,31 @@ import React, { useContext } from "react";
 import { BackButton } from "../ui/navigation";
 import { NavigableSectionComponent } from "../../types/SharedProps";
 import GamemodeCard from "../projects/GamemodeCard";
-import { User, Users, Trophy, Wrench, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  User,
+  Users,
+  Trophy,
+  Wrench,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { MotionContext } from "../../contexts/MotionContext";
-import { GAMEMODES, isGamemodeSlug } from "../../content/gamemodes";
+import {
+  GAMEMODES,
+  isGamemodeSlug,
+  type GamemodeSlug,
+} from "../../content/gamemodes";
 import { useSoundEffects } from "../../hooks/useSoundEffects";
+import ProjectGrid from "../projects/ProjectGrid";
+import {
+  getFeaturedSlides,
+  getProjectsByMode,
+  getProjects,
+  normalizeProject,
+} from "../../lib/contentLoader";
+import { type Project } from "../../content";
+import { useNavigation } from "../../hooks/useNavigation";
 
 interface AdditionalProjectsProps {}
 
@@ -21,12 +41,17 @@ type Slide = {
   title: string;
   subtitle?: string;
   image: string;
+  // Optional extras for navigation/presentation
+  mode?: GamemodeSlug;
+  slug?: string;
+  tags?: string[];
 };
 
 const FeaturedCarousel: React.FC<{
   slides: Slide[];
   className?: string;
-}> = ({ slides, className }) => {
+  onOpen?: (s: Slide) => void;
+}> = ({ slides, className, onOpen }) => {
   const motion = useContext(MotionContext);
   const reduce = motion?.reduceMotion;
   const [index, setIndex] = React.useState(0);
@@ -78,7 +103,7 @@ const FeaturedCarousel: React.FC<{
           </button>
         )}
         <div
-          className="group relative w-[92%] md:w-[86%] lg:w-[72%] h-16 md:h-20 lg:h-24 overflow-hidden transform-gpu origin-center will-change-transform transition-transform duration-150 hover:scale-[1.015] motion-reduce:transform-none motion-reduce:transition-none"
+          className="group relative w-[92%] md:w-[86%] lg:w-[72%] h-20 md:h-24 lg:h-28 overflow-hidden transform-gpu origin-center will-change-transform transition-transform duration-150 hover:scale-[1.015] motion-reduce:transform-none motion-reduce:transition-none rounded-xl"
           onMouseEnter={clear}
           onMouseLeave={start}
           onFocus={clear}
@@ -97,6 +122,7 @@ const FeaturedCarousel: React.FC<{
                   className="absolute inset-0 w-full h-full cursor-pointer text-left"
                   onClick={() => {
                     playClick();
+                    onOpen?.(s);
                   }}
                   onMouseEnter={() => playHover()}
                   onMouseLeave={() => playUnhover()}
@@ -110,31 +136,45 @@ const FeaturedCarousel: React.FC<{
                     className="absolute inset-0 w-full h-full object-cover"
                     draggable={false}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/35 to-transparent" />
-                  <div className="absolute inset-y-0 left-6 md:left-8 flex items-center" style={{ transform: "translateZ(0)" }}>
+                  {/* (Gradient overlay removed per request) */}
+                  <div
+                    className="absolute inset-y-0 left-6 md:left-8 right-6 md:right-8 flex items-center"
+                    style={{ transform: "translateZ(0)" }}
+                  >
                     <div>
-                      <div className="uppercase tracking-[0.25em] text-[12px] md:text-xs font-bold text-white/85 mb-1">
-                      {s.kind === "featured" ? "Featured" : "New"}
+                      {/* Badge (text-only, no pill background) */}
+                      <div className="inline-flex items-center text-white text-sm md:text-base font-extrabold tracking-widest mb-1 drop-shadow-[0_1px_1px_rgba(0,0,0,0.45)]">
+                        {s.kind === "featured" ? "FEATURED" : "NEW"}
                       </div>
                       <div
-                        className="game-title text-xl md:text-2xl lg:text-3xl font-extrabold leading-none"
-                        style={{ WebkitFontSmoothing: "antialiased", textRendering: "optimizeLegibility" as any }}
+                        className="game-title text-2xl md:text-3xl lg:text-4xl font-extrabold leading-none drop-shadow-[0_1px_1px_rgba(0,0,0,0.35)]"
+                        style={{
+                          WebkitFontSmoothing: "antialiased",
+                          textRendering: "optimizeLegibility" as any,
+                        }}
                       >
                         {s.title}
                       </div>
-                      {s.subtitle && (
-                        <div className="theme-text-muted text-[11px] md:text-xs mt-0.5 leading-snug">
-                          {s.subtitle}
-                        </div>
-                      )}
                     </div>
                   </div>
+                  {/* Tags at bottom-right */}
+                  {s.tags && s.tags.length > 0 && (
+                    <div className="absolute bottom-2 right-4 md:bottom-3 md:right-6 flex flex-wrap gap-1.5">
+                      {s.tags.slice(0, 3).map((t) => (
+                        <span
+                          key={`${s.id}-br-${t}`}
+                          className="px-2 py-0.5 rounded-full text-[10px] md:text-xs text-white/90 bg-black/45"
+                        >
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </button>
               </div>
             ))}
           </div>
-          {/* subtle hover glow without scaling */}
-          <div className="pointer-events-none absolute inset-0 ring-0 transition-all duration-150 group-hover:ring-1 group-hover:ring-white/60 group-hover:shadow-[0_0_12px_rgba(255,255,255,0.35)]" />
+          {/* hover outline removed per request */}
         </div>
         {count > 1 && (
           <button
@@ -182,6 +222,8 @@ const ProjectsSection: NavigableSectionComponent<AdditionalProjectsProps> = ({
   const location = useLocation();
   const subpath = location.pathname.replace(/^\/projects\/?/, "");
   const modeSlug = subpath ? subpath.split("/")[0] : "";
+  const slugParam = subpath.split("/")[1] || "";
+  const { handleProjectClick } = useNavigation();
 
   // Match main menu nav feel (Portfolio uses ~250ms). Keep local constant for now.
   const MODE_NAV_DELAY = 400;
@@ -191,7 +233,83 @@ const ProjectsSection: NavigableSectionComponent<AdditionalProjectsProps> = ({
 
   // (Icon row and featured banner removed per request)
 
-  // Simple stub view when at /projects/:mode
+  // --- Mode list state (must be declared unconditionally to keep Hook order stable) ---
+  type NormalizedProject = Project & {
+    slug: string;
+    gamemode: GamemodeSlug;
+    cover: string;
+  };
+  const [list, setList] = React.useState<
+    {
+      id: string;
+      title: string;
+      description: string;
+      tags: string[];
+      image: string;
+      slug: string;
+      mode: GamemodeSlug;
+    }[]
+  >([]);
+  const [raw, setRaw] = React.useState<NormalizedProject[]>([]);
+
+  React.useEffect(() => {
+    let cancelled = false;
+    async function load() {
+      if (modeSlug && isGamemodeSlug(modeSlug)) {
+        const items = await getProjectsByMode(modeSlug as GamemodeSlug);
+        if (!cancelled) {
+          setRaw(items as unknown as NormalizedProject[]);
+          setList(
+            items.map((p) => ({
+              id: p.id,
+              title: p.title,
+              description: p.description,
+              tags: p.tags,
+              image: (p as any).cover,
+              slug: (p as any).slug,
+              mode: (p as any).gamemode as GamemodeSlug,
+            })),
+          );
+        }
+      } else {
+        // Not on a mode page; clear list state
+        setRaw([]);
+        setList([]);
+      }
+    }
+    void load();
+    return () => {
+      cancelled = true;
+    };
+  }, [modeSlug]);
+
+  // Sync URL param /projects/:mode/:slug with overlay detail
+  // URL syncing moved to Portfolio; this component is now stateless regarding selection
+
+  // When opening a project from a card, navigate and set selectedProject
+  const openProject = React.useCallback(
+    (
+      p: { slug: string; mode: GamemodeSlug } & Record<string, any>,
+      full?: any,
+    ) => {
+      console.debug("[ProjectsSection] Open project", {
+        mode: p.mode,
+        slug: p.slug,
+        hasFull: !!full,
+      });
+      
+      // Set the selected project in navigation context
+      if (full) {
+        handleProjectClick(full);
+      }
+      
+      // Navigate to the project detail URL
+      navigate(`/projects/${p.mode}/${p.slug}`);
+    },
+    [navigate, handleProjectClick],
+  );
+
+  // Simple view when at /projects/:mode — now renders a grid of projects
   if (modeSlug && isGamemodeSlug(modeSlug)) {
     const meta = GAMEMODES[modeSlug];
     return (
@@ -199,19 +317,23 @@ const ProjectsSection: NavigableSectionComponent<AdditionalProjectsProps> = ({
         className={`max-w-6xl mx-auto transition-all duration-500 animate-fade-in select-none caret-transparent ${className ?? ""}`}
         id={id}
       >
-        <BackButton onClick={() => navigate("/projects")} label="Back to Modes" />
+        <BackButton
+          onClick={() => navigate("/projects")}
+          label="Back to Modes"
+        />
         <h2 className="text-5xl font-extrabold mb-2 text-center game-title uppercase tracking-[0.2em]">
           {meta.gameLabel} / {meta.portfolioLabel}
         </h2>
-  <p className="text-center game-subtitle theme-text-muted mb-10 text-lg">
+        <p className="text-center game-subtitle theme-text-muted mb-10 text-lg">
           {meta.description}
         </p>
-        <div className="theme-card-static rounded-xl p-8 text-center">
-          <p className="theme-text">
-            This is a placeholder page to verify navigation and transitions. Clicking a
-            mode card takes you here. Next step: render filtered projects.
-          </p>
-        </div>
+        <ProjectGrid
+          projects={list}
+          onOpen={(p) => {
+            const full = raw.find((r) => (r as any).slug === p.slug);
+            openProject(p, full ?? undefined);
+          }}
+        />
       </div>
     );
   }
@@ -237,27 +359,8 @@ const ProjectsSection: NavigableSectionComponent<AdditionalProjectsProps> = ({
         </p>
       </div>
       {/* Featured/New banner carousel */}
-      <FeaturedCarousel
-        className="mb-12 md:mb-16"
-        slides={[
-          {
-            id: "s1",
-            kind: "featured",
-            title: "Spotlight coming soon",
-            subtitle: undefined,
-            image:
-              "https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?q=80&w=1920&auto=format&fit=crop",
-          },
-          {
-            id: "s2",
-            kind: "new",
-            title: "New project coming soon",
-            subtitle: undefined,
-            image:
-              "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1920&auto=format&fit=crop",
-          },
-        ]}
-      />
+      {/* Featured/New banner carousel (data-driven) */}
+      <ProjectsFeatured />
 
   {/* Gamemode Cards row */}
   <div className="mx-auto max-w-7xl grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 md:gap-6 mt-16 md:mt-20">
@@ -266,7 +369,7 @@ const ProjectsSection: NavigableSectionComponent<AdditionalProjectsProps> = ({
           portfolioLabel="Solo Projects"
           description="Personal projects focused on gameplay, audio, and tools."
           image="https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1470&auto=format&fit=crop"
-          accent="rgb(59 130 246)"  // blue
+          accent="rgb(59 130 246)" // blue
           morphSpeed={1.8}
           icon={User}
           onActivate={() => goMode("singleplayer")}
@@ -276,7 +379,7 @@ const ProjectsSection: NavigableSectionComponent<AdditionalProjectsProps> = ({
           portfolioLabel="Group Projects"
           description="Team-based works: networking, systems, collaboration."
           image="https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?q=80&w=1470&auto=format&fit=crop"
-          accent="rgb(234 179 8)"   // amber / orange
+          accent="rgb(234 179 8)" // amber / orange
           morphSpeed={1.8}
           icon={Users}
           onActivate={() => goMode("multiplayer")}
@@ -286,7 +389,7 @@ const ProjectsSection: NavigableSectionComponent<AdditionalProjectsProps> = ({
           portfolioLabel="Game Jams"
           description="Rapid, focused prototypes built under time pressure."
           image="https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1470&auto=format&fit=crop"
-          accent="rgb(168 85 247)"  // purple
+          accent="rgb(168 85 247)" // purple
           morphSpeed={1.8}
           icon={Trophy}
           onActivate={() => goMode("competitive")}
@@ -296,13 +399,81 @@ const ProjectsSection: NavigableSectionComponent<AdditionalProjectsProps> = ({
           portfolioLabel="Engine & Tools"
           description="Engine mods, editor tooling, audio & tech exploration."
           image="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=1470&auto=format&fit=crop"
-          accent="rgb(34 197 94)"   // green
+          accent="rgb(34 197 94)" // green
           morphSpeed={1.8}
           icon={Wrench}
           onActivate={() => goMode("sandbox")}
         />
       </div>
     </div>
+  );
+};
+
+// Data-driven featured carousel wrapper
+const ProjectsFeatured: React.FC = () => {
+  const [slides, setSlides] = React.useState<Slide[]>([]);
+  const navigate = useNavigate();
+  const { handleProjectClick } = useNavigation();
+  
+  React.useEffect(() => {
+    let cancelled = false;
+    
+    // Only load slides - we'll get project data on demand
+    getFeaturedSlides().then((featuredRes) => {
+      if (!cancelled) {
+        setSlides(
+          featuredRes.map((s) => ({
+            id: s.id,
+            kind: s.kind,
+            title: s.title,
+            subtitle: undefined, // suppress description in banner
+            image: s.image,
+            mode: s.mode,
+            slug: s.slug,
+            tags: s.tags,
+          })),
+        );
+      }
+    });
+    
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+  
+  if (!slides.length) return null;
+  
+  return (
+    <FeaturedCarousel
+      className="mb-12 md:mb-16"
+      slides={slides}
+      onOpen={async (s) => {
+        if (s.mode && s.slug) {
+          console.debug("[ProjectsFeatured] Click slide", {
+            kind: s.kind,
+            mode: s.mode,
+            slug: s.slug,
+          });
+          
+          // Load project data on demand
+          try {
+            const allProjects = await getProjects();
+            const fullProject = allProjects.find((p) => {
+              const normalized = normalizeProject(p);
+              return normalized.slug === s.slug && normalized.gamemode === s.mode;
+            });
+            if (fullProject) {
+              handleProjectClick(fullProject);
+            }
+          } catch (error) {
+            console.warn("Failed to load project data:", error);
+          }
+          
+          // Navigate to the project detail URL
+          navigate(`/projects/${s.mode}/${s.slug}`);
+        }
+      }}
+    />
   );
 };
 

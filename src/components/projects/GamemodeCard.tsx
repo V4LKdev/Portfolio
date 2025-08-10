@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { User, Users, Trophy, Wrench } from "lucide-react";
 import { useSoundEffects } from "../../hooks/useSoundEffects";
 
-
 interface GamemodeCardProps {
   gameLabel: string; // e.g., "Singleplayer"
   portfolioLabel: string; // e.g., "Solo Projects"

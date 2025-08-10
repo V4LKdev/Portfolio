@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { type GamemodeSlug, GAMEMODES } from "../../content/gamemodes";
+import { useSoundEffects } from "../../hooks/useSoundEffects";
 
 export type ProjectCardData = {
   id: string;
@@ -20,11 +21,16 @@ interface ProjectCardProps {
 const ProjectCard: React.FC<ProjectCardProps> = ({ project, onOpen }) => {
   const meta = GAMEMODES[project.mode];
   const accent = meta.accent;
+  const { playHover, playClick } = useSoundEffects();
 
   return (
     <motion.button
       type="button"
-      onClick={() => onOpen(project)}
+      onClick={() => {
+        playClick();
+        onOpen(project);
+      }}
+      onMouseEnter={playHover}
       className="relative group overflow-hidden rounded-xl text-left focus:outline-none"
       whileHover={{ scale: 1.02 }}
       transition={{ type: "spring", stiffness: 240, damping: 22 }}

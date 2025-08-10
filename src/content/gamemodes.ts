@@ -21,8 +21,7 @@ export const GAMEMODES: Record<GamemodeSlug, GamemodeMeta> = {
     slug: "singleplayer",
     gameLabel: "Singleplayer",
     portfolioLabel: "Solo Projects",
-    description:
-      "Personal projects focused on gameplay, audio, and tools.",
+    description: "Personal projects focused on gameplay, audio, and tools.",
     accent: "rgb(59 130 246)", // blue
     iconKey: "user",
   },
@@ -30,8 +29,7 @@ export const GAMEMODES: Record<GamemodeSlug, GamemodeMeta> = {
     slug: "multiplayer",
     gameLabel: "Multiplayer",
     portfolioLabel: "Group Projects",
-    description:
-      "Team-based works: networking, systems, collaboration.",
+    description: "Team-based works: networking, systems, collaboration.",
     accent: "rgb(234 179 8)", // amber
     iconKey: "users",
   },
@@ -39,8 +37,7 @@ export const GAMEMODES: Record<GamemodeSlug, GamemodeMeta> = {
     slug: "competitive",
     gameLabel: "Competitive",
     portfolioLabel: "Game Jams",
-    description:
-      "Rapid, focused prototypes built under time pressure.",
+    description: "Rapid, focused prototypes built under time pressure.",
     accent: "rgb(168 85 247)", // purple
     iconKey: "trophy",
   },
@@ -48,8 +45,7 @@ export const GAMEMODES: Record<GamemodeSlug, GamemodeMeta> = {
     slug: "sandbox",
     gameLabel: "Sandbox",
     portfolioLabel: "Engine & Tools",
-    description:
-      "Engine mods, editor tooling, audio & tech exploration.",
+    description: "Engine mods, editor tooling, audio & tech exploration.",
     accent: "rgb(34 197 94)", // green
     iconKey: "wrench",
   },
@@ -74,7 +70,9 @@ export function deriveGamemode(project: Project): GamemodeSlug {
   if (
     lcCat.includes("engine") ||
     lcCat.includes("tool") ||
-    lcTags.some((t) => t.includes("tool") || t.includes("editor") || t.includes("audio"))
+    lcTags.some(
+      (t) => t.includes("tool") || t.includes("editor") || t.includes("audio"),
+    )
   ) {
     return "sandbox";
   }
