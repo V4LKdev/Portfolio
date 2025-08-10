@@ -95,7 +95,10 @@ const LocalVideoBackground: React.FC<LocalVideoBackgroundProps> = ({
     } else {
       // Hide poster immediately when resuming
       setShowPoster(false);
-      video.play().catch(() => {
+  // Always ensure muted attribute for autoplay safety; AppProviders will control effective mute
+  video.muted = true;
+  video.volume = 0.05;
+  video.play().catch(() => {
         // Video autoplay failed - show poster and set error state
         setHasError(true);
         onError?.();
@@ -107,7 +110,8 @@ const LocalVideoBackground: React.FC<LocalVideoBackgroundProps> = ({
   useEffect(() => {
     const video = videoRef.current;
     if (video) {
-      video.muted = isMuted;
+  // AppProviders enforces locked-muted pre-gesture. Reflect desired isMuted here but do not force unmuted start.
+  video.muted = isMuted;
     }
   }, [isMuted]);
 

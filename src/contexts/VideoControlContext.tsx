@@ -10,12 +10,14 @@ interface VideoState {
   isPaused: boolean;
   isMuted: boolean;
   isManuallyPaused: boolean;
+  audioUnlocked?: boolean;
 }
 
 interface VideoActions {
   togglePlayback: () => void;
   toggleMute: () => void;
   setManualPause: (paused: boolean) => void;
+  unlockAudio?: () => void;
   lastVideoTime: number;
   setLastVideoTime: (t: number) => void;
 }

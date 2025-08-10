@@ -17,6 +17,7 @@ import {
 } from "../../contexts/NavigationContext";
 import { MotionContext } from "../../contexts/MotionContext";
 import { type Project } from "../../content";
+import { audioEngine } from "../../lib/audioEngine";
 
 interface AppProvidersProps {
   readonly children: React.ReactNode;
@@ -58,6 +59,49 @@ export function AppProviders({ children }: AppProvidersProps) {
       return newValue;
     });
   }, []);
+
+  // Sync preference changes after onboarding completes and on window focus/visibility
+  useEffect(() => {
+    const syncFromCookies = () => {
+      const autoplayEnabled = UserPreferences.getVideoAutoplayEnabled();
+      const muted = UserPreferences.getGlobalAudioMuted();
+      setIsPaused(!autoplayEnabled);
+      setIsManuallyPaused(!autoplayEnabled);
+      setIsMuted(muted);
+    };
+
+    const handleOnboardingComplete = () => {
+      // Apply cookie values immediately
+      syncFromCookies();
+      // If user enabled SFX during onboarding, unlock audio right away
+      try {
+        const muted = UserPreferences.getGlobalAudioMuted();
+        if (!muted) {
+          unlockAudio();
+        }
+      } catch {
+        // ignore
+      }
+    };
+
+    const handleFocus = () => syncFromCookies();
+    const handleVisibility = () => {
+      if (!document.hidden) syncFromCookies();
+    };
+
+    window.addEventListener("onboardingComplete", handleOnboardingComplete);
+    window.addEventListener("focus", handleFocus);
+    document.addEventListener("visibilitychange", handleVisibility);
+
+    return () => {
+      window.removeEventListener(
+        "onboardingComplete",
+        handleOnboardingComplete,
+      );
+      window.removeEventListener("focus", handleFocus);
+      document.removeEventListener("visibilitychange", handleVisibility);
+    };
+  }, []);
   const lastVideoTimeRef = useRef(0);
 
   const [isPaused, setIsPaused] = useState(() => {
@@ -73,6 +117,19 @@ export function AppProviders({ children }: AppProvidersProps) {
     const autoplayEnabled = UserPreferences.getVideoAutoplayEnabled();
     return !autoplayEnabled;
   });
+
+  // Audio unlock state: true once AudioContext has been successfully resumed (via MEI or user gesture)
+  const [audioUnlocked, setAudioUnlocked] = useState<boolean>(false);
+
+  // Attempt to unlock audio (resume AudioContext) and fade in the master gain
+  const unlockAudio = useCallback(async () => {
+    try {
+      await audioEngine.unlock(800);
+      setAudioUnlocked(true);
+    } catch {
+      // Ignore; remains locked until a valid gesture
+    }
+  }, []);
 
   const togglePlayback = useCallback(() => {
     const newPausedState = !isPaused;
@@ -134,9 +191,38 @@ export function AppProviders({ children }: AppProvidersProps) {
       video.currentTime = lastVideoTimeRef.current;
     }
 
-    video.muted = isMuted;
+    // Always keep video muted until audio is unlocked to avoid autoplay errors
+    const shouldBeMuted = isMuted || !audioUnlocked;
+  const targetVolume = 0.3; // desired background video volume when unmuted
 
-    if (isPaused && !video.paused) {
+    // If transitioning from muted to unmuted, apply a small volume ramp to target
+    const applyVolumeRamp = () => {
+      try {
+        const start = performance.now();
+        const durationMs = 600;
+        const to = targetVolume;
+        const step = (now: number) => {
+          const t = Math.min(1, (now - start) / durationMs);
+          video.volume = to * t;
+          if (t < 1) requestAnimationFrame(step);
+        };
+        // Always start from 0 to avoid blast
+        video.volume = 0;
+        requestAnimationFrame(step);
+      } catch {
+        // Non-fatal
+      }
+    };
+
+    const wasMuted = video.muted;
+    video.muted = shouldBeMuted;
+    if (!shouldBeMuted && wasMuted) {
+  // Ensure starting at 0 before ramp
+  video.volume = 0;
+      applyVolumeRamp();
+    }
+
+  if (isPaused && !video.paused) {
       video.pause();
     } else if (!isPaused && video.paused) {
       video.play().catch(() => {});
@@ -154,7 +240,27 @@ export function AppProviders({ children }: AppProvidersProps) {
         lastVideoTimeRef.current = video.currentTime;
       }
     };
-  }, [isPaused, isMuted]);
+  }, [isPaused, isMuted, audioUnlocked]);
+
+  // Keep AudioEngine master gain in sync with global mute and unlock state
+  useEffect(() => {
+    // If globally muted or still locked, keep master at 0; otherwise at 0.3
+    const desired = !isMuted && audioUnlocked ? 0.3 : 0;
+    try {
+      audioEngine.setMasterVolume(desired);
+    } catch {
+      // Ignore if engine not available yet
+    }
+  }, [isMuted, audioUnlocked]);
+
+  // Optimistic MEI-based unlock attempt on mount if preference is unmuted
+  useEffect(() => {
+    if (!isMuted) {
+      // Try once; browsers that disallow will keep context suspended without throwing
+      unlockAudio();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const handleVisibilityChange = () => {
@@ -181,9 +287,11 @@ export function AppProviders({ children }: AppProvidersProps) {
       isPaused,
       isMuted,
       isManuallyPaused,
+  audioUnlocked,
       togglePlayback,
       toggleMute,
       setManualPause,
+  unlockAudio,
       lastVideoTime: lastVideoTimeRef.current,
       setLastVideoTime: (t: number) => {
         lastVideoTimeRef.current = t;
@@ -193,9 +301,11 @@ export function AppProviders({ children }: AppProvidersProps) {
       isPaused,
       isMuted,
       isManuallyPaused,
+  audioUnlocked,
       togglePlayback,
       toggleMute,
       setManualPause,
+  unlockAudio,
     ],
   );
 

@@ -5,9 +5,10 @@
  * Integrates with global mute setting from VideoControlContext
  */
 
-import { useCallback, useRef } from "react";
+import { useCallback } from "react";
 import { useVideoControls } from "./useVideoControls";
 import { AUDIO_CONFIG } from "../config/audio";
+import { audioEngine } from "../lib/audioEngine";
 
 interface SoundEffectsConfig {
   enabled?: boolean; // Local override, respects global mute when true
@@ -28,20 +29,11 @@ export function useSoundEffects(
     enabled = true, // Enable by default, but respect global mute
   } = config;
 
-  // Get global mute state from video controls
-  const { isMuted } = useVideoControls();
+  // Get global mute and audio unlock state from video controls
+  const { isMuted, audioUnlocked } = useVideoControls();
 
-  // Sound effects are enabled when both local enabled is true AND global audio is not muted
-  const effectivelyEnabled = enabled && !isMuted;
-
-  const audioContextRef = useRef<AudioContext | null>(null);
-
-  const getAudioContext = useCallback(() => {
-    audioContextRef.current ??= new (window.AudioContext ||
-      (window as unknown as { webkitAudioContext: typeof AudioContext })
-        .webkitAudioContext)();
-    return audioContextRef.current;
-  }, []);
+  // SFX enabled only when local enabled, global not muted, and audio is unlocked by a gesture/MEI
+  const effectivelyEnabled = enabled && !isMuted && !!audioUnlocked;
 
   const playTone = useCallback(
     (
@@ -55,43 +47,43 @@ export function useSoundEffects(
       if (!effectivelyEnabled) return;
 
       try {
-        const audioContext = getAudioContext();
-        const oscillator = audioContext.createOscillator();
-        const gainNode = audioContext.createGain();
+        // Use centralized audio engine so we share a single AudioContext and master gain
+        const ctx = audioEngine.getContext();
+        const master = audioEngine.getMasterGain();
+
+        const oscillator = ctx.createOscillator();
+        const gainNode = ctx.createGain();
 
         oscillator.connect(gainNode);
-        gainNode.connect(audioContext.destination);
+        gainNode.connect(master);
 
-        oscillator.frequency.setValueAtTime(
-          frequency,
-          audioContext.currentTime,
-        );
+        oscillator.frequency.setValueAtTime(frequency, ctx.currentTime);
         oscillator.type = waveform ?? AUDIO_CONFIG.WAVEFORM;
 
-        gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+        gainNode.gain.setValueAtTime(0, ctx.currentTime);
         gainNode.gain.linearRampToValueAtTime(
           volume,
-          audioContext.currentTime + AUDIO_CONFIG.FADE_IN_DURATION,
+          ctx.currentTime + AUDIO_CONFIG.FADE_IN_DURATION,
         );
         gainNode.gain.exponentialRampToValueAtTime(
           AUDIO_CONFIG.MIN_VOLUME,
-          audioContext.currentTime + duration,
+          ctx.currentTime + duration,
         );
 
         if (typeof glideTo === "number" && glideTime && glideTime > 0) {
           oscillator.frequency.linearRampToValueAtTime(
             glideTo,
-            audioContext.currentTime + glideTime,
+            ctx.currentTime + glideTime,
           );
         }
 
-        oscillator.start(audioContext.currentTime);
-        oscillator.stop(audioContext.currentTime + duration);
+        oscillator.start(ctx.currentTime);
+        oscillator.stop(ctx.currentTime + duration);
       } catch {
-        // Audio context may not be available in some browsers
+        // Silently ignore if AudioContext is unavailable or locked
       }
     },
-    [effectivelyEnabled, getAudioContext],
+    [effectivelyEnabled],
   );
 
   const playHover = useCallback(() => {
