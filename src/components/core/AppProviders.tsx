@@ -10,6 +10,7 @@ import {
 } from "../../contexts/NavigationContext";
 import { MotionContext } from "../../contexts/MotionContext";
 import VideoProvider from "../../contexts/VideoProvider";
+import AudioProvider from "../../contexts/AudioProvider";
 import { type Project } from "../../content";
 // Purge: remove audio engine and video coupling for this refactor branch
 
@@ -128,7 +129,9 @@ export function AppProviders({ children }: AppProvidersProps) {
   return (
     <MotionContext.Provider value={motionValue}>
       <NavigationContext.Provider value={navigationValue}>
-        <VideoProvider>{children}</VideoProvider>
+        <VideoProvider>
+          <AudioProvider>{children}</AudioProvider>
+        </VideoProvider>
       </NavigationContext.Provider>
     </MotionContext.Provider>
   );

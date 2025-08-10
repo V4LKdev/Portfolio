@@ -1,5 +1,6 @@
 import React from "react";
 import { Settings, Users, User, Trophy } from "lucide-react";
+import { useSoundEffects } from "../../hooks/useSoundEffects";
 
 interface ProjectFilterProps {
   activeFilter: string;
@@ -10,6 +11,7 @@ const ProjectFilter: React.FC<ProjectFilterProps> = ({
   activeFilter,
   onFilterChange,
 }) => {
+  const { playHover, playUnhover, playClick } = useSoundEffects();
   const filters = [
     { id: "all", label: "All Projects", icon: Settings },
     { id: "team", label: "Team Projects", icon: Users },
@@ -24,7 +26,14 @@ const ProjectFilter: React.FC<ProjectFilterProps> = ({
         return (
           <button
             key={filter.id}
-            onClick={() => onFilterChange(filter.id)}
+            onClick={() => {
+              playClick();
+              onFilterChange(filter.id);
+            }}
+            onMouseEnter={playHover}
+            onMouseLeave={playUnhover}
+            onFocus={playHover}
+            onBlur={playUnhover}
             className={`flex items-center space-x-2 px-6 py-3 rounded-lg border-2 transition-all duration-300 ${
               activeFilter === filter.id
                 ? "theme-button active shadow-[0_0_20px_var(--theme-menu-glow)]"

@@ -6,6 +6,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { ArrowLeft, Image, Code, Settings } from "lucide-react";
 import { type Project } from "../content";
+import { useSoundEffects } from "../../hooks/useSoundEffects";
 
 interface ProjectDetailProps {
   project: Project;
@@ -31,6 +32,7 @@ interface TabDefinition {
  * @param onBack - Callback function to navigate back to projects list
  */
 const ProjectDetail: React.FC<ProjectDetailProps> = ({ project, onBack }) => {
+  const { playHover, playUnhover, playClick } = useSoundEffects();
   // --- Tab Configuration ---
   // Define available tabs with content validation
   const availableTabs: TabDefinition[] = [
@@ -322,7 +324,14 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project, onBack }) => {
     <div className="max-w-6xl mx-auto transition-all duration-500 animate-fade-in">
       {/* Back Button */}
       <button
-        onClick={onBack}
+        onClick={() => {
+          playClick();
+          onBack();
+        }}
+        onMouseEnter={playHover}
+        onMouseLeave={playUnhover}
+        onFocus={playHover}
+        onBlur={playUnhover}
         className="mb-8 flex items-center space-x-2 theme-back-button"
       >
         <ArrowLeft className="w-5 h-5" />
@@ -401,7 +410,12 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project, onBack }) => {
                 return (
                   <button
                     key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
+                    onClick={() => {
+                      playClick();
+                      setActiveTab(tab.id);
+                    }}
+                    onMouseEnter={playHover}
+                    onMouseLeave={playUnhover}
                     className={`flex-1 px-6 py-4 text-center transition-all duration-300 ${
                       activeTab === tab.id
                         ? "theme-button-outline active border-b-2 border-current"

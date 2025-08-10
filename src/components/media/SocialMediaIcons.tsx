@@ -3,6 +3,7 @@
 // Horizontal layout without borders, positioned over video background
 
 import * as React from "react";
+import { useSoundEffects } from "../../hooks/useSoundEffects";
 
 interface SocialMediaIconsProps {
   className?: string;
@@ -15,6 +16,7 @@ interface SocialMediaIconsProps {
 const SocialMediaIcons: React.FC<SocialMediaIconsProps> = ({
   className = "",
 }) => {
+  const { playHover, playUnhover, playClick } = useSoundEffects();
   const socialLinks = [
     {
       name: "GitHub",
@@ -68,6 +70,9 @@ const SocialMediaIcons: React.FC<SocialMediaIconsProps> = ({
           rel="noopener noreferrer"
           className="group p-2 transition-all duration-300 hover:scale-110"
           title={social.name}
+          onClick={playClick}
+          onMouseEnter={playHover}
+          onMouseLeave={playUnhover}
         >
           {" "}
           {/* Icon with hover glow */}

@@ -26,6 +26,7 @@ import { useNavigation } from "../../hooks/useNavigation";
 import { getProjects } from "../../lib/contentLoader";
 import { type Project } from "../../content";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useSoundEffects } from "../../hooks/useSoundEffects";
 
 const ProjectDetail = React.lazy(() => import("../projects/ProjectDetail"));
 
@@ -33,6 +34,7 @@ const PortfolioContent: React.FC = () => {
   const [projects, setProjects] = React.useState<Project[]>([]);
   const navigate = useNavigate();
   const location = useLocation();
+  const { playHover, playUnhover, playClick } = useSoundEffects();
 
   React.useEffect(() => {
     getProjects().then(setProjects);
@@ -185,7 +187,12 @@ const PortfolioContent: React.FC = () => {
     <div className="min-h-screen bg-transparent text-foreground overflow-x-hidden">
       {currentSection === "home" && (
         <button
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          onClick={() => {
+            playClick();
+            setIsMobileMenuOpen(!isMobileMenuOpen);
+          }}
+          onMouseEnter={playHover}
+          onMouseLeave={playUnhover}
           className="fixed top-4 left-4 md:top-6 md:left-6 z-50 lg:hidden theme-panel p-3 rounded-lg transition-all duration-300"
           aria-label={
             isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"
@@ -233,7 +240,12 @@ const PortfolioContent: React.FC = () => {
       {isMobileMenuOpen && currentSection === "home" && (
         <button
           className="fixed inset-0 bg-black/50 z-30 lg:hidden"
-          onClick={() => setIsMobileMenuOpen(false)}
+          onClick={() => {
+            playClick();
+            setIsMobileMenuOpen(false);
+          }}
+          onMouseEnter={playHover}
+          onMouseLeave={playUnhover}
           aria-label="Close mobile menu overlay"
           tabIndex={0}
           type="button"

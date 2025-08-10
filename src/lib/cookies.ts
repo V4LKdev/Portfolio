@@ -38,6 +38,8 @@ export interface UserPreferenceDefinitions {
   reduceMotion: boolean;
   /** Whether background video playback is enabled */
   videoEnabled: boolean;
+  /** Whether sound effects are enabled (off by default) */
+  sfxEnabled: boolean;
 }
 
 /**
@@ -51,6 +53,8 @@ export const DEFAULT_PREFERENCES: UserPreferenceDefinitions = {
   reduceMotion: false,
   // Media: Background video enabled by default
   videoEnabled: true,
+  // Audio: SFX disabled by default
+  sfxEnabled: false,
 };
 
 /**
@@ -64,6 +68,7 @@ export const PREFERENCE_COOKIE_NAMES: Record<
   showOnboarding: "portfolio-show-onboarding",
   reduceMotion: "portfolio-reduce-motion",
   videoEnabled: "portfolio-video-enabled",
+  sfxEnabled: "portfolio-sfx-enabled",
 };
 
 // ============================================================================
@@ -276,6 +281,30 @@ export const UserPreferences = {
   },
 
   /**
+   * Get whether sound effects are enabled
+   * @returns true if SFX should play, false otherwise
+   */
+  getSfxEnabled: (): boolean => {
+    const cookieValue = getCookie(PREFERENCE_COOKIE_NAMES.sfxEnabled);
+    return deserializePreferenceValue(
+      cookieValue,
+      "boolean",
+      DEFAULT_PREFERENCES.sfxEnabled,
+    );
+  },
+
+  /**
+   * Set whether sound effects are enabled
+   * @param enabled - true to enable SFX, false to disable
+   */
+  setSfxEnabled: (enabled: boolean): void => {
+    setCookie(
+      PREFERENCE_COOKIE_NAMES.sfxEnabled,
+      serializePreferenceValue(enabled),
+    );
+  },
+
+  /**
    * Get whether background video playback is enabled
    * @returns true if video should play, false otherwise
    */
@@ -347,7 +376,6 @@ export const UserPreferences = {
       "portfolio-audio-muted", // Old globalAudioMuted cookie
   // Also remove purged cookies from previous versions
   "portfolio-video-autoplay",
-  "portfolio-sfx-enabled",
     ];
 
     oldCookieNames.forEach((cookieName) => {
@@ -364,6 +392,7 @@ export const UserPreferences = {
       showOnboarding: UserPreferences.getShowOnboarding(),
       reduceMotion: UserPreferences.getReduceMotion(),
   videoEnabled: UserPreferences.getVideoEnabled(),
+  sfxEnabled: UserPreferences.getSfxEnabled(),
     };
   },
 } as const;

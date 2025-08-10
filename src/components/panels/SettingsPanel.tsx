@@ -5,6 +5,7 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
 import { useVideo } from "../../hooks/useVideo";
+import { useAudio } from "../../hooks/useAudio";
 import {
   Settings,
   ChevronLeft,
@@ -13,6 +14,7 @@ import {
   Volume2,
   VolumeX,
 } from "lucide-react";
+import { useSoundEffects } from "../../hooks/useSoundEffects";
 // Purge: temporarily disable settings functionality
 
 interface SettingsPanelProps {
@@ -29,9 +31,11 @@ interface SettingsPanelProps {
  */
 const SettingsPanel: React.FC<SettingsPanelProps> = ({ className = "" }) => {
   const { videoEnabled, toggleVideo } = useVideo();
+  const { sfxEnabled, toggleSfx, unlockAudio } = useAudio();
+  const { playHover, playUnhover, playClick } = useSoundEffects();
   // For now, treat "paused" as the inverse of videoEnabled
   const isPaused = !videoEnabled;
-  const isMuted = true;
+  const isMuted = !sfxEnabled;
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
@@ -75,7 +79,12 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ className = "" }) => {
       {!isSettingsOpen ? (
         /* Settings Gear Button */
         <button
-          onClick={() => setIsSettingsOpen(true)}
+          onClick={() => {
+            playClick();
+            setIsSettingsOpen(true);
+          }}
+          onMouseEnter={playHover}
+          onMouseLeave={playUnhover}
           className="p-3 rounded-lg backdrop-blur-sm transition-all duration-300 hover:scale-110"
           data-settings-panel
           style={{
@@ -109,7 +118,12 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ className = "" }) => {
         >
           {/* Collapse Button */}
           <button
-            onClick={() => setIsSettingsOpen(false)}
+            onClick={() => {
+              playClick();
+              setIsSettingsOpen(false);
+            }}
+            onMouseEnter={playHover}
+            onMouseLeave={playUnhover}
             className="p-3 transition-all duration-300 hover:scale-110"
             aria-label="Close settings menu"
             title="Close settings menu"
@@ -119,7 +133,12 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ className = "" }) => {
 
           {/* Video Toggle */}
           <button
-            onClick={toggleVideo}
+            onClick={() => {
+              playClick();
+              toggleVideo();
+            }}
+            onMouseEnter={playHover}
+            onMouseLeave={playUnhover}
             className="p-3 transition-all duration-300 hover:scale-110"
             aria-label={
               isPaused ? "Play background video" : "Pause background video"
@@ -137,7 +156,17 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ className = "" }) => {
 
           {/* SFX Toggle */}
           <button
-            onClick={() => {}}
+            onClick={() => {
+              playClick();
+              if (!sfxEnabled) {
+                toggleSfx();
+                unlockAudio();
+              } else {
+                toggleSfx();
+              }
+            }}
+            onMouseEnter={playHover}
+            onMouseLeave={playUnhover}
             className="p-3 transition-all duration-300 hover:scale-110"
             aria-label={isMuted ? "Enable sound effects" : "Disable sound effects"}
             title={isMuted ? "Enable sound effects" : "Disable sound effects"}

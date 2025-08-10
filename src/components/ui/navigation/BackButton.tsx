@@ -4,6 +4,7 @@
 
 import React from "react";
 import { ArrowLeft } from "lucide-react";
+import { useSoundEffects } from "../../../hooks/useSoundEffects";
 
 interface BackButtonProps {
   onClick: () => void;
@@ -19,9 +20,17 @@ const BackButton: React.FC<BackButtonProps> = ({
   onClick,
   label = "Back to Home",
 }) => {
+  const { playHover, playUnhover, playClick } = useSoundEffects();
   return (
     <button
-      onClick={onClick}
+      onClick={() => {
+        playClick();
+        onClick();
+      }}
+      onMouseEnter={playHover}
+      onMouseLeave={playUnhover}
+      onFocus={playHover}
+      onBlur={playUnhover}
       className="mb-8 flex items-center space-x-2 theme-back-button"
     >
       <ArrowLeft className="w-5 h-5" />

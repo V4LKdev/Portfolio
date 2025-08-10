@@ -8,6 +8,7 @@
 
 import { Link, useLocation } from "react-router-dom";
 import { useEffect } from "react";
+import { useSoundEffects } from "../../hooks/useSoundEffects";
 
 /**
  * 404 Not Found page component
@@ -19,6 +20,7 @@ import { useEffect } from "react";
  */
 const NotFound = () => {
   const location = useLocation();
+  const { playHover, playUnhover, playClick } = useSoundEffects();
 
   useEffect(() => {
     // Track navigation to non-existent routes for analytics
@@ -35,6 +37,9 @@ const NotFound = () => {
         </p>
         <Link
           to="/"
+          onClick={playClick}
+          onMouseEnter={playHover}
+          onMouseLeave={playUnhover}
           className="inline-block bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-3 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
         >
           Return to Home
