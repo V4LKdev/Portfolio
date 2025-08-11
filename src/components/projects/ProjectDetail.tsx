@@ -1,465 +1,310 @@
-// ProjectDetail.tsx
-// Enhanced project detail component with dynamic tabbed navigation
-// Features: Sticky navigation, responsive design, dynamic content sections
-// Supports Design, Code, and Implementation tabs based on available project data
+// ProjectDetail.tsx - The Orchestrator
+// Robust, component-based architecture for project detail views
 
-import React, { useState, useEffect, useRef } from "react";
-import { ArrowLeft, Image, Code, Settings } from "lucide-react";
-import { type Project } from "../content";
-import { useSoundEffects } from "../../hooks/useSoundEffects";
+import React, { useState, useMemo } from "react";
+import { useSearchParams } from "react-router-dom";
+import { type Project, type ProjectTab } from "../../content";
+import DetailLayout from "../layout/DetailLayout";
+import { StickyHeader, QuickNav, SectionRenderer } from "./detail";
 
 interface ProjectDetailProps {
   project: Project;
   onBack: () => void;
 }
 
-type ProjectTab = "design" | "code" | "implementation";
-
-interface TabDefinition {
-  id: ProjectTab;
-  label: string;
-  icon: React.ComponentType<{ className?: string }>;
-  hasContent: boolean;
-}
-
 /**
- * Enhanced project detail component with tabbed navigation
- * Automatically shows/hides tabs based on available content
- * Features sticky navigation when scrolling
- * Fully theme-aware with consistent styling
- *
- * @param project - The project data to display
- * @param onBack - Callback function to navigate back to projects list
+ * Creates backward-compatible tabs from legacy project data structure.
+ * Converts old design/code/implementation fields into the new tab format.
  */
-const ProjectDetail: React.FC<ProjectDetailProps> = ({ project, onBack }) => {
-  const { playHover, playUnhover, playClick } = useSoundEffects();
-  // --- Tab Configuration ---
-  // Define available tabs with content validation
-  const availableTabs: TabDefinition[] = [
-    {
-      id: "design" as ProjectTab,
+const createLegacyTabs = (project: Project): ProjectTab[] => {
+  const tabs: ProjectTab[] = [];
+
+  // Design Tab (from project.design)
+  if (project.design) {
+    tabs.push({
+      id: "design",
       label: "Design",
-      icon: Image,
-      hasContent: !!project.design,
-    },
-    {
-      id: "code" as ProjectTab,
+      sections: [
+        {
+          type: "text",
+          syncKey: "overview",
+          title: "Overview",
+          body: project.design.overview,
+        },
+        {
+          type: "text",
+          syncKey: "challenges",
+          title: "Challenges",
+          body: project.design.challenges.map((c, _i) => `${_i + 1}. ${c}`).join('\n'),
+        },
+        {
+          type: "text", 
+          syncKey: "solutions",
+          title: "Solutions",
+          body: project.design.solutions.map((s, _i) => `${_i + 1}. ${s}`).join('\n'),
+        },
+        {
+          type: "gallery",
+          syncKey: "gallery",
+          title: "Gallery",
+          images: project.design.images,
+        },
+      ],
+    });
+  }
+
+  // Code Tab (from project.code)
+  if (project.code) {
+    const sections: ProjectTab['sections'] = [
+      {
+        type: "text",
+        syncKey: "architecture",
+        title: "Architecture",
+        body: project.code.architecture,
+      },
+      {
+        type: "text",
+        syncKey: "features",
+        title: "Key Features",
+        body: project.code.keyFeatures.map((f, _i) => `• ${f}`).join('\n'),
+      },
+    ];
+
+    // Add code snippets
+    project.code.codeSnippets.forEach((snippet, index) => {
+      sections.push({
+        type: "code",
+        syncKey: `code-${index}`,
+        title: snippet.title,
+        language: snippet.language,
+        code: snippet.code,
+      });
+    });
+
+    tabs.push({
+      id: "code",
       label: "Code",
-      icon: Code,
-      hasContent: !!project.code,
-    },
-    {
-      id: "implementation" as ProjectTab,
+      sections,
+    });
+  }
+
+  // Implementation Tab (from project.implementation)
+  if (project.implementation) {
+    const sections: ProjectTab['sections'] = [
+      {
+        type: "text",
+        syncKey: "process",
+        title: "Process",
+        body: project.implementation.process,
+      },
+      {
+        type: "text",
+        syncKey: "timeline",
+        title: "Timeline",
+        body: project.implementation.timeline
+          .map(t => `**${t.phase}** (${t.duration})\n${t.description}`)
+          .join('\n\n'),
+      },
+      {
+        type: "text",
+        syncKey: "challenges",
+        title: "Challenges",
+        body: project.implementation.challenges.map((c, _i) => `${_i + 1}. ${c}`).join('\n'),
+      },
+      {
+        type: "text",
+        syncKey: "results",
+        title: "Results",
+        body: project.implementation.results.map((r, _i) => `• ${r}`).join('\n'),
+      },
+    ];
+
+    tabs.push({
+      id: "implementation",
       label: "Implementation",
-      icon: Settings,
-      hasContent: !!project.implementation,
-    },
-  ].filter((tab) => tab.hasContent);
+      sections,
+    });
+  }
 
-  // --- State Management ---
-  const [activeTab, setActiveTab] = useState<ProjectTab>(
-    availableTabs.length > 0 ? availableTabs[0].id : "design",
-  );
-  const [isSticky, setIsSticky] = useState(false);
+  return tabs;
+};
 
-  // --- Refs for DOM Elements ---
-  const tabContainerRef = useRef<HTMLDivElement>(null);
+const ProjectDetail: React.FC<ProjectDetailProps> = ({ project, onBack }) => {
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  // --- Effects ---
-  // Handle sticky navigation behavior
-  useEffect(() => {
-    const handleScroll = () => {
-      if (tabContainerRef.current && availableTabs.length > 1) {
-        const containerRect = tabContainerRef.current.getBoundingClientRect();
-        const shouldBeSticky = containerRect.top <= 20;
-        setIsSticky(shouldBeSticky);
+  // Get tabs from project (new format) or create from legacy data
+  const projectTabs = useMemo(() => {
+    return project.tabs && project.tabs.length > 0 
+      ? project.tabs 
+      : createLegacyTabs(project);
+  }, [project]);
+
+  // State management with URL sync
+  const urlTabId = searchParams.get('tab');
+  const defaultTabId = projectTabs[0]?.id || 'design';
+  const validActiveTabId = (() => {
+    // Validate URL tab exists
+    const validTab = projectTabs.find(tab => tab.id === urlTabId);
+    return validTab ? urlTabId! : defaultTabId;
+  })();
+  
+  const [activeTabId, setActiveTabId] = useState<string>(validActiveTabId);
+
+  // Update URL when tab changes
+  const handleTabClick = (tabId: string) => {
+    setActiveTabId(tabId);
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set('tab', tabId);
+    setSearchParams(newParams);
+  };
+
+  // Cross-tab navigation (from SectionRenderer)
+  const handleNavigate = (tabId: string, anchorId: string) => {
+    handleTabClick(tabId);
+    // Small delay to ensure tab content renders before scrolling
+    setTimeout(() => {
+      const element = document.getElementById(anchorId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
       }
-    };
-
-    // Only add scroll listener if multiple tabs exist
-    if (availableTabs.length > 1) {
-      window.addEventListener("scroll", handleScroll);
-      return () => window.removeEventListener("scroll", handleScroll);
-    }
-  }, [availableTabs.length]);
-
-  // --- Helper Functions ---
-  const getTeamDisplay = () => {
-    if (project.type === "team") return project.team ?? "Team Project";
-    if (project.type === "solo") return "Solo Project";
-    if (project.type === "academic") return "Academic Project";
-    return project.team ?? "Team Project";
+    }, 100);
   };
 
-  // --- Content Rendering Functions ---
-  const renderDesignContent = () => (
-    <div className="space-y-8">
-      <div>
-        <h3 className="text-2xl font-semibold theme-heading mb-4">
-          Design Overview
-        </h3>
-        <p className="theme-text text-lg leading-relaxed mb-6">
-          {project.design?.overview ?? "Design overview will be added here..."}
-        </p>
-      </div>
+  // Get active tab data
+  const activeTab = projectTabs.find(tab => tab.id === activeTabId) || projectTabs[0];
 
-      {project.design?.challenges && project.design.challenges.length > 0 && (
-        <div>
-          <h4 className="text-xl font-semibold theme-heading mb-3">
-            Design Challenges
-          </h4>
-          <ul className="space-y-2">
-            {project.design.challenges.map((challenge) => (
-              <li
-                key={challenge.substring(0, 50).replace(/[^a-zA-Z0-9]/g, "-")}
-                className="theme-text flex items-start"
-              >
-                <span className="theme-icon-accent mr-2">•</span>
-                {challenge}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+  // Master list of unique syncKeys for synchronized rows
+  const allSyncKeys = useMemo(() => {
+    const syncKeySet = new Set<string>();
+    projectTabs.forEach(tab => {
+      tab.sections.forEach(section => {
+        if (section.syncKey) {
+          syncKeySet.add(section.syncKey);
+        }
+      });
+    });
+    return Array.from(syncKeySet);
+  }, [projectTabs]);
 
-      {project.design?.solutions && project.design.solutions.length > 0 && (
-        <div>
-          <h4 className="text-xl font-semibold theme-heading mb-3">
-            Design Solutions
-          </h4>
-          <ul className="space-y-2">
-            {project.design.solutions.map((solution) => (
-              <li
-                key={solution.substring(0, 50).replace(/[^a-zA-Z0-9]/g, "-")}
-                className="theme-text flex items-start"
-              >
-                <span className="theme-icon-accent mr-2">▸</span>
-                {solution}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {project.design?.images && project.design.images.length > 0 && (
-        <div className="theme-card-static p-6 rounded-lg">
-          <h4 className="text-xl font-semibold theme-heading mb-3">
-            Design Gallery
-          </h4>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <h5 className="theme-heading font-medium mb-2">
-                User Experience
-              </h5>
-              <p className="theme-text-muted text-sm">
-                Focus on intuitive navigation and seamless user interactions.
-              </p>
-            </div>
-            <div>
-              <h5 className="theme-heading font-medium mb-2">Visual Design</h5>
-              <p className="theme-text-muted text-sm">
-                Consistent visual hierarchy with modern design principles.
-              </p>
+  // If no tabs available, show error state
+  if (!activeTab || projectTabs.length === 0) {
+    return (
+      <DetailLayout>
+        <div className="relative min-h-screen w-full animate-fade-in">
+          <div className="absolute inset-0 -z-10"
+            style={{
+              background: "radial-gradient(120% 100% at 50% 0%, rgba(255,255,255,0.06) 0%, rgba(0,0,0,0.6) 42%, rgba(0,0,0,0.9) 100%), linear-gradient(180deg, rgba(13,15,20,0.9) 0%, rgba(5,6,8,0.96) 100%)",
+            }}
+          />
+          <div className="flex items-center justify-center h-screen">
+            <div className="text-center">
+              <h1 className="text-4xl font-bold theme-heading">{project.title}</h1>
+              <p className="theme-text-muted mt-4">No content available for this project.</p>
             </div>
           </div>
         </div>
-      )}
-    </div>
-  );
+      </DetailLayout>
+    );
+  }
 
-  const renderCodeContent = () => (
-    <div className="space-y-8 w-full">
-      <div>
-        <h3 className="text-2xl font-semibold theme-heading mb-4">
-          Technical Implementation
-        </h3>
-        <p className="theme-text text-lg leading-relaxed mb-6">
-          {project.code?.architecture ??
-            "Technical details will be added here..."}
-        </p>
-      </div>
+  // ...existing code...
 
-      {project.code?.keyFeatures && project.code.keyFeatures.length > 0 && (
-        <div>
-          <h4 className="text-xl font-semibold theme-heading mb-3">
-            Key Features
-          </h4>
-          <ul className="space-y-2">
-            {project.code.keyFeatures.map((feature) => (
-              <li
-                key={feature.substring(0, 50).replace(/[^a-zA-Z0-9]/g, "-")}
-                className="theme-text flex items-start"
-              >
-                <span className="theme-icon-accent mr-2">▸</span>
-                {feature}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {project.code?.codeSnippets && project.code.codeSnippets.length > 0 && (
-        <div>
-          <h4 className="text-xl font-semibold theme-heading mb-3">
-            Code Examples
-          </h4>
-          <div className="grid grid-cols-1 gap-4">
-            {project.code.codeSnippets.map((snippet) => (
-              <div
-                key={snippet.title}
-                className="theme-card-static rounded-lg w-full"
-              >
-                <div className="p-4">
-                  <h5 className="theme-heading font-medium">{snippet.title}</h5>
-                  <span className="theme-text-muted text-sm">
-                    {snippet.language}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {project.code?.architecture && (
-        <div className="theme-card-static p-6 rounded-lg w-full">
-          <h4 className="text-xl font-semibold theme-heading mb-3">
-            Architecture Details
-          </h4>
-          <p className="theme-text">{project.code.architecture}</p>
-        </div>
-      )}
-    </div>
-  );
-
-  const renderImplementationContent = () => (
-    <div className="space-y-8">
-      <div>
-        <h3 className="text-2xl font-semibold theme-heading mb-4">
-          Implementation Details
-        </h3>
-        <p className="theme-text text-lg leading-relaxed mb-6">
-          {project.implementation?.process ??
-            "Implementation details will be added here..."}
-        </p>
-      </div>
-
-      {project.implementation?.timeline && (
-        <div className="theme-card-static p-6 rounded-lg">
-          <h4 className="text-xl font-semibold theme-heading mb-3">
-            Development Timeline
-          </h4>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {project.implementation.timeline.map((step) => (
-              <div
-                key={step.phase ?? step.duration}
-                className="theme-card-static p-4 rounded-lg"
-              >
-                <h5 className="theme-heading font-medium mb-2">
-                  {step.phase ?? step.duration}
-                </h5>
-                <p className="theme-text-muted text-sm">{step.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {project.implementation?.challenges && (
-        <div>
-          <h4 className="text-xl font-semibold theme-heading mb-3">
-            Implementation Challenges
-          </h4>
-          <ul className="space-y-2">
-            {project.implementation.challenges.map((challenge) => (
-              <li
-                key={challenge.substring(0, 50).replace(/[^a-zA-Z0-9]/g, "-")}
-                className="theme-text flex items-start"
-              >
-                <span className="theme-icon-accent mr-2">•</span>
-                {challenge}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {project.implementation?.results && (
-        <div>
-          <h4 className="text-xl font-semibold theme-heading mb-3">
-            Results & Outcomes
-          </h4>
-          <ul className="space-y-2">
-            {project.implementation.results.map((result) => (
-              <li
-                key={result.substring(0, 50).replace(/[^a-zA-Z0-9]/g, "-")}
-                className="theme-text flex items-start"
-              >
-                <span className="theme-icon-accent mr-2">★</span>
-                {result}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-    </div>
-  );
-
-  // --- Tab Content Router ---
-  const renderTabContent = () => {
-    switch (activeTab) {
-      case "design":
-        return renderDesignContent();
-      case "code":
-        return renderCodeContent();
-      case "implementation":
-        return renderImplementationContent();
-      default:
-        return null;
-    }
-  };
-
-  // --- Main Render ---
   return (
-    <div className="max-w-6xl mx-auto transition-all duration-500 animate-fade-in text-selectable">
-      {/* Back Button */}
-      <button
-        onClick={() => {
-          playClick();
-          onBack();
-        }}
-        onMouseEnter={playHover}
-        onMouseLeave={playUnhover}
-        onFocus={playHover}
-        onBlur={playUnhover}
-        className="mb-8 flex items-center space-x-2 theme-back-button"
-      >
-        <ArrowLeft className="w-5 h-5" />
-        <span>Back to Projects</span>
-      </button>
-
-      {/* Project Header with Banner */}
-      <div className="theme-card rounded-lg overflow-hidden atmospheric-glow mb-8">
-        <img
-          src={project.image}
-          alt={project.title}
-          className="w-full h-64 object-cover"
+    <DetailLayout>
+      <div className="relative min-h-screen w-full animate-fade-in">
+        {/* Premium dark gradient background (preserved) */}
+        <div
+          className="absolute inset-0 -z-10"
+          style={{
+            background: "radial-gradient(120% 100% at 50% 0%, rgba(255,255,255,0.06) 0%, rgba(0,0,0,0.6) 42%, rgba(0,0,0,0.9) 100%), linear-gradient(180deg, rgba(13,15,20,0.9) 0%, rgba(5,6,8,0.96) 100%)",
+          }}
         />
-        <div className="p-8">
-          {/* Project Tags */}
-          <div className="flex flex-wrap gap-2 mb-4">
-            {project.tags.map((tag) => (
-              <span
-                key={tag}
-                className="theme-skill-tag px-3 py-1 text-sm rounded-full"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
 
-          {/* Project Title and Description */}
-          <h1 className="text-4xl font-bold theme-heading mb-4 game-title">
-            {project.title}
-          </h1>
-          <p className="text-xl theme-text mb-6">{project.description}</p>
+        {/* Sticky Header */}
+        <StickyHeader
+          project={project}
+          tabs={projectTabs}
+          activeTabId={activeTabId}
+          onTabClick={handleTabClick}
+          onBack={onBack}
+        />
 
-          {/* Project Metadata Overview */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 theme-card-static rounded-lg p-4">
-            <div className="text-center">
-              <div className="theme-heading font-semibold text-lg">
-                {project.year ?? "2024"}
-              </div>
-              <div className="theme-text-muted text-sm">Year</div>
+        {/* Main Content Area */}
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            {/* Quick Navigation Sidebar */}
+            <div className="lg:col-span-1">
+              <QuickNav 
+                activeTab={activeTab} 
+                activeTabId={activeTabId} 
+                allSyncKeys={allSyncKeys}
+              />
             </div>
-            <div className="text-center">
-              <div className="theme-heading font-semibold text-lg">
-                {project.duration ?? "N/A"}
-              </div>
-              <div className="theme-text-muted text-sm">Duration</div>
-            </div>
-            <div className="text-center">
-              <div className="theme-heading font-semibold text-lg">
-                {project.role ?? "Developer"}
-              </div>
-              <div className="theme-text-muted text-sm">Role</div>
-            </div>
-            <div className="text-center">
-              <div className="theme-heading font-semibold text-lg">
-                {getTeamDisplay()}
-              </div>
-              <div className="theme-text-muted text-sm">Type</div>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      {/* Tab Navigation - Only show if more than one tab */}
-      {availableTabs.length > 1 && (
-        <div ref={tabContainerRef} className="relative mb-8">
-          <div
-            className={`theme-card atmospheric-glow ${
-              isSticky
-                ? "fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-6xl mx-auto shadow-2xl"
-                : "relative"
-            }`}
-          >
-            <div className="flex border-b theme-divider">
-              {availableTabs.map((tab) => {
-                const IconComponent = tab.icon;
-                return (
-                  <button
-                    key={tab.id}
-                    onClick={() => {
-                      playClick();
-                      setActiveTab(tab.id);
-                    }}
-                    onMouseEnter={playHover}
-                    onMouseLeave={playUnhover}
-                    className={`flex-1 px-6 py-4 text-center transition-all duration-300 ${
-                      activeTab === tab.id
-                        ? "theme-button-outline active border-b-2 border-current"
-                        : "theme-text-muted hover:theme-text hover:theme-button-outline"
-                    }`}
-                  >
-                    <div className="flex items-center justify-center space-x-2">
-                      <IconComponent
-                        className={`w-5 h-5 ${
-                          activeTab === tab.id
-                            ? "theme-icon-accent"
-                            : "theme-icon-muted"
-                        }`}
+            {/* Main Content */}
+            <div className="lg:col-span-3">
+              <div className="space-y-12">
+                {/* Render sections for each unique syncKey */}
+                {(() => {
+                  const renderedSections = new Set();
+                  return allSyncKeys.map((syncKey, syncIndex) => {
+                    // Find the section in the active tab that matches this syncKey
+                    // Prioritize non-spacer sections
+                    const section = activeTab.sections.find(s => 
+                      s.syncKey === syncKey && s.type !== 'spacer'
+                    ) || activeTab.sections.find(s => s.syncKey === syncKey);
+                    
+                    // Skip if no section found for this syncKey in active tab
+                    if (!section) return null;
+
+                    // Create a unique identifier for this section to prevent duplicates
+                    const sectionTitle = 'title' in section ? section.title || 'notitle' : 'notitle';
+                    const sectionId = `${activeTabId}-${section.type}-${section.syncKey}-${sectionTitle}`;
+                    
+                    if (renderedSections.has(sectionId)) {
+                      console.warn('[ProjectDetail] Skipping duplicate section:', sectionId);
+                      return null;
+                    }
+                    renderedSections.add(sectionId);
+
+                    // Generate unique anchor ID
+                    const anchorId = `section-${activeTabId}-${syncKey}-${syncIndex}`;
+
+                    return (
+                      <SectionRenderer
+                        key={`${activeTabId}-${syncKey}-${syncIndex}`}
+                        section={section}
+                        project={project}
+                        activeTabId={activeTabId}
+                        onNavigate={handleNavigate}
+                        anchorId={anchorId}
                       />
-                      <span className="font-semibold">{tab.label}</span>
-                    </div>
-                  </button>
-                );
-              })}
+                    );
+                  });
+                })()}
+
+                {/* Render sections without syncKeys at the end */}
+                {activeTab.sections
+                  .filter(section => !section.syncKey)
+                  .map((section, index) => {
+                    const anchorId = `section-${activeTabId}-no-sync-${index}`;
+                    return (
+                      <SectionRenderer
+                        key={`${activeTabId}-no-sync-${index}`}
+                        section={section}
+                        project={project}
+                        activeTabId={activeTabId}
+                        onNavigate={handleNavigate}
+                        anchorId={anchorId}
+                      />
+                    );
+                  })}
+              </div>
             </div>
           </div>
-          {/* Placeholder to maintain space when sticky */}
-          {isSticky && <div className="h-20"></div>}
-        </div>
-      )}
-
-      {/* Content Area */}
-      <div className="theme-card atmospheric-glow">
-        <div className="p-8 min-h-[600px] w-full">
-          {availableTabs.length > 0 ? (
-            renderTabContent()
-          ) : (
-            <div className="text-center py-12">
-              <p className="text-xl theme-text">
-                No detailed content available for this project yet.
-              </p>
-              <p className="theme-text-muted mt-4">
-                Check back later for updates!
-              </p>
-            </div>
-          )}
         </div>
       </div>
-    </div>
+    </DetailLayout>
   );
 };
 

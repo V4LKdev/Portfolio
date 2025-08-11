@@ -1,6 +1,5 @@
 import React from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { User, Users, Trophy, Wrench } from "lucide-react";
+import { motion } from "framer-motion";
 import { useSoundEffects } from "../../hooks/useSoundEffects";
 
 interface GamemodeCardProps {
@@ -47,9 +46,9 @@ const MorphingString: React.FC<{
 
   return (
     <span className="inline-block">
-      {display.split("").map((ch, i) => (
+    {display.split("").map((ch, i) => (
         <motion.span
-          key={`gmorph-${i}`}
+      key={`gmorph-${fromText}-${toText}-${i}-${ch.charCodeAt(0) || 0}`}
           animate={{ opacity: ch ? 1 : 0 }}
           transition={{ duration: 0.08, ease: "easeOut" }}
           className="inline-block"
@@ -99,9 +98,15 @@ const GamemodeCard: React.FC<GamemodeCardProps> = ({
   const accentColor = accent ?? "rgb(59 130 246)"; // tailwind blue-500
   const glow = accentColor;
   const ringColor = "rgba(255,255,255,0.95)"; // white outline for better edge coverage
+  let fillHeight = "0%";
+  if (clicked) {
+    fillHeight = "100%";
+  } else if (hovered) {
+    fillHeight = "33%";
+  }
 
   return (
-    <motion.div
+  <motion.button
       className={`relative overflow-hidden rounded-xl select-none will-change-transform aspect-[4/5] cursor-pointer ${className ?? ""}`}
       onMouseEnter={() => {
         setHovered(true);
@@ -117,29 +122,20 @@ const GamemodeCard: React.FC<GamemodeCardProps> = ({
         playClick();
         onActivate?.();
       }}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          setClicked(true);
-          playClick();
-          onActivate?.();
-        }
-      }}
-      onFocus={() => playHover()}
-      onBlur={() => playUnhover()}
+  onFocus={() => playHover()}
+  onBlur={() => playUnhover()}
       whileHover={{ scale: 1.11 }}
       transition={{ type: "spring", stiffness: 320, damping: 26 }}
       style={{
         // expose accent color to CSS via custom property for color-mix usage
-        ["--accent-color" as any]: accentColor,
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+        ["--accent-color" as unknown as string]: accentColor,
         // Soft glow on hover, no hard outline/lines
         boxShadow: hovered ? `0 0 24px 4px ${glow}` : "none",
         background:
           "radial-gradient(120% 120% at 50% 50%, rgba(255,255,255,0.06) 0%, rgba(0,0,0,0.4) 100%)",
       }}
-  role="button"
   aria-label={`${portfolioLabel} mode`}
-  tabIndex={0}
     >
   {/* Top-left mode icon removed for a cleaner look */}
       {/* Background image */}
@@ -165,8 +161,8 @@ const GamemodeCard: React.FC<GamemodeCardProps> = ({
           boxShadow:
             "inset 0 6px 10px rgba(255,255,255,0.16), inset 0 1px 0 rgba(255,255,255,0.22)",
         }}
-        initial={{ height: "0%" }}
-  animate={{ height: clicked ? "100%" : hovered ? "33%" : "0%" }}
+  initial={{ height: "0%" }}
+  animate={{ height: fillHeight }}
         transition={{ duration: clicked ? 0.45 : 0.25, ease: "easeOut" }}
       >
         <div className="h-full w-full flex items-start justify-center p-3 md:p-4">
@@ -249,7 +245,7 @@ const GamemodeCard: React.FC<GamemodeCardProps> = ({
           boxShadow: `inset 0 0 0 2.5px ${ringColor}, 0 0 36px 10px rgba(255,255,255,0.14)`,
         }}
       />
-    </motion.div>
+  </motion.button>
   );
 };
 

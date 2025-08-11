@@ -3,7 +3,7 @@
 // Import from this file to get all content in one place
 
 // --- Type Exports ---
-export type { Project } from "./projects";
+export type { Project, ProjectTab, Section } from "./projects";
 
 // --- Content Exports ---
 export { projects } from "./projects";

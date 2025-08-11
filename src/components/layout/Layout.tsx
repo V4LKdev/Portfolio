@@ -21,6 +21,8 @@ interface LayoutProps extends SectionProps {
   isInnerPage?: boolean;
   /** Controls backdrop intensity for inner pages */
   innerOverlayVariant?: "default" | "deep";
+  /** Optional: disables padding for edge-to-edge content */
+  disablePadding?: boolean;
 }
 
 const Layout: React.FC<LayoutProps> = ({
@@ -34,6 +36,7 @@ const Layout: React.FC<LayoutProps> = ({
   backgroundImage: _backgroundImage,
   isInnerPage = false,
   innerOverlayVariant = "default",
+  disablePadding = false,
 }) => {
   const { sfxEnabled, audioUnlocked } = useAudio();
   const showAudioNudge = sfxEnabled && !audioUnlocked;
@@ -41,6 +44,13 @@ const Layout: React.FC<LayoutProps> = ({
     innerOverlayVariant === "deep"
       ? "fixed inset-0 z-10 pointer-events-none bg-black/50 backdrop-blur-md"
       : "fixed inset-0 z-10 pointer-events-none bg-black/40 backdrop-blur-sm";
+
+  const contentPadding = isInnerPage
+    ? disablePadding
+      ? ""
+      : "p-8"
+    : "p-4 md:p-8";
+
   return (
     <div
       className={`h-screen bg-transparent text-foreground overflow-hidden ${className ?? ""}`}
@@ -58,7 +68,7 @@ const Layout: React.FC<LayoutProps> = ({
       {/* Backdrop effects for inner sections: sits above background (z-0) and below content (z-20) */}
       {isInnerPage && <div className={overlayClasses} aria-hidden />}
       <div
-        className={`relative z-20 h-full ${isInnerPage ? "p-8 overflow-y-auto" : "p-4 md:p-8"}`}
+        className={`relative z-20 h-full overflow-y-auto ${contentPadding}`}
       >
         {children}
       </div>

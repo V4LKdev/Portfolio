@@ -23,8 +23,7 @@ import ContactSection from "../sections/ContactSection";
 import AdditionalSection from "../sections/AdditionalSection";
 import BUILD_VERSION from "../../config/version";
 import { useNavigation } from "../../hooks/useNavigation";
-import { getProjects } from "../../lib/contentLoader";
-import { type Project } from "../../content";
+// (unused imports removed)
 import { useNavigate, useLocation } from "react-router-dom";
 import { useSoundEffects } from "../../hooks/useSoundEffects";
 import { useVideo } from "../../hooks/useVideo";
@@ -32,15 +31,11 @@ import { useVideo } from "../../hooks/useVideo";
 const ProjectDetail = React.lazy(() => import("../projects/ProjectDetail"));
 
 const PortfolioContent: React.FC = () => {
-  const [projects, setProjects] = React.useState<Project[]>([]);
   const navigate = useNavigate();
   const location = useLocation();
   const { playHover, playUnhover, playClick } = useSoundEffects();
   const { setUIPause } = useVideo();
 
-  React.useEffect(() => {
-    getProjects().then(setProjects);
-  }, []);
 
   const getCurrentSectionFromPath = (pathname: string): string => {
     const trimmed = pathname.replace(/^\/+/, "");
@@ -54,12 +49,9 @@ const PortfolioContent: React.FC = () => {
   const {
     currentSection,
     selectedProject,
-    projectFilter,
     isMobileMenuOpen,
     setCurrentSection,
-    setProjectFilter,
     setIsMobileMenuOpen,
-    handleProjectClick,
     handleBackClick,
   } = useNavigation();
 
@@ -224,6 +216,7 @@ const PortfolioContent: React.FC = () => {
           section="projects"
           overlayVariant="deep"
           className="fixed inset-0 z-50"
+          disablePadding
         >
           <Suspense
             fallback={

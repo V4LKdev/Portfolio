@@ -2,6 +2,63 @@
 // Contains all portfolio project information
 // Edit this file to add, remove, or modify projects
 
+// --- Tab/Section model for synchronized tabs ---
+export type SectionType = "text" | "code" | "gallery" | "quote" | "video" | "spacer";
+
+export interface BaseSection {
+  id?: string;
+  type: SectionType;
+  // Rows across tabs align by this key. Examples: "top", "intro", "mid", "bottom".
+  syncKey?: string;
+}
+
+export interface TextSection extends BaseSection {
+  type: "text" | "quote";
+  title?: string;
+  body: string;
+}
+
+export interface CodeSection extends BaseSection {
+  type: "code";
+  title?: string;
+  language: string;
+  code: string;
+}
+
+export interface GallerySection extends BaseSection {
+  type: "gallery";
+  title?: string;
+  images: string[];
+}
+
+export interface SpacerSection extends BaseSection {
+  type: "spacer";
+  // Optional min height; rows auto-size to tallest section across tabs.
+  minHeight?: string;
+}
+
+export interface VideoSection extends BaseSection {
+  type: "video";
+  title?: string;
+  // Either provide a YouTube ID (preferred) or a direct URL/embed.
+  youtubeId?: string;
+  url?: string;
+}
+
+export type Section =
+  | TextSection
+  | CodeSection
+  | GallerySection
+  | VideoSection
+  | SpacerSection;
+
+export interface ProjectTab {
+  id: string; // e.g., "design" | "code" | "implementation"
+  label: string;
+  icon?: string; // lucide icon name (optional; can be mapped later)
+  sections: Section[];
+}
+
 export interface Project {
   id: string;
   title: string;
@@ -53,6 +110,8 @@ export interface Project {
     challenges: string[];
     results: string[];
   };
+  // Optional: explicit tabbed content model with synchronized rows
+  tabs?: ProjectTab[];
 }
 
 export const projects: Project[] = [
@@ -110,7 +169,7 @@ export const projects: Project[] = [
         "Dynamic music layering based on gameplay events",
         "Visual editor extension for runtime music system configuration",
         "Integration with UE5 MetaSounds for advanced audio processing",
-      ],
+  ],
       codeSnippets: [
         {
           title: "MIDI Input Handler",
@@ -194,6 +253,202 @@ private:
         "Integrated into 3 shipped game projects with positive developer feedback",
       ],
     },
+    // Example synchronized tabs for Phase 2 engine testing
+    tabs: [
+      {
+        id: "design",
+        label: "Design",
+        sections: [
+          {
+            type: "text",
+            syncKey: "top",
+            title: "Overview",
+            body:
+              "The framework targets dynamic, real-time response to MIDI input while maintaining performance and intuitive authoring tools.\n\nKey goals:\n- Low-latency input to sound pipeline (sub-10ms)\n- Authoring tools usable by non-programmers\n- Layered composition with smooth transitions\n\nWe evaluated multiple approaches and landed on a hybrid C++/Blueprint model for both performance and iteration speed.",
+          },
+          {
+            type: "gallery",
+            syncKey: "mid",
+            title: "Core",
+            images: [
+              "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=800&q=80",
+              "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=800&q=80",
+            ],
+          },
+          {
+            type: "text",
+            syncKey: "bottom",
+            title: "Details",
+            body:
+              "Focus on latency, clear visual feedback, and layered composition.\n\nFormatting demo:\n1) Emphasis on critical path: input → parse → route → play\n2) Use of bullet points and numbered lists\n3) Support for multi-paragraph content with intentional spacing.",
+          },
+          {
+            type: "text",
+            syncKey: "perf",
+            title: "Performance",
+            body:
+              "We target sub-10ms end-to-end latency.\n\nNotes:\n- MIDI message batching with lock-free queues\n- Fixed-size audio buffers to reduce GC pressure\n- Profiling shows stable frame times under load",
+          },
+          {
+            type: "gallery",
+            syncKey: "editor-tools",
+            title: "Editor Tools",
+            images: [
+              "https://images.unsplash.com/photo-1518779578993-ec3579fee39f?auto=format&fit=crop&w=800&q=80",
+              "https://images.unsplash.com/photo-1527430253228-e93688616381?auto=format&fit=crop&w=800&q=80",
+            ],
+          },
+          {
+            type: "text",
+            syncKey: "roadmap",
+            title: "Roadmap",
+            body:
+              "Planned:\n- Preset library expansion\n- Live recording capture\n- Autosave sessions\n\nStretch goals:\n- OSC bridge\n- Built-in stem exporter",
+          },
+          {
+            type: "gallery",
+            syncKey: "field",
+            title: "Field Recordings",
+            images: [
+              "https://images.unsplash.com/photo-1461783436728-0a921771469f?auto=format&fit=crop&w=800&q=80",
+              "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=800&q=80",
+            ],
+          },
+          {
+            type: "text",
+            syncKey: "faq",
+            title: "FAQ",
+            body:
+              "Q: Can designers tweak without code?\nA: Yes—Blueprint wrappers expose common controls.\n\nQ: How do you keep latency low?\nA: Lock-free queues and preallocated buffers.",
+          },
+        ],
+      },
+      {
+        id: "code",
+        label: "Code",
+        sections: [
+          {
+            type: "text",
+            syncKey: "top",
+            title: "Overview",
+            body:
+              "Hybrid C++/Blueprint. Core MIDI pipeline in C++ with thread-safe buffers; UI/editor tools in Blueprints.\n\nDetails:\n- C++ handles hot loop and audio threading\n- Blueprints wrap exposed functions for designers\n- Editor module provides visual routing graph\n\nThe following snippets illustrate key areas.",
+          },
+          {
+            type: "code",
+            syncKey: "mid",
+            title: "Core",
+            language: "cpp",
+            code: "class UMidiInputHandler {\npublic: void ProcessMidiMessage(const FMidiMessage& Msg); };\n",
+          },
+          {
+            type: "code",
+            syncKey: "bottom",
+            title: "Details",
+            language: "cpp",
+            code: "void UMusicGameSystem::UpdateMusicLayers(EGameState S) { /* ... */ }\n",
+          },
+          {
+            type: "code",
+            syncKey: "perf",
+            title: "Performance",
+            language: "cpp",
+            code: "// Pseudo-benchmark\nvoid Benchmark() {\n  const int N = 1'000'000;\n  volatile int sum = 0;\n  for (int i = 0; i < N; ++i) sum += i;\n}",
+          },
+          {
+            type: "code",
+            syncKey: "api",
+            title: "API",
+            language: "ts",
+            code: "export interface MidiMessage { type: string; note: number; velocity: number }\nexport function process(msg: MidiMessage) { /* ... */ }\n",
+          },
+          {
+            type: "text",
+            syncKey: "changelog",
+            title: "Changelog",
+            body:
+              "v1.2.0: Added editor hooks.\nv1.1.0: Improved chord detection.\nv1.0.0: Initial release.",
+          },
+          {
+            type: "text",
+            syncKey: "roadmap",
+            title: "Roadmap",
+            body:
+              "Near-term:\n- Expand unit tests\n- Public SDK typings\n\nLong-term:\n- Modular DSP graph\n- Multi-device sync",
+          },
+          {
+            type: "text",
+            syncKey: "faq",
+            title: "FAQ",
+            body:
+              "Q: Is there a C API?\nA: Not planned. C++/TS bindings cover most cases.\n\nQ: Supported sampling rates?\nA: 44.1kHz, 48kHz.",
+          },
+        ],
+      },
+      {
+        id: "implementation",
+        label: "Implementation",
+        sections: [
+          {
+            type: "gallery",
+            syncKey: "top",
+            title: "Overview",
+            images: [
+              "https://images.unsplash.com/photo-1571330735066-03aaa9429d89?auto=format&fit=crop&w=800&q=80",
+            ],
+          },
+          {
+            type: "video",
+            syncKey: "mid",
+            title: "Core",
+            youtubeId: "hoQno8UyHY4"
+          },
+          { type: "spacer", syncKey: "mid" },
+          {
+            type: "text",
+            syncKey: "bottom",
+            title: "Details",
+            body:
+              "Latency 5-8ms; 64 channels; editor tools sped up setup by 75%.\n\nNext steps:\n- Expand test suite for edge-case chords\n- Add more authoring presets\n- Publish a quick-start template.",
+          },
+          {
+            type: "text",
+            syncKey: "editor-tools",
+            title: "Editor Tools",
+            body:
+              "The runtime config editor supports hot reload and undo/redo.\nIt stores graphs as JSON for portability and versioning.",
+          },
+          {
+            type: "text",
+            syncKey: "changelog",
+            title: "Changelog",
+            body:
+              "v1.2.0: New import/export for presets.\nv1.1.0: Performance pass on audio thread.\nv1.0.0: Initial integration.",
+          },
+          {
+            type: "text",
+            syncKey: "deployment",
+            title: "Deployment",
+            body:
+              "Built with UE5 shipping profile.\nContinuous integration runs smoke tests and content validation.",
+          },
+          {
+            type: "text",
+            syncKey: "roadmap",
+            title: "Roadmap",
+            body:
+              "Rollout plan:\n- Dogfood in internal projects\n- Prepare marketplace package\n- Write migration guide",
+          },
+          {
+            type: "text",
+            syncKey: "faq",
+            title: "FAQ",
+            body:
+              "Q: How do I report bugs?\nA: Open an issue with logs and reproduction steps.\n\nQ: Does it work offline?\nA: Yes.",
+          },
+        ],
+      },
+    ],
   },
   {
     id: "inkvocation",

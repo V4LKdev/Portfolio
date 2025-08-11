@@ -1,5 +1,5 @@
 // Projects Section Component
-// TODO: For mobile, implement an autocycle carousel (one card at a time, arrows, dots, auto-advance) in a future pass.
+// NOTE: For mobile, consider an autocycle carousel (one card at a time, arrows, dots, auto-advance) in a future pass.
 // Visual-only Gamemode Hub for projects
 // Replaces filter/grid with four large gamemode cards (no functionality yet)
 
@@ -33,7 +33,7 @@ import {
 import { type Project } from "../../content";
 import { useNavigation } from "../../hooks/useNavigation";
 
-interface AdditionalProjectsProps {}
+type AdditionalProjectsProps = Record<string, never>;
 
 type Slide = {
   id: string;
@@ -102,15 +102,13 @@ const FeaturedCarousel: React.FC<{
             <ChevronLeft size={18} />
           </button>
         )}
-        <div
+        <section
           className="group relative w-[92%] md:w-[86%] lg:w-[72%] h-20 md:h-24 lg:h-28 overflow-hidden transform-gpu origin-center will-change-transform transition-transform duration-150 hover:scale-[1.015] motion-reduce:transform-none motion-reduce:transition-none rounded-xl"
           onMouseEnter={clear}
           onMouseLeave={start}
           onFocus={clear}
           onBlur={start}
-          role="region"
-          aria-roledescription="carousel"
-          aria-label="Featured projects"
+          aria-label="Featured projects carousel"
         >
           <div
             className="absolute inset-0 flex transition-transform duration-150 ease-out"
@@ -175,7 +173,7 @@ const FeaturedCarousel: React.FC<{
             ))}
           </div>
           {/* hover outline removed per request */}
-        </div>
+  </section>
         {count > 1 && (
           <button
             type="button"
@@ -189,9 +187,9 @@ const FeaturedCarousel: React.FC<{
       </div>
       {count > 1 && (
         <div className="mt-2 flex items-center justify-center gap-2">
-          {slides.map((_, i) => (
+          {slides.map((s, i) => (
             <button
-              key={`dot-${i}`}
+              key={`dot-${s.id}`}
               className={`h-1.5 w-1.5 rounded-full ${i === index ? "bg-white" : "bg-white/50"}`}
               aria-label={`Go to slide ${i + 1}`}
               onClick={() => {
@@ -213,6 +211,8 @@ const FeaturedCarousel: React.FC<{
  * @param onBack - Callback to navigate back to home
  * (Functionality intentionally omitted for this visual pass)
  */
+const DEBUG_LOGS = false; // set true to enable verbose debug logs
+
 const ProjectsSection: NavigableSectionComponent<AdditionalProjectsProps> = ({
   onBack,
   className,
@@ -222,7 +222,6 @@ const ProjectsSection: NavigableSectionComponent<AdditionalProjectsProps> = ({
   const location = useLocation();
   const subpath = location.pathname.replace(/^\/projects\/?/, "");
   const modeSlug = subpath ? subpath.split("/")[0] : "";
-  const slugParam = subpath.split("/")[1] || "";
   const { handleProjectClick } = useNavigation();
 
   // Match main menu nav feel (Portfolio uses ~250ms). Keep local constant for now.
@@ -239,24 +238,23 @@ const ProjectsSection: NavigableSectionComponent<AdditionalProjectsProps> = ({
     gamemode: GamemodeSlug;
     cover: string;
   };
-  const [list, setList] = React.useState<
-    {
-      id: string;
-      title: string;
-      description: string;
-      tags: string[];
-      image: string;
-      slug: string;
-      mode: GamemodeSlug;
-    }[]
-  >([]);
+  type CardItem = {
+    id: string;
+    title: string;
+    description: string;
+    tags: string[];
+    image: string;
+    slug: string;
+    mode: GamemodeSlug;
+  };
+  const [list, setList] = React.useState<CardItem[]>([]);
   const [raw, setRaw] = React.useState<NormalizedProject[]>([]);
 
   React.useEffect(() => {
     let cancelled = false;
     async function load() {
       if (modeSlug && isGamemodeSlug(modeSlug)) {
-        const items = await getProjectsByMode(modeSlug as GamemodeSlug);
+  const items = await getProjectsByMode(modeSlug);
         if (!cancelled) {
           setRaw(items as unknown as NormalizedProject[]);
           setList(
@@ -289,14 +287,16 @@ const ProjectsSection: NavigableSectionComponent<AdditionalProjectsProps> = ({
   // When opening a project from a card, navigate and set selectedProject
   const openProject = React.useCallback(
     (
-      p: { slug: string; mode: GamemodeSlug } & Record<string, any>,
-      full?: any,
+      p: { slug: string; mode: GamemodeSlug },
+      full?: Project,
     ) => {
-      console.debug("[ProjectsSection] Open project", {
-        mode: p.mode,
-        slug: p.slug,
-        hasFull: !!full,
-      });
+      if (DEBUG_LOGS) {
+        console.debug("[ProjectsSection] Open project", {
+          mode: p.mode,
+          slug: p.slug,
+          hasFull: !!full,
+        });
+      }
       
       // Set the selected project in navigation context
       if (full) {
@@ -330,7 +330,7 @@ const ProjectsSection: NavigableSectionComponent<AdditionalProjectsProps> = ({
         <ProjectGrid
           projects={list}
           onOpen={(p) => {
-            const full = raw.find((r) => (r as any).slug === p.slug);
+            const full = raw.find((r) => r.slug === p.slug);
             openProject(p, full ?? undefined);
           }}
         />
@@ -449,11 +449,13 @@ const ProjectsFeatured: React.FC = () => {
       slides={slides}
       onOpen={async (s) => {
         if (s.mode && s.slug) {
-          console.debug("[ProjectsFeatured] Click slide", {
-            kind: s.kind,
-            mode: s.mode,
-            slug: s.slug,
-          });
+          if (DEBUG_LOGS) {
+            console.debug("[ProjectsFeatured] Click slide", {
+              kind: s.kind,
+              mode: s.mode,
+              slug: s.slug,
+            });
+          }
           
           // Load project data on demand
           try {

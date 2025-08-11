@@ -2,9 +2,15 @@ import { projects, type Project } from "../content/projects";
 import { deriveGamemode, type GamemodeSlug } from "../content/gamemodes";
 import { skillsContent } from "../content/skills";
 
-export const getProjects = async (): Promise<Project[]> => {
+export type NormalizedProject = Project & {
+  slug: string;
+  gamemode: GamemodeSlug;
+  cover: string;
+};
+
+export const getProjects = async (): Promise<NormalizedProject[]> => {
   // Normalize projects with derived fields for consumers
-  const normalized = projects.map((p) => normalizeProject(p));
+  const normalized: NormalizedProject[] = projects.map((p) => normalizeProject(p));
   return Promise.resolve(normalized);
 };
 
@@ -22,26 +28,18 @@ const slugify = (s: string) =>
     .replace(/\s+/g, "-")
     .replace(/-+/g, "-");
 
-export function normalizeProject(p: Project): Project & {
-  slug: string;
-  gamemode: GamemodeSlug;
-  cover: string;
-} {
+export function normalizeProject(p: Project): NormalizedProject {
   const slug = p.slug || slugify(p.title || p.id);
   const gm = (p.gamemode as GamemodeSlug) || deriveGamemode(p);
   const cover = p.cover || p.image;
-  return { ...p, slug, gamemode: gm, cover };
+  return { ...p, slug, gamemode: gm, cover } as NormalizedProject;
 }
 
 export async function getProjectsByMode(
   mode: GamemodeSlug,
-): Promise<
-  (Project & { slug: string; gamemode: GamemodeSlug; cover: string })[]
-> {
+): Promise<NormalizedProject[]> {
   const all = await getProjects();
-  return all
-    .map(normalizeProject)
-    .filter((p) => ((p as any).gamemode as GamemodeSlug) === mode);
+  return all.filter((p) => p.gamemode === mode);
 }
 
 export type FeaturedSlide = {
@@ -56,15 +54,16 @@ export type FeaturedSlide = {
 };
 
 export async function getFeaturedSlides(): Promise<FeaturedSlide[]> {
-  const all = (await getProjects()).map(normalizeProject);
-  const withDates = all.map((p) => ({
-    p,
-    date: p.createdAt
-      ? Date.parse(p.createdAt)
-      : p.year
-        ? Date.parse(`${p.year}-01-01`)
-        : 0,
-  }));
+  const all = await getProjects();
+  const withDates = all.map((p) => {
+    let date = 0;
+    if (p.createdAt) {
+      date = Date.parse(p.createdAt);
+    } else if (p.year) {
+      date = Date.parse(`${p.year}-01-01`);
+    }
+    return { p, date };
+  });
   // Featured first (sorted by newest)
   const featured = withDates
     .filter(({ p }) => !!p.featured)
@@ -74,9 +73,9 @@ export async function getFeaturedSlides(): Promise<FeaturedSlide[]> {
       kind: "featured" as const,
       title: p.title,
       subtitle: p.description,
-      image: (p as any).cover,
-      mode: (p as any).gamemode,
-      slug: (p as any).slug,
+  image: p.cover,
+  mode: p.gamemode,
+  slug: p.slug,
       tags: p.tags || [],
     }));
   // Fill with newest (excluding those already featured) to ensure at least 3
@@ -89,9 +88,9 @@ export async function getFeaturedSlides(): Promise<FeaturedSlide[]> {
       kind: "new" as const,
       title: p.title,
       subtitle: p.description,
-      image: (p as any).cover,
-      mode: (p as any).gamemode,
-      slug: (p as any).slug,
+  image: p.cover,
+  mode: p.gamemode,
+  slug: p.slug,
       tags: p.tags || [],
     }));
   const combined = [...featured, ...newestFill].slice(0, 3);

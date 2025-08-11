@@ -16,6 +16,8 @@ interface SectionLayoutProps extends SectionProps {
   customBackground?: string;
   /** Optional overlay variant for inner pages */
   overlayVariant?: "default" | "deep";
+  /** Disable layout padding for edge-to-edge presentations */
+  disablePadding?: boolean;
 }
 
 /**
@@ -29,12 +31,14 @@ const SectionLayout: React.FC<SectionLayoutProps> = ({
   className,
   id,
   overlayVariant,
+  disablePadding,
 }) => {
   return (
     <Layout
       showVideoBackground={false}
       innerOverlayVariant={overlayVariant}
       isInnerPage={true}
+      disablePadding={disablePadding}
       className={className}
       id={id}
     >
