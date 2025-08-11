@@ -4,6 +4,9 @@ export type VideoContextValue = {
   videoEnabled: boolean;
   toggleVideo: () => void;
   isPausedByVisibility: boolean;
+  // New: temporary UI-driven pause flag (does not alter user preference)
+  isPausedByUI: boolean;
+  setUIPause: (shouldPause: boolean) => void;
   lastVideoTime: React.MutableRefObject<number>;
 };
 

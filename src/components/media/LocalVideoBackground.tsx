@@ -7,7 +7,7 @@ type Props = {
 };
 
 const LocalVideoBackground: React.FC<Props> = ({ className }) => {
-		const { videoEnabled, isPausedByVisibility, lastVideoTime } = useVideo();
+		const { videoEnabled, isPausedByVisibility, isPausedByUI, lastVideoTime } = useVideo();
 	const videoRef = useRef<HTMLVideoElement | null>(null);
 		const [videoError, setVideoError] = useState(false);
 
@@ -32,7 +32,9 @@ const LocalVideoBackground: React.FC<Props> = ({ className }) => {
 		const el = videoRef.current;
 		if (!el) return;
 
-			const shouldPlay = videoEnabled && !isPausedByVisibility && !videoError;
+		const visibilityOk = !isPausedByVisibility;
+		const uiOk = !isPausedByUI;
+		const shouldPlay = videoEnabled && visibilityOk && uiOk && !videoError;
 
 		const onLoadedMetadata = () => {
 			if (!shouldPlay) return;
@@ -63,7 +65,7 @@ const LocalVideoBackground: React.FC<Props> = ({ className }) => {
 		return () => {
 			el.removeEventListener("loadedmetadata", onLoadedMetadata);
 		};
-			}, [videoEnabled, isPausedByVisibility, lastVideoTime, videoError, seekToLast]);
+			}, [videoEnabled, isPausedByVisibility, isPausedByUI, lastVideoTime, videoError, seekToLast]);
 
 		// Handle error/canplay transitions gracefully
 		useEffect(() => {

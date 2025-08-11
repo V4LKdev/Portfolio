@@ -27,6 +27,7 @@ import { getProjects } from "../../lib/contentLoader";
 import { type Project } from "../../content";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useSoundEffects } from "../../hooks/useSoundEffects";
+import { useVideo } from "../../hooks/useVideo";
 
 const ProjectDetail = React.lazy(() => import("../projects/ProjectDetail"));
 
@@ -35,6 +36,7 @@ const PortfolioContent: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { playHover, playUnhover, playClick } = useSoundEffects();
+  const { setUIPause } = useVideo();
 
   React.useEffect(() => {
     getProjects().then(setProjects);
@@ -66,6 +68,15 @@ const PortfolioContent: React.FC = () => {
       setCurrentSection(urlSection);
     }
   }, [urlSection, currentSection, setCurrentSection]);
+
+  // Pause background video when project detail overlay is open
+  useEffect(() => {
+    if (selectedProject) {
+      setUIPause(true);
+    } else {
+      setUIPause(false);
+    }
+  }, [selectedProject, setUIPause]);
 
   // Handles navigation menu clicks, with optional delay for animated menus
   const handleMenuClick = (sectionId: string, hierarchy?: string) => {

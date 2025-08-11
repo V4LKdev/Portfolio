@@ -7,6 +7,7 @@ import { VideoContext, type VideoContextValue } from "./VideoContext";
 const VideoProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [videoEnabled, setVideoEnabled] = useState(() => UserPreferences.getVideoEnabled());
   const [isPausedByVisibility, setIsPausedByVisibility] = useState(false);
+  const [isPausedByUI, setIsPausedByUI] = useState(false);
   const lastVideoTime = useRef(0);
   // Keep track of current visibility state to avoid redundant updates
   const lastVisibilityRef = useRef(document.visibilityState);
@@ -31,9 +32,13 @@ const VideoProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =>
     return () => document.removeEventListener("visibilitychange", onVisibility);
   }, []);
 
+  const setUIPause = useCallback((shouldPause: boolean) => {
+    setIsPausedByUI(shouldPause);
+  }, []);
+
   const value = useMemo<VideoContextValue>(
-    () => ({ videoEnabled, toggleVideo, isPausedByVisibility, lastVideoTime }),
-    [videoEnabled, toggleVideo, isPausedByVisibility]
+    () => ({ videoEnabled, toggleVideo, isPausedByVisibility, isPausedByUI, setUIPause, lastVideoTime }),
+    [videoEnabled, toggleVideo, isPausedByVisibility, isPausedByUI]
   );
 
   return <VideoContext.Provider value={value}>{children}</VideoContext.Provider>;

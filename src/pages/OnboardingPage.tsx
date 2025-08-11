@@ -17,7 +17,6 @@ import { onboardingContent } from "../content/onboarding-exit";
 import "../styles/onboarding.css";
 import { useVideo } from "../hooks/useVideo";
 import { useAudio } from "../hooks/useAudio";
-import { useSoundEffects } from "../hooks/useSoundEffects";
 
 const LOADING_MESSAGES = onboardingContent.loadingMessages;
 
@@ -30,7 +29,6 @@ const OnboardingPage: React.FC = () => {
 
   const { videoEnabled, toggleVideo } = useVideo();
   const { sfxEnabled, toggleSfx, unlockAudio } = useAudio();
-  const { playHover, playUnhover, playClick } = useSoundEffects();
 
   // Loading state
   const [isLoading, setIsLoading] = useState(true);
@@ -140,15 +138,10 @@ const OnboardingPage: React.FC = () => {
                   className={`relative w-12 h-6 rounded-full flex items-center transition-all duration-300 focus:ring-2 focus:ring-[#3b82f6] focus:outline-none select-none ${
                     videoEnabled ? "bg-[#3b82f6]" : "bg-gray-600"
                   }`}
-                  onClick={() => {
-                    playClick();
-                    toggleVideo();
-                  }}
+                  onClick={toggleVideo}
                   onKeyDown={(e) =>
-                    (e.key === "Enter" || e.key === " ") && (playClick(), toggleVideo())
+                    (e.key === "Enter" || e.key === " ") && toggleVideo()
                   }
-                  onMouseEnter={playHover}
-                  onMouseLeave={playUnhover}
                 >
                   <div
                     className={`absolute w-5 h-5 bg-white rounded-full shadow-lg transition-all duration-300 transform ${
@@ -177,7 +170,6 @@ const OnboardingPage: React.FC = () => {
                     sfxEnabled ? "bg-[#3b82f6]" : "bg-gray-600"
                   }`}
                   onClick={() => {
-                    playClick();
                     if (!sfxEnabled) {
                       unlockAudio();
                     }
@@ -185,15 +177,12 @@ const OnboardingPage: React.FC = () => {
                   }}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" || e.key === " ") {
-                      playClick();
                       if (!sfxEnabled) {
                         unlockAudio();
                       }
                       toggleSfx();
                     }
                   }}
-                  onMouseEnter={playHover}
-                  onMouseLeave={playUnhover}
                 >
                   <div
                     className={`absolute w-5 h-5 bg-white rounded-full shadow-lg transition-all duration-300 transform ${
@@ -231,12 +220,7 @@ const OnboardingPage: React.FC = () => {
                 <span style={{ fontFamily: 'Arial, Segoe UI, sans-serif', marginRight: 6 }}>✓</span> Ready to proceed
               </span>
               <button
-                onClick={() => {
-                  playClick();
-                  handleEnterPortfolio();
-                }}
-                onMouseEnter={playHover}
-                onMouseLeave={playUnhover}
+                onClick={handleEnterPortfolio}
                 className="bg-[#3b82f6] text-white px-6 py-3 font-bold text-xl tracking-wide uppercase rounded-lg shadow-lg hover:bg-[#2563eb] hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#3b82f6] focus:ring-offset-2 focus:ring-offset-black mb-3"
                 style={{ boxShadow: "0 2px 16px 0 rgba(59,130,246,0.18)" }}
               >

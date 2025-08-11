@@ -3,11 +3,9 @@ import { useNavigate } from "react-router-dom";
 import "../styles/onboarding.css";
 import SocialMediaIcons from "../components/media/SocialMediaIcons";
 import { exitContent } from "../content/onboarding-exit";
-import { useSoundEffects } from "../hooks/useSoundEffects";
 
 const ExitPage: React.FC = () => {
   const navigate = useNavigate();
-  const { playHover, playUnhover, playClick } = useSoundEffects();
   React.useEffect(() => {
     // Blur any focused element on mount to prevent blue text cursor/caret
     if (document.activeElement instanceof HTMLElement) {
@@ -57,24 +55,14 @@ const ExitPage: React.FC = () => {
         {/* Actions */}
         <div className="flex flex-col items-center w-full mt-8 gap-6">
           <button
-            onClick={() => {
-              playClick();
-              navigate("/", { replace: true });
-            }}
-            onMouseEnter={playHover}
-            onMouseLeave={playUnhover}
+            onClick={() => navigate("/", { replace: true })}
             className="w-full sm:w-80 bg-white/10 text-white px-8 py-4 font-extrabold text-xl tracking-wider uppercase shadow-xl hover:bg-white/20 hover:text-blue-200 hover:scale-[1.03] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:ring-offset-2 focus:ring-offset-black rounded-md"
             style={{ boxShadow: "0 4px 32px 0 rgba(100,116,139,0.10)" }}
           >
             RETURN TO HOMEPAGE
           </button>
           <button
-            onClick={() => {
-              playClick();
-              navigate("/onboarding", { replace: true });
-            }}
-            onMouseEnter={playHover}
-            onMouseLeave={playUnhover}
+            onClick={() => navigate("/onboarding", { replace: true })}
             className="w-full sm:w-80 bg-gradient-to-r from-blue-500 via-blue-400 to-blue-600 text-white px-8 py-4 font-extrabold text-xl tracking-wider uppercase shadow-xl hover:from-blue-600 hover:to-blue-700 hover:scale-[1.03] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-black backdrop-blur-sm bg-opacity-90 border border-blue-400 rounded-md"
             style={{ boxShadow: "0 4px 32px 0 rgba(59,130,246,0.18)" }}
           >

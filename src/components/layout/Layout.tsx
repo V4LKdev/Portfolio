@@ -9,6 +9,8 @@ import React from "react";
 import SocialMediaIcons from "../media/SocialMediaIcons";
 import SettingsPanel from "../panels/SettingsPanel";
 import { SectionProps } from "../../types/SharedProps";
+import { useAudio } from "../../hooks/useAudio";
+import { VolumeX } from "lucide-react";
 // Purged audio/video controls for now
 
 interface LayoutProps extends SectionProps {
@@ -33,7 +35,8 @@ const Layout: React.FC<LayoutProps> = ({
   isInnerPage = false,
   innerOverlayVariant = "default",
 }) => {
-  // Audio unlock indicator removed
+  const { sfxEnabled, audioUnlocked } = useAudio();
+  const showAudioNudge = sfxEnabled && !audioUnlocked;
   const overlayClasses =
     innerOverlayVariant === "deep"
       ? "fixed inset-0 z-10 pointer-events-none bg-black/50 backdrop-blur-md"
@@ -60,8 +63,17 @@ const Layout: React.FC<LayoutProps> = ({
         {children}
       </div>
 
-  {/* Bottom-center audio-locked indicator: only if pref is unmuted but engine still locked (debounced) */}
-  {/* Audio unlock indicator removed during purge */}
+      {/* Bottom-center audio-locked indicator: shows if SFX is enabled but audio engine isn't unlocked yet */}
+      {showAudioNudge && (
+        <div
+          className="fixed bottom-4 left-1/2 -translate-x-1/2 z-30 pointer-events-none text-zinc-400 opacity-80"
+          aria-hidden
+        >
+          <div className="flex items-center justify-center w-12 h-12">
+            <VolumeX size={24} strokeWidth={1.8} />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

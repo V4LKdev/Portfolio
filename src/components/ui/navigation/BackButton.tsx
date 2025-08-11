@@ -20,17 +20,13 @@ const BackButton: React.FC<BackButtonProps> = ({
   onClick,
   label = "Back to Home",
 }) => {
-  const { playHover, playUnhover, playClick } = useSoundEffects();
+  const { playClick } = useSoundEffects();
   return (
     <button
       onClick={() => {
         playClick();
         onClick();
       }}
-      onMouseEnter={playHover}
-      onMouseLeave={playUnhover}
-      onFocus={playHover}
-      onBlur={playUnhover}
       className="mb-8 flex items-center space-x-2 theme-back-button"
     >
       <ArrowLeft className="w-5 h-5" />
