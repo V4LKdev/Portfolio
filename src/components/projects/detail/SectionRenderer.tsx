@@ -67,8 +67,19 @@ const SectionRenderer: React.FC<SectionRendererProps> = ({
               <div className="flex flex-wrap items-center gap-2 text-sm">
                 <span className="theme-text-muted">See in:</span>
                 {otherTabsWithSyncKey.map((tab, index) => {
-                  // Generate the anchorId for the target tab/section
-                  const syncIndex = project.tabs?.find(t => t.id === tab.id)?.sections.findIndex(s => s.syncKey === section.syncKey) ?? 0;
+                  // Generate the anchorId for the target tab/section using consistent master syncKey indexing
+                  const allSyncKeysForProject = (() => {
+                    const syncKeySet = new Set<string>();
+                    project.tabs?.forEach(t => {
+                      t.sections.forEach(s => {
+                        if (s.syncKey) {
+                          syncKeySet.add(s.syncKey);
+                        }
+                      });
+                    });
+                    return Array.from(syncKeySet);
+                  })();
+                  const syncIndex = allSyncKeysForProject.findIndex(key => key === section.syncKey);
                   const targetAnchorId = `section-${tab.id}-${section.syncKey}-${syncIndex}`;
                   return (
                     <React.Fragment key={tab.id}>

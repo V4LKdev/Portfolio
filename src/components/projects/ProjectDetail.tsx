@@ -161,13 +161,24 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project, onBack }) => {
   // Cross-tab navigation (from SectionRenderer)
   const handleNavigate = (tabId: string, anchorId: string) => {
     handleTabClick(tabId);
-    // Small delay to ensure tab content renders before scrolling
-    setTimeout(() => {
-      const element = document.getElementById(anchorId);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-      }
-    }, 100);
+    // Use requestAnimationFrame + setTimeout for better timing
+    // First RAF ensures React has processed the tab change
+    requestAnimationFrame(() => {
+      // Second timeout allows DOM to fully update and render
+      setTimeout(() => {
+        const element = document.getElementById(anchorId);
+        if (element) {
+          // Use smooth scrollIntoView - this works WITH CSS scroll-behavior
+          element.scrollIntoView({ 
+            behavior: 'smooth',
+            block: 'start',
+            inline: 'nearest'
+          });
+        } else {
+          console.debug('[ProjectDetail] Element not found for anchor:', anchorId);
+        }
+      }, 150); // Increased from 100ms to 150ms for more reliable rendering
+    });
   };
 
   // Get active tab data

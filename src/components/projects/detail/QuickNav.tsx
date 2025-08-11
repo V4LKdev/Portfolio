@@ -56,14 +56,27 @@ const QuickNav: React.FC<QuickNavProps> = ({ activeTab, activeTabId, allSyncKeys
             })();
 
             return (
-              <a
+              <button
                 key={`nav-${syncKey}-${syncIndex}`}
-                href={`#${anchorId}`}
-                className="block w-full text-left px-3 py-2 rounded-lg text-sm theme-text hover:theme-button-outline transition-colors"
+                onClick={(e) => {
+                  e.preventDefault();
+                  // Use consistent programmatic scrolling
+                  requestAnimationFrame(() => {
+                    const element = document.getElementById(anchorId);
+                    if (element) {
+                      element.scrollIntoView({ 
+                        behavior: 'smooth',
+                        block: 'start',
+                        inline: 'nearest'
+                      });
+                    }
+                  });
+                }}
+                className="block w-full text-left px-3 py-2 rounded-lg text-sm theme-text hover:theme-button-outline transition-colors cursor-pointer border-none bg-transparent"
                 tabIndex={0}
               >
                 {displayTitle}
-              </a>
+              </button>
             );
           })}
         </nav>
