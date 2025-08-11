@@ -7,7 +7,7 @@ html {
 }
 
 .scroll-mt-header {
-  scroll-margin-top: 80px; /* Adjust to match your sticky header height */
+  scroll-margin-top: 100px; /* Updated for better header clearance: 32px padding + 16px border + ~52px buffer */
 }
 
 @tailwind base;
