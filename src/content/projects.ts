@@ -280,7 +280,7 @@ private:
             syncKey: "bottom",
             title: "Details",
             body:
-              "Focus on latency, clear visual feedback, and layered composition.\n\nFormatting demo:\n1) Emphasis on critical path: input → parse → route → play\n2) Use of bullet points and numbered lists\n3) Support for multi-paragraph content with intentional spacing.",
+              "Focus on latency, clear visual feedback, and layered composition.\n\nFormatting demo:\n1) Emphasis on critical path: input → parse → route → play\n2) Use of bullet points and numbered lists\n3) Support for multi-paragraph content with intentional spacing.\n\nHere is an inline image demonstrating the editor graph:\n\n![Editor Graph](https://images.unsplash.com/photo-1518779578993-ec3579fee39f?auto=format&fit=crop&w=1200&q=80)",
           },
           {
             type: "text",

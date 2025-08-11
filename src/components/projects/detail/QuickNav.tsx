@@ -32,27 +32,27 @@ const QuickNav: React.FC<QuickNavProps> = ({ activeTab, activeTabId, allSyncKeys
         <nav className="space-y-1.5">
           {navigableSyncKeys.map((syncKey) => {
             // Get the index from the master sync keys list for consistency
-            const syncIndex = allSyncKeys.findIndex(key => key === syncKey);
+            const syncIndex = allSyncKeys.findIndex((key) => key === syncKey);
             const anchorId = `section-${activeTabId}-${syncKey}-${syncIndex}`;
-            
+
             // Find the section to get display title (prioritize non-spacer sections)
-            const section = activeTab.sections.find(s => 
-              s.syncKey === syncKey && s.type !== 'spacer'
-            ) || activeTab.sections.find(s => s.syncKey === syncKey);
-            
+            const section =
+              activeTab.sections.find((s) => s.syncKey === syncKey && s.type !== "spacer") ||
+              activeTab.sections.find((s) => s.syncKey === syncKey);
+
             // Get section title for display
             const displayTitle = (() => {
-              if (section && 'title' in section && section.title) {
-                return section.title;
+              if (section && "title" in section && section.title) {
+                return section.title as string;
               }
               if (syncKey) {
                 // Capitalize and format syncKey as fallback
                 return syncKey
-                  .split('-')
-                  .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                  .join(' ');
+                  .split("-")
+                  .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                  .join(" ");
               }
-              return 'Untitled Section';
+              return "Untitled Section";
             })();
 
             return (
@@ -60,13 +60,14 @@ const QuickNav: React.FC<QuickNavProps> = ({ activeTab, activeTabId, allSyncKeys
                 key={`nav-${syncKey}-${syncIndex}`}
                 onClick={(e) => {
                   e.preventDefault();
+                  // Use consistent programmatic scrolling
                   requestAnimationFrame(() => {
                     const element = document.getElementById(anchorId);
                     if (element) {
-                      element.scrollIntoView({ 
-                        behavior: 'smooth',
-                        block: 'start',
-                        inline: 'nearest'
+                      element.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                        inline: "nearest",
                       });
                     }
                   });
@@ -74,7 +75,9 @@ const QuickNav: React.FC<QuickNavProps> = ({ activeTab, activeTabId, allSyncKeys
                 className="block w-full text-left px-2.5 py-2 rounded-md text-sm text-white/75 hover:text-white transition-colors focus:outline-none focus:ring-0 bg-transparent"
                 tabIndex={0}
               >
-                {displayTitle}
+                <span className="inline-flex items-center gap-2">
+                  <span>{displayTitle}</span>
+                </span>
               </button>
             );
           })}
