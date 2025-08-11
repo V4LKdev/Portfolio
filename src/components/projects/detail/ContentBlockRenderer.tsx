@@ -50,8 +50,9 @@ const getMarkdownComponents = (
       <button
         type="button"
         onClick={handleClick}
-        className="block w-full md:w-4/5 lg:w-2/3 mx-auto cursor-zoom-in focus:outline-none"
+        className="block mx-auto cursor-zoom-in focus:outline-none"
         aria-label={alt ? `Open image: ${alt}` : "Open image"}
+        style={{ maxWidth: '8rem', width: '100%' }} // max-w-lg
       >
         <img
           src={source}
