@@ -1,6 +1,5 @@
 import React from "react";
 import { type ProjectTab } from "../../../content";
-import { useProjectScroll } from "../../../hooks/useProjectScroll";
 
 interface QuickNavProps {
   activeTab: ProjectTab;
@@ -10,10 +9,9 @@ interface QuickNavProps {
 
 /**
  * Left-hand sidebar for navigating sections within the active tab.
- * Uses the centralized useProjectScroll hook for smooth scrolling.
+ * Uses native anchor links for smooth scrolling behavior.
  */
 const QuickNav: React.FC<QuickNavProps> = ({ activeTab, activeTabId, allSyncKeys }) => {
-  const { scrollToAnchor } = useProjectScroll();
 
   // Get sections that exist in the current tab for the given sync keys
   const navigableSyncKeys = allSyncKeys.filter((syncKey) => {
@@ -63,7 +61,6 @@ const QuickNav: React.FC<QuickNavProps> = ({ activeTab, activeTabId, allSyncKeys
                 href={`#${anchorId}`}
                 className="block w-full text-left px-3 py-2 rounded-lg text-sm theme-text hover:theme-button-outline transition-colors"
                 tabIndex={0}
-                role="button"
               >
                 {displayTitle}
               </a>

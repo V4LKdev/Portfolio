@@ -30,7 +30,7 @@ const StickyHeader: React.FC<StickyHeaderProps> = ({
       style={{
         background: "rgba(13, 15, 20, 0.85)"
       }}
-      data-sticky-header // Marker for useProjectScroll hook
+      data-sticky-header // Marker for CSS scroll-margin-top calculations
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between py-4">
