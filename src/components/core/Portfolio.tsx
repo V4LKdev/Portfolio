@@ -81,6 +81,11 @@ const PortfolioContent: React.FC = () => {
     let cancelled = false;
     const doHydrate = async () => {
       if (!projectRoute) return;
+      if (suppressHydrateRef.current) {
+        // Skip one cycle after manual close
+        suppressHydrateRef.current = false;
+        return;
+      }
       // Ensure we are on projects section (so base layout present)
       if (currentSection !== "projects") {
         setCurrentSection("projects");
@@ -91,6 +96,7 @@ const PortfolioContent: React.FC = () => {
         if (!cancelled) {
           if (p) {
             setSelectedProject(p);
+            lastHydratedRef.current = projectRoute.slug;
           } else {
             // Not found: navigate back to mode list or root projects
             // If mode provided, drop slug; else fallback to /projects
@@ -103,6 +109,20 @@ const PortfolioContent: React.FC = () => {
     void doHydrate();
     return () => { cancelled = true; };
   }, [projectRoute, currentSection, selectedProject, setCurrentSection, setSelectedProject, navigate]);
+
+  // Track last hydrated slug & suppression flag
+  const lastHydratedRef = React.useRef<string | null>(null);
+  const suppressHydrateRef = React.useRef(false);
+
+  // Wrap back handler to flag suppression before clearing selection
+  const handleProjectBack = React.useCallback(() => {
+    if (selectedProject) {
+      suppressHydrateRef.current = true;
+      setSelectedProject(null);
+    } else {
+      handleBackClick();
+    }
+  }, [selectedProject, setSelectedProject, handleBackClick]);
 
   // When closing project detail (handleBackClick sets selectedProject null), clean URL if slug present
   useEffect(() => {
@@ -283,7 +303,7 @@ const PortfolioContent: React.FC = () => {
               </div>
             }
           >
-            <ProjectDetail project={selectedProject} onBack={handleBackClick} />
+            <ProjectDetail project={selectedProject} onBack={handleProjectBack} />
           </Suspense>
         </SectionLayout>
       ) : (
