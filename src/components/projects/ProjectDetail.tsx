@@ -267,7 +267,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project, onBack }) => {
             </aside>
 
             {/* Main content */}
-            <main className="flex-1" id="project-content">
+            <main className="flex-1 text-selectable" id="project-content">
               <div className="max-w-3xl 2xl:max-w-4xl space-y-12 mx-auto">
                 {/* Render sections for each unique syncKey */}
                 {(() => {

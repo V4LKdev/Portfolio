@@ -64,7 +64,7 @@ export const ProjectOverview: React.FC<ProjectOverviewProps> = ({ project }) => 
         }} />
 
         {/* Content overlay */}
-        <div className="relative z-10 px-5 sm:px-8 md:px-10 py-10 sm:py-14" style={{ minHeight: '16rem' }}>
+  <div className="relative z-10 px-5 sm:px-8 md:px-10 py-10 sm:py-14 text-selectable" style={{ minHeight: '16rem' }}>
           <div className="max-w-4xl">
             <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight theme-heading drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)]">
               {project.title}
