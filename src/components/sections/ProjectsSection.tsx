@@ -33,7 +33,10 @@ import {
 import { type Project } from "../../content";
 import { useNavigation } from "../../hooks/useNavigation";
 
-type AdditionalProjectsProps = Record<string, never>;
+// No extra props for now; use empty object type so intersection with NavigableSectionProps
+// does NOT forbid standard props like onBack.
+// (Previously used Record<string, never> which caused 'onBack' to be type 'never').
+type AdditionalProjectsProps = {};
 
 type Slide = {
   id: string;

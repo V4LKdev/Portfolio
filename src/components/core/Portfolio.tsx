@@ -25,6 +25,8 @@ import BUILD_VERSION from "../../config/version";
 import { useNavigation } from "../../hooks/useNavigation";
 // (unused imports removed)
 import { useNavigate, useLocation } from "react-router-dom";
+import { getProjectByModeAndSlug } from "../../lib/contentLoader";
+import { type GamemodeSlug } from "../../content/gamemodes";
 import { useSoundEffects } from "../../hooks/useSoundEffects";
 import { useVideo } from "../../hooks/useVideo";
 
@@ -46,6 +48,18 @@ const PortfolioContent: React.FC = () => {
 
   const urlSection = getCurrentSectionFromPath(location.pathname);
 
+  // Lightweight project route parsing: /projects/:mode/:slug
+  const projectRoute = React.useMemo<null | { mode: GamemodeSlug; slug: string }>(() => {
+    // Expect paths like /projects, /projects/mode, /projects/mode/slug
+    if (!location.pathname.startsWith("/projects")) return null;
+    const parts = location.pathname.replace(/^\/projects\/?/, "").split("/").filter(Boolean);
+    if (parts.length === 2 && parts[0] && parts[1]) {
+      const [mode, slug] = parts as [string, string];
+      return { mode: mode as GamemodeSlug, slug };
+    }
+    return null;
+  }, [location.pathname]);
+
   const {
     currentSection,
     selectedProject,
@@ -53,6 +67,7 @@ const PortfolioContent: React.FC = () => {
     setCurrentSection,
     setIsMobileMenuOpen,
     handleBackClick,
+    setSelectedProject,
   } = useNavigation();
 
   useEffect(() => {
@@ -60,6 +75,44 @@ const PortfolioContent: React.FC = () => {
       setCurrentSection(urlSection);
     }
   }, [urlSection, currentSection, setCurrentSection]);
+
+  // Hydrate project detail from deep link: /projects/:mode/:slug
+  useEffect(() => {
+    let cancelled = false;
+    const doHydrate = async () => {
+      if (!projectRoute) return;
+      // Ensure we are on projects section (so base layout present)
+      if (currentSection !== "projects") {
+        setCurrentSection("projects");
+      }
+      // If a different project already selected, allow switch (shareable links inside app)
+      if (!selectedProject || selectedProject.slug !== projectRoute.slug) {
+        const p = await getProjectByModeAndSlug(projectRoute.mode, projectRoute.slug);
+        if (!cancelled) {
+          if (p) {
+            setSelectedProject(p);
+          } else {
+            // Not found: navigate back to mode list or root projects
+            // If mode provided, drop slug; else fallback to /projects
+            const base = `/projects/${projectRoute.mode}`;
+            navigate(base, { replace: true });
+          }
+        }
+      }
+    };
+    void doHydrate();
+    return () => { cancelled = true; };
+  }, [projectRoute, currentSection, selectedProject, setCurrentSection, setSelectedProject, navigate]);
+
+  // When closing project detail (handleBackClick sets selectedProject null), clean URL if slug present
+  useEffect(() => {
+    if (!selectedProject && projectRoute) {
+      // If we were at /projects/:mode/:slug, go back to /projects/:mode (retain mode context)
+      navigate(`/projects/${projectRoute.mode}`, { replace: true });
+    }
+  // Only respond to selectedProject changes & pathname deep-link state
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedProject]);
 
   // Pause background video when project detail overlay is open
   useEffect(() => {

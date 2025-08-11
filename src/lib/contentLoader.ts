@@ -42,6 +42,29 @@ export async function getProjectsByMode(
   return all.filter((p) => p.gamemode === mode);
 }
 
+/** Load a single project by its mode + slug (normalized). */
+export async function getProjectByModeAndSlug(
+  mode: GamemodeSlug,
+  slug: string,
+): Promise<NormalizedProject | null> {
+  const all = await getProjects();
+  return (
+    all.find(
+      (p) => p.gamemode === mode && p.slug.toLowerCase() === slug.toLowerCase(),
+    ) || null
+  );
+}
+
+/** Load a project by slug only (first match across modes). */
+export async function getProjectBySlug(
+  slug: string,
+): Promise<NormalizedProject | null> {
+  const all = await getProjects();
+  return (
+    all.find((p) => p.slug.toLowerCase() === slug.toLowerCase()) || null
+  );
+}
+
 export type FeaturedSlide = {
   id: string;
   kind: "featured" | "new";
