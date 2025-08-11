@@ -44,7 +44,7 @@ const MainNavigation: React.FC<MainNavigationProps> = ({
       className="h-full no-select"
       style={{
         background:
-          "linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 25%, rgba(0,0,0,0.5) 70%, transparent 99%)",
+          "linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 35%, rgba(0,0,0,0.5) 80%, transparent 100%)",
       }}
     >
       {/* Navigation Header */}

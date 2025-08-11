@@ -129,7 +129,8 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isPressedDown, setIsPressedDown] = useState(false);
-  const [isActivated, setIsActivated] = useState(false);
+  // Bridge state: after click, keep the item visually engaged until routing marks it active.
+  const [isCommitted, setIsCommitted] = useState(false);
   const { playHover, playUnhover, playClick, playFeedback } = useSoundEffects();
 
   const animationConfigs = useMemo(
@@ -174,13 +175,11 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
 
   const handleMouseLeave = () => {
     setIsHovered(false);
-    setIsActivated(false);
     playUnhover();
   };
 
   const handleMouseDown = () => {
     setIsPressedDown(true);
-    setIsActivated(true);
   };
 
   const handleMouseUp = () => {
@@ -189,14 +188,15 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
 
   const handleClick = () => {
     playClick();
-    setIsActivated(true);
-
     onClick(section, hierarchy);
-
+    // play optional feedback without relying on local activation state
     setTimeout(() => {
       playFeedback();
-      setIsActivated(false);
     }, ANIMATION_CONFIG.FEEDBACK_DELAY);
+  // Keep filled during navigation delay; will auto-clear once isActive turns true
+  setIsCommitted(true);
+  // Safety: clear commitment if no activation occurs within a reasonable time
+  window.setTimeout(() => setIsCommitted(false), 2000);
   };
 
   const renderAnimatedText = () => {
@@ -257,7 +257,7 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
       style={{ transformOrigin: "left center" }}
       animate={{
         scale:
-          isPressedDown || isActivated
+          (isPressedDown || isActive || isCommitted)
             ? ANIMATION_CONFIG.BUTTON_SCALE_FACTOR
             : 1,
       }}
@@ -267,7 +267,7 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
         className="mr-1"
         animate={{
           rotate:
-            isHovered || isPressedDown || isActivated
+            (isHovered || isPressedDown || isActive || isCommitted)
               ? [0, -12, 12, -8, 8, 0]
               : 0,
         }}
@@ -301,7 +301,7 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
       style={{ transformOrigin: "left center" }}
       animate={{
         scale:
-          isPressedDown || isActivated
+          (isPressedDown || isActive || isCommitted)
             ? ANIMATION_CONFIG.BUTTON_SCALE_FACTOR
             : 1,
       }}
@@ -312,7 +312,7 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
           className="mr-1"
           animate={{
             scale:
-              isHovered || isPressedDown || isActivated
+              (isHovered || isPressedDown || isActive || isCommitted)
                 ? [1, 1.18, 0.92, 1.12, 1]
                 : 1,
           }}
@@ -344,13 +344,16 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
   const renderEnhancedText = () => (
     <motion.span
       className="relative inline-block align-bottom"
-      style={{
-        color: isPressedDown || isActivated ? "rgba(0, 0, 0, 0.9)" : undefined,
-      }}
     >
-      <span className="block relative z-10">{renderAnimatedText()}</span>
+      <span
+        className={`block relative z-10 ${
+          (isPressedDown || isActive || isCommitted) ? "text-black/90" : "theme-text"
+        }`}
+      >
+        {renderAnimatedText()}
+      </span>
       <AnimatePresence>
-        {(isPressedDown || isActivated) && (
+        {(isPressedDown || isActive || isCommitted) && (
           <motion.div
             className="absolute left-0 bottom-0 w-full z-0 will-change-transform rounded-sm"
             style={{
@@ -366,7 +369,7 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
         )}
       </AnimatePresence>
       <AnimatePresence>
-        {isHovered && !isPressedDown && !isActivated && (
+        {isHovered && !isPressedDown && !isActive && !isCommitted && (
           <motion.div
             className="absolute left-0 bottom-0 h-0.5 will-change-transform rounded-sm"
             style={{
@@ -382,6 +385,11 @@ const NavigationMenuItem: React.FC<NavigationMenuItemProps> = ({
       </AnimatePresence>
     </motion.span>
   );
+
+  // Once the parent marks this item active, drop the temporary commitment state
+  React.useEffect(() => {
+    if (isActive && isCommitted) setIsCommitted(false);
+  }, [isActive, isCommitted]);
 
   const renderFallbackText = () => (
     <>

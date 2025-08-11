@@ -1,7 +1,15 @@
 /**
  * Minimal oscillator-based audio engine for SFX.
  *
- * Future-proof: swap internals for sample playback or add volume without changing callers.
+ * Architecture:
+ * - Uses the Web Audio API with a lazily created AudioContext.
+ * - Produces simple tones via OscillatorNode + GainNode envelope.
+ * - Public API is stable (unlock, play), allowing a later switch to sample playback or
+ *   more advanced synthesis without touching call sites.
+ *
+ * Notes:
+ * - unlock() should be called in response to a user gesture to satisfy autoplay policies.
+ * - play(name) maps UX events (hover/click/feedback) to short tones.
  */
 
 export type SoundName = "hover" | "unhover" | "click" | "feedback" | "minor" | "major";

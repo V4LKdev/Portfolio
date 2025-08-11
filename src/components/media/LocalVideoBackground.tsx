@@ -1,3 +1,12 @@
+/**
+ * LocalVideoBackground
+ *
+ * Always-mounted background video element. Consumes VideoProvider state to decide when to play/pause.
+ * Key behaviors:
+ * - Keep <video> mounted to preserve decode state and currentTime across UI or visibility pauses.
+ * - Save last playback time before pausing and seek back after metadata is available on resume.
+ * - Show a poster overlay while disabled or on error for a graceful fallback.
+ */
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useVideo } from "../../hooks/useVideo";
 import { videoConfig } from "../../content";

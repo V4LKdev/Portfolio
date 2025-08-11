@@ -70,7 +70,7 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       spacing: {
-        sidebar: "360px", // Main sidebar width (wider for gradient coverage)
+        sidebar: "400px", // Main sidebar width (wider for gradient coverage)
         "sidebar-collapsed": "60px", // Collapsed sidebar width (for future use)
       },
       keyframes: {

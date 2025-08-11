@@ -199,6 +199,13 @@
   body {
     @apply bg-background text-foreground;
     font-family: "Expletus Sans", sans-serif;
+  /* Global no-select policy */
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none;    /* Old Firefox */
+  -ms-user-select: none;     /* IE/Edge */
+  user-select: none;         /* Standard */
+  /* Hide text caret globally unless explicitly re-enabled */
+  caret-color: transparent;
   }
 }
 
@@ -336,6 +343,38 @@
       --theme-signal-inactive,
       rgba(75, 85, 99, 0.5)
     ); /* gray-600/50 equivalent */
+  }
+}
+
+/* Opt-in selectable text utility */
+@layer utilities {
+  .text-selectable {
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+    caret-color: auto;
+  }
+  .text-selectable * {
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+    caret-color: inherit;
+  }
+}
+
+/* Ensure form controls and contenteditable remain selectable by default */
+@layer base {
+  input,
+  textarea,
+  select,
+  [contenteditable="true"] {
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+    caret-color: auto;
   }
 }
 

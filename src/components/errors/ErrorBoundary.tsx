@@ -5,7 +5,6 @@
  * Provides a fallback UI and reload option when an error is encountered.
  */
 import React, { Component, ReactNode } from "react";
-import { useSoundEffects } from "../../hooks/useSoundEffects";
 
 interface Props {
   children: ReactNode;
@@ -36,7 +35,6 @@ class ErrorBoundary extends Component<Props, State> {
 
   public override render() {
     if (this.state.hasError) {
-  const { playHover, playUnhover, playClick } = ((): any => ({}))();
       return (
         <div
           className="min-h-screen w-full flex flex-col items-center justify-center bg-[#181a20] text-white font-mono p-4"

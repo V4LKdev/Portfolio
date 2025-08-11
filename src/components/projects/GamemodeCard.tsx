@@ -147,7 +147,7 @@ const GamemodeCard: React.FC<GamemodeCardProps> = ({
         <img
           src={image}
           alt=""
-          className="w-full h-full object-cover opacity-70 group-focus:opacity-80"
+          className="w-full h-full object-cover opacity-100"
           draggable={false}
         />
   {/* vignette layer (blur removed for performance; prefer pre-blurred imagery) */}
@@ -242,6 +242,7 @@ const GamemodeCard: React.FC<GamemodeCardProps> = ({
       {/* Hover outline overlay */}
       <motion.div
         className="pointer-events-none absolute inset-0 z-30 rounded-xl"
+        initial={{ opacity: 0 }}
         animate={{ opacity: hovered ? 1 : 0 }}
         transition={{ duration: 0.16, ease: "easeOut" }}
         style={{

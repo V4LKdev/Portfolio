@@ -321,7 +321,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project, onBack }) => {
 
   // --- Main Render ---
   return (
-    <div className="max-w-6xl mx-auto transition-all duration-500 animate-fade-in">
+    <div className="max-w-6xl mx-auto transition-all duration-500 animate-fade-in text-selectable">
       {/* Back Button */}
       <button
         onClick={() => {

@@ -1,3 +1,17 @@
+/**
+ * AudioProvider
+ *
+ * Centralized preference and unlock state for SFX.
+ * Responsibilities:
+ * - Persist sfxEnabled to cookies for next visits.
+ * - Track whether the Web Audio context is unlocked (user-gesture requirement on many browsers).
+ * - Provide actions to toggle SFX and to explicitly unlock on a user interaction.
+ * - When sfxEnabled is true after reload, auto-unlock on the first true user gesture (pointer/keydown).
+ *
+ * Design notes:
+ * - The provider does not play any sound. It only exposes state and an unlock action.
+ * - The actual sounds are produced by audioEngine and triggered via useSoundEffects.
+ */
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { AudioContext, type AudioContextValue } from "./AudioContext";
 import { UserPreferences } from "../lib/cookies";
@@ -41,7 +55,7 @@ const AudioProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =>
       void unlockAudio();
     };
 
-    const onKeyDown = (e: KeyboardEvent) => {
+  const onKeyDown = (e: KeyboardEvent) => {
       // ignore pure modifier keys
       const mods = ["Meta", "Control", "Alt", "Shift"]; 
       if (mods.includes(e.key)) return;

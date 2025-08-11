@@ -127,15 +127,28 @@ function ServerConnectionPanel({ className = "" }: ServerConnectionPanelProps) {
     }
   };
 
-  // Measure latency on component mount and then every 3 seconds
+  // Measure latency on component mount and then every 3 seconds, if page is visible
   useEffect(() => {
-    measureLatency(); // Initial measurement
+    const measureIfVisible = () => {
+      if (!document.hidden) {
+        measureLatency();
+      }
+    };
 
-    const interval = setInterval(() => {
-      measureLatency();
-    }, 3000); // Update every 3 seconds
+    // Run on mount if visible
+    measureIfVisible();
 
-    return () => clearInterval(interval);
+    // Set up interval for periodic checks
+    const interval = setInterval(measureIfVisible, 3000);
+
+    // Add event listener to measure immediately when tab becomes visible
+    document.addEventListener("visibilitychange", measureIfVisible);
+
+    // Cleanup function
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener("visibilitychange", measureIfVisible);
+    };
   }, []);
   return (
     <div

@@ -1,7 +1,9 @@
-/*
- * useSoundEffects.ts
+/**
+ * useSoundEffects
  *
- * Thin wrapper for SFX triggers. Uses AudioProvider and AudioEngine.
+ * Convenience hook exposing pre-named SFX triggers for UI events.
+ * It respects the user's SFX preference and the unlock state, and avoids producing
+ * any audio until both conditions are met. Internally delegates to audioEngine.
  */
 import { useMemo } from "react";
 import { audioEngine } from "../lib/audioEngine";

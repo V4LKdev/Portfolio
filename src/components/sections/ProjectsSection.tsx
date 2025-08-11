@@ -113,7 +113,7 @@ const FeaturedCarousel: React.FC<{
           aria-label="Featured projects"
         >
           <div
-            className="absolute inset-0 flex transition-transform duration-200 ease-out"
+            className="absolute inset-0 flex transition-transform duration-150 ease-out"
             style={{ transform: `translateX(-${index * 100}%)` }}
           >
             {slides.map((s) => (

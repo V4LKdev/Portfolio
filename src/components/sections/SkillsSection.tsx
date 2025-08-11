@@ -17,7 +17,7 @@ const SkillsSection: NavigableSectionComponent = ({
   id,
 }) => {
   return (
-    <div className={`max-w-6xl mx-auto ${className || ""}`} id={id}>
+  <div className={`max-w-6xl mx-auto text-selectable ${className || ""}`} id={id}>
       <BackButton onClick={onBack} label="Back to Home" />
       <h2 className="text-5xl font-bold mb-16 text-center game-title">
         Skills & Tools
