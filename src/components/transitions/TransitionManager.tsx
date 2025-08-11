@@ -308,8 +308,6 @@ const AdaptiveTransition: React.FC<{
             <Route path="projects" element={<></>} />
             {/* Support nested project routes like /projects/singleplayer */}
             <Route path="projects/*" element={<></>} />
-            {/* Support individual project URLs like /projects/singleplayer/music-framework */}
-            <Route path="projects/:mode/:slug" element={<></>} />
             <Route path="about" element={<></>} />
             <Route path="skills" element={<></>} />
             <Route path="contact" element={<></>} />

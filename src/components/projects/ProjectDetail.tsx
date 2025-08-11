@@ -5,7 +5,7 @@ import React, { useState, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { type Project, type ProjectTab } from "../../content";
 import DetailLayout from "../layout/DetailLayout";
-import { StickyHeader, QuickNav, SectionRenderer } from "./detail";
+import { StickyHeader, SectionRenderer, ProjectOverview, QuickNav } from "./detail";
 
 interface ProjectDetailProps {
   project: Project;
@@ -177,8 +177,8 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project, onBack }) => {
           console.debug('[ProjectDetail] Navigated to:', anchorId);
         } else {
           console.debug('[ProjectDetail] Element not found for anchor:', anchorId);
-          // Fallback: try scrolling to top of content area if specific element not found
-          const contentArea = document.querySelector('.lg\\:col-span-3');
+          // Fallback: scroll to main content area
+          const contentArea = document.getElementById('project-content');
           if (contentArea) {
             contentArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
           }
@@ -224,18 +224,20 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project, onBack }) => {
     );
   }
 
-  // ...existing code...
-
   return (
     <DetailLayout>
       <div className="relative min-h-screen w-full animate-fade-in">
         {/* Premium dark gradient background (preserved) */}
-        <div
-          className="absolute inset-0 -z-10"
-          style={{
-            background: "radial-gradient(120% 100% at 50% 0%, rgba(255,255,255,0.06) 0%, rgba(0,0,0,0.6) 42%, rgba(0,0,0,0.9) 100%), linear-gradient(180deg, rgba(13,15,20,0.9) 0%, rgba(5,6,8,0.96) 100%)",
-          }}
-        />
+        <div className="absolute inset-0 -z-10 overflow-hidden">
+          <div
+            className="absolute top-0 left-0 w-[180vw] h-full pointer-events-none"
+            style={{
+              background: `radial-gradient(160% 140% at 25% 10%, rgba(255,255,255,0.07) 0%, rgba(20,22,28,0.45) 40%, rgba(5,6,8,0.92) 70%, rgba(0,0,0,0.98) 100%),
+                           linear-gradient(135deg, rgba(13,15,20,0.85) 0%, rgba(8,10,14,0.9) 55%, rgba(0,0,0,0.95) 100%)` ,
+              maskImage: "linear-gradient(to right, rgba(0,0,0,0.9), rgba(0,0,0,1) 20%, rgba(0,0,0,1) 80%, rgba(0,0,0,0.9))",
+            }}
+          />
+        </div>
 
         {/* Sticky Header */}
         <StickyHeader
@@ -246,47 +248,43 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project, onBack }) => {
           onBack={onBack}
         />
 
-        {/* Main Content Area */}
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-            {/* Quick Navigation Sidebar */}
-            <div className="lg:col-span-1">
-              <QuickNav 
-                activeTab={activeTab} 
-                activeTabId={activeTabId} 
-                allSyncKeys={allSyncKeys}
-              />
-            </div>
+        {/* Main Content: full-width overview banner, then dual-column layout */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 xl:px-10 py-12" key={activeTabId} data-active-tab={activeTabId}>
+          {/* Full-width Project Overview hero */}
+          <ProjectOverview project={project} />
 
-            {/* Main Content */}
-            <div className="lg:col-span-3">
-              <div className="space-y-12">
+          {/* Dual column content below overview */}
+          <div className="mt-10 flex flex-row gap-10">
+            {/* Sidebar QuickNav (desktop) */}
+            <aside className="hidden lg:block shrink-0 w-56 xl:w-60 pt-2">
+              <div className="sticky top-32">
+                <QuickNav 
+                  activeTab={activeTab} 
+                  activeTabId={activeTabId} 
+                  allSyncKeys={allSyncKeys}
+                />
+              </div>
+            </aside>
+
+            {/* Main content */}
+            <main className="flex-1" id="project-content">
+              <div className="max-w-3xl 2xl:max-w-4xl space-y-12 mx-auto">
                 {/* Render sections for each unique syncKey */}
                 {(() => {
                   const renderedSections = new Set();
                   return allSyncKeys.map((syncKey, syncIndex) => {
-                    // Find the section in the active tab that matches this syncKey
-                    // Prioritize non-spacer sections
                     const section = activeTab.sections.find(s => 
                       s.syncKey === syncKey && s.type !== 'spacer'
                     ) || activeTab.sections.find(s => s.syncKey === syncKey);
-                    
-                    // Skip if no section found for this syncKey in active tab
                     if (!section) return null;
-
-                    // Create a unique identifier for this section to prevent duplicates
                     const sectionTitle = 'title' in section ? section.title || 'notitle' : 'notitle';
                     const sectionId = `${activeTabId}-${section.type}-${section.syncKey}-${sectionTitle}`;
-                    
                     if (renderedSections.has(sectionId)) {
                       console.warn('[ProjectDetail] Skipping duplicate section:', sectionId);
                       return null;
                     }
                     renderedSections.add(sectionId);
-
-                    // Generate unique anchor ID
                     const anchorId = `section-${activeTabId}-${syncKey}-${syncIndex}`;
-
                     return (
                       <SectionRenderer
                         key={`${activeTabId}-${syncKey}-${syncIndex}`}
@@ -300,7 +298,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project, onBack }) => {
                   });
                 })()}
 
-                {/* Render sections without syncKeys at the end */}
+                {/* Sections without syncKeys */}
                 {activeTab.sections
                   .filter(section => !section.syncKey)
                   .map((section, index) => {
@@ -317,7 +315,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project, onBack }) => {
                     );
                   })}
               </div>
-            </div>
+            </main>
           </div>
         </div>
       </div>

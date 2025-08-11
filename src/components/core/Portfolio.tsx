@@ -124,14 +124,12 @@ const PortfolioContent: React.FC = () => {
     }
   }, [selectedProject, setSelectedProject, handleBackClick]);
 
-  // When closing project detail (handleBackClick sets selectedProject null), clean URL if slug present
+  // When closing project detail, clean URL only if we previously hydrated (avoid stripping slug on initial reload)
   useEffect(() => {
-    if (!selectedProject && projectRoute) {
-      // If we were at /projects/:mode/:slug, go back to /projects/:mode (retain mode context)
+    if (!selectedProject && projectRoute && lastHydratedRef.current) {
       navigate(`/projects/${projectRoute.mode}`, { replace: true });
     }
-  // Only respond to selectedProject changes & pathname deep-link state
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedProject]);
 
   // Pause background video when project detail overlay is open

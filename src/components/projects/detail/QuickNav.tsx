@@ -24,12 +24,12 @@ const QuickNav: React.FC<QuickNavProps> = ({ activeTab, activeTabId, allSyncKeys
   }
 
   return (
-    <div className="sticky top-32 h-fit">
-      <div className="theme-card p-4 rounded-lg">
-        <h3 className="text-sm font-semibold theme-text-muted uppercase tracking-wider mb-3">
+    <div>
+      <div className="rounded-xl border border-white/10 bg-white/[0.04] backdrop-blur-sm p-4">
+        <h3 className="text-xs font-semibold text-white/50 uppercase tracking-wider mb-3">
           Quick Navigation
         </h3>
-        <nav className="space-y-2">
+        <nav className="space-y-1.5">
           {navigableSyncKeys.map((syncKey) => {
             // Get the index from the master sync keys list for consistency
             const syncIndex = allSyncKeys.findIndex(key => key === syncKey);
@@ -60,7 +60,6 @@ const QuickNav: React.FC<QuickNavProps> = ({ activeTab, activeTabId, allSyncKeys
                 key={`nav-${syncKey}-${syncIndex}`}
                 onClick={(e) => {
                   e.preventDefault();
-                  // Use consistent programmatic scrolling
                   requestAnimationFrame(() => {
                     const element = document.getElementById(anchorId);
                     if (element) {
@@ -72,7 +71,7 @@ const QuickNav: React.FC<QuickNavProps> = ({ activeTab, activeTabId, allSyncKeys
                     }
                   });
                 }}
-                className="block w-full text-left px-3 py-2 rounded-lg text-sm theme-text hover:theme-button-outline transition-colors cursor-pointer border-none bg-transparent"
+                className="block w-full text-left px-2.5 py-2 rounded-md text-sm text-white/75 hover:text-white transition-colors focus:outline-none focus:ring-0 bg-transparent"
                 tabIndex={0}
               >
                 {displayTitle}
