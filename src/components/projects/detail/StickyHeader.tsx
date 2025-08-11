@@ -45,9 +45,10 @@ const StickyHeader: React.FC<StickyHeaderProps> = ({
             onFocus={playHover}
             onBlur={playUnhover}
             className="inline-flex items-center gap-2 px-3 py-2 rounded-lg theme-back-button group"
+            title="Go back to project list"
           >
             <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
-            <span className="font-semibold text-sm sm:text-base">Back</span>
+            <span className="font-semibold text-sm sm:text-base">Back to Projects</span>
           </button>
 
           {/* Project Title */}

@@ -105,7 +105,10 @@ const SectionRenderer: React.FC<SectionRendererProps> = ({
 
       {/* Section Content */}
       <div className="section-content">
-        <ContentBlockRenderer block={section} />
+        <ContentBlockRenderer 
+          block={section} 
+          suppressTitle={!!sectionTitle} // Suppress content title if section already has one
+        />
       </div>
   </section>
   );

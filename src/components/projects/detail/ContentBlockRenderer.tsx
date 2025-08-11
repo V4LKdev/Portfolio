@@ -5,6 +5,7 @@ import CodeBlock from "../../ui/CodeBlock";
 
 interface ContentBlockRendererProps {
   block: Section;
+  suppressTitle?: boolean; // When true, don't render the block's title
 }
 
 // Markdown component overrides for theme consistency
@@ -42,13 +43,16 @@ const markdownComponents = {
  * Renders a single ContentBlock based on its type.
  * Supports text (markdown), images, galleries, code blocks, videos, and spacers.
  */
-const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({ block }) => {
+const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({ 
+  block, 
+  suppressTitle = false 
+}) => {
   switch (block.type) {
     case "text":
     case "quote":
       return (
         <div className="space-y-4">
-          {block.title && (
+          {block.title && !suppressTitle && (
             <h3 className="text-xl font-semibold theme-heading">
               {block.title}
             </h3>
@@ -67,7 +71,7 @@ const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({ block }) =>
           <CodeBlock
             code={block.code}
             language={block.language}
-            title={block.title}
+            title={suppressTitle ? undefined : block.title}
             className="w-full"
           />
         </div>
@@ -76,7 +80,7 @@ const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({ block }) =>
     case "gallery":
       return (
         <div className="space-y-4">
-          {block.title && (
+          {block.title && !suppressTitle && (
             <h3 className="text-xl font-semibold theme-heading">
               {block.title}
             </h3>
@@ -120,7 +124,7 @@ const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({ block }) =>
 
         return (
           <div className="space-y-4">
-            {block.title && (
+            {block.title && !suppressTitle && (
               <h3 className="text-xl font-semibold theme-heading">
                 {block.title}
               </h3>
