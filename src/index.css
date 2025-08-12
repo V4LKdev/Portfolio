@@ -1,3 +1,23 @@
+/* Custom gray checkbox for filter popup */
+.custom-checkbox-accent {
+  appearance: none;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 0.25rem;
+  border: 1.5px solid #27272a;
+  background: #18181b;
+  position: relative;
+  cursor: pointer;
+  vertical-align: middle;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+}
+.custom-checkbox-accent:checked {
+  background: var(--accent, #3b82f6);
+  border-color: var(--accent, #3b82f6);
+}
+.custom-checkbox-accent:checked::after {
+  display: none;
+}
 @import url("https://fonts.cdnfonts.com/css/good-timing");
 @import url("https://fonts.cdnfonts.com/css/toxigenesis");
 @import url("https://fonts.googleapis.com/css2?family=Expletus+Sans:wght@400;500;600;700&display=swap");

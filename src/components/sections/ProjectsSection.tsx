@@ -24,6 +24,7 @@ import {
 } from "../../content/gamemodes";
 import { useSoundEffects } from "../../hooks/useSoundEffects";
 import ProjectGrid from "../projects/ProjectGrid";
+import FilterPopup from "./FilterPopup";
 import {
   getFeaturedSlides,
   getProjectsByMode,
@@ -252,6 +253,11 @@ const ProjectsSection: NavigableSectionComponent<AdditionalProjectsProps> = ({
   };
   const [list, setList] = React.useState<CardItem[]>([]);
   const [raw, setRaw] = React.useState<NormalizedProject[]>([]);
+  // Filter/sort state
+  const [selectedTags, setSelectedTags] = React.useState<string[]>([]);
+  const [showCompleted, setShowCompleted] = React.useState(false);
+  type SortOption = 'recent' | 'oldest' | 'title-az' | 'title-za' | 'completed';
+  const [sortOrder, setSortOrder] = React.useState<SortOption>('recent');
 
   React.useEffect(() => {
     let cancelled = false;
@@ -312,9 +318,67 @@ const ProjectsSection: NavigableSectionComponent<AdditionalProjectsProps> = ({
     [navigate, handleProjectClick],
   );
 
+  // Local state for filter dropdown (must be before any returns)
+  const [showFilter, setShowFilter] = React.useState(false);
+
   // Simple view when at /projects/:mode — now renders a grid of projects
   if (modeSlug && isGamemodeSlug(modeSlug)) {
     const meta = GAMEMODES[modeSlug];
+    // Compute filtered/sorted projects
+    let filtered = list;
+    if (selectedTags.length > 0) {
+      filtered = filtered.filter(p => selectedTags.every(tag => p.tags.includes(tag)));
+    }
+    if (showCompleted) {
+      filtered = filtered.filter(p => {
+        const full = raw.find(r => r.slug === p.slug);
+        return full && (full.status === 'Complete' || full.status === 'Completed');
+      });
+    }
+    switch (sortOrder) {
+      case 'title-az':
+        filtered = [...filtered].sort((a, b) => a.title.localeCompare(b.title));
+        break;
+      case 'title-za':
+        filtered = [...filtered].sort((a, b) => b.title.localeCompare(a.title));
+        break;
+      case 'oldest':
+        filtered = [...filtered].sort((a, b) => {
+          const ra = raw.find(r => r.slug === a.slug);
+          const rb = raw.find(r => r.slug === b.slug);
+          const da = ra && ra.createdAt ? Date.parse(ra.createdAt) : 0;
+          const db = rb && rb.createdAt ? Date.parse(rb.createdAt) : 0;
+          return da - db;
+        });
+        break;
+      case 'completed':
+        filtered = [...filtered].sort((a, b) => {
+          const ra = raw.find(r => r.slug === a.slug);
+          const rb = raw.find(r => r.slug === b.slug);
+          const sa = ra && ra.status ? ra.status : '';
+          const sb = rb && rb.status ? rb.status : '';
+          // Completed first, then by most recent
+          if (sa === sb) {
+            const da = ra && ra.createdAt ? Date.parse(ra.createdAt) : 0;
+            const db = rb && rb.createdAt ? Date.parse(rb.createdAt) : 0;
+            return db - da;
+          }
+          if (sa === 'Complete' || sa === 'Completed') return -1;
+          if (sb === 'Complete' || sb === 'Completed') return 1;
+          return 0;
+        });
+        break;
+      case 'recent':
+      default:
+        filtered = [...filtered].sort((a, b) => {
+          const ra = raw.find(r => r.slug === a.slug);
+          const rb = raw.find(r => r.slug === b.slug);
+          const da = ra && ra.createdAt ? Date.parse(ra.createdAt) : 0;
+          const db = rb && rb.createdAt ? Date.parse(rb.createdAt) : 0;
+          return db - da;
+        });
+        break;
+    }
     return (
       <div
         className={`max-w-6xl mx-auto transition-all duration-500 animate-fade-in select-none caret-transparent ${className ?? ""}`}
@@ -324,14 +388,127 @@ const ProjectsSection: NavigableSectionComponent<AdditionalProjectsProps> = ({
           onClick={() => navigate("/projects")}
           label="Back to Modes"
         />
-        <h2 className="text-5xl font-extrabold mb-2 text-center game-title uppercase tracking-[0.2em]">
-          {meta.gameLabel} / {meta.portfolioLabel}
-        </h2>
-        <p className="text-center game-subtitle theme-text-muted mb-10 text-lg">
-          {meta.description}
-        </p>
+
+        {/* Mode header: glass panel with large icon and accent */}
+
+        <section
+          className="relative mt-2 mb-10 overflow-visible rounded-2xl shadow-xl"
+          style={{
+            border: `2.5px solid ${meta.accent}`,
+            background: 'none',
+          }}
+        >
+          {/* Accent line */}
+          {/* Removed top accent line as requested */}
+
+          {/* Prominent icon left of title */}
+          <div className="flex items-center gap-7 px-5 sm:px-8 pt-7 pb-2">
+            <div className="flex-shrink-0 flex items-center justify-center" style={{ width: 96, height: 96 }}>
+              {(() => {
+                const size = 72;
+                const iconStyle = { filter: 'grayscale(1)', color: '#bfc3d1' };
+                switch (meta.iconKey) {
+                  case "user":
+                    return <User size={size} style={iconStyle} />;
+                  case "users":
+                    return <Users size={size} style={iconStyle} />;
+                  case "trophy":
+                    return <Trophy size={size} style={iconStyle} />;
+                  default:
+                    return <Wrench size={size} style={iconStyle} />;
+                }
+              })()}
+            </div>
+            <div className="flex flex-col gap-1">
+              <div className="text-[11px] uppercase tracking-[0.2em] text-white/60 mb-0.5">
+                Projects • {meta.gameLabel}
+              </div>
+              <div className="flex items-center gap-3 flex-wrap">
+                <h2 className="game-title text-4xl sm:text-5xl font-extrabold tracking-[0.12em]" style={{ textShadow: `0 2px 24px ${meta.accent}55, 0 1px 0 #000` }}>
+                  {meta.portfolioLabel}
+                </h2>
+              </div>
+            </div>
+          </div>
+          {/* Description */}
+          <div className="px-5 sm:px-8 pb-2">
+            <div
+              className="h-1 w-full max-w-[600px] rounded-full mb-2"
+              style={{
+                background: `linear-gradient(90deg, ${meta.accent} 0%, ${meta.accent} 85%, transparent 100%)`,
+              }}
+            />
+            <p className="max-w-3xl theme-text-muted text-sm sm:text-base">
+              {meta.description}
+            </p>
+          </div>
+
+          {/* Utility row: tag filter chips, completed toggle, sort button */}
+          <div className="px-5 sm:px-8 pb-5 mt-2 flex flex-wrap items-center gap-2 sm:gap-3">
+            {/* Count chip (filtered) */}
+              <span className="text-xs font-semibold text-white/80">
+              {filtered.length} Project{filtered.length === 1 ? '' : 's'}
+            </span>
+            {/* Filter dropdown button (UI only) */}
+            <div className="relative">
+              <button
+                type="button"
+                className={`px-3 py-1.5 text-xs rounded-full border border-white/15 flex items-center gap-1 transition-colors bg-zinc-900/95
+                  ${selectedTags.length > 0 ? 'text-white' : 'text-white/80'}
+                  ${selectedTags.length > 0 ? '' : 'hover:text-white'}
+                `}
+                style={selectedTags.length > 0 ? { background: meta.accent, borderColor: meta.accent } : {}}
+                onClick={e => {
+                  e.preventDefault();
+                  setShowFilter(f => !f);
+                }}
+              >
+                <span>Filter by Tag</span>
+              </button>
+              {showFilter && (
+                <FilterPopup
+                  tags={Array.from(new Set(list.flatMap(p => p.tags)))}
+                  selectedTags={selectedTags}
+                  setSelectedTags={setSelectedTags}
+                  onClose={() => setShowFilter(false)}
+                  accent={meta.accent}
+                />
+              )}
+            </div>
+            {/* Completed toggle */}
+            <button
+              type="button"
+              className={`px-3 py-1.5 text-xs rounded-full border border-white/15 transition-colors bg-zinc-900/95
+                ${showCompleted ? 'text-white' : 'text-white/70'}
+                ${showCompleted ? '' : 'hover:text-white'}
+              `}
+              style={showCompleted ? { background: meta.accent, borderColor: meta.accent } : {}}
+              onClick={() => setShowCompleted(v => !v)}
+            >
+              Completed
+            </button>
+            {/* Sort dropdown */}
+            <div className="ml-auto">
+              <label htmlFor="sort-select" className="sr-only">Sort projects</label>
+              <select
+                id="sort-select"
+                value={sortOrder}
+                onChange={e => setSortOrder(e.target.value as SortOption)}
+                className="px-3 py-1.5 text-xs rounded-xl bg-zinc-900/95 border border-white/15 text-white/80 shadow-xl focus:outline-none select-none caret-transparent transition-colors min-w-[140px] cursor-pointer"
+                style={{ fontFamily: 'inherit' }}
+              >
+                <option value="recent">Most Recent</option>
+                <option value="oldest">Oldest First</option>
+                <option value="title-az">Title (A–Z)</option>
+                <option value="title-za">Title (Z–A)</option>
+                <option value="completed">Completed First</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
         <ProjectGrid
-          projects={list}
+          projects={filtered}
           onOpen={(p) => {
             const full = raw.find((r) => r.slug === p.slug);
             openProject(p, full ?? undefined);
