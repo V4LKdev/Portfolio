@@ -424,7 +424,15 @@ const ProjectsSection: NavigableSectionComponent<AdditionalProjectsProps> = ({
                 Projects • {meta.gameLabel}
               </div>
               <div className="flex items-center gap-3 flex-wrap">
-                <h2 className="game-title text-4xl sm:text-5xl font-extrabold tracking-[0.12em]" style={{ textShadow: `0 2px 24px ${meta.accent}55, 0 1px 0 #000` }}>
+                <h2
+                  className="game-title text-4xl sm:text-5xl font-extrabold tracking-[0.12em]"
+                  style={{
+                    color: meta.accent,
+                    WebkitFontSmoothing: 'antialiased',
+                    textRendering: 'optimizeLegibility',
+                    filter: `drop-shadow(0 2px 12px ${meta.accent}) drop-shadow(0 1px 0 #000)`
+                  }}
+                >
                   {meta.portfolioLabel}
                 </h2>
               </div>

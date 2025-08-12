@@ -44,11 +44,8 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onOpen }) => {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
       </div>
-      <div className="relative z-10 p-4 flex flex-col gap-2">
-        <div className="text-xs uppercase tracking-widest font-bold text-white/80">
-          {meta.portfolioLabel}
-        </div>
-        <div className="text-xl font-extrabold game-title text-white">
+  <div className="relative z-10 p-8 flex flex-col gap-4">
+        <div className="text-xl md:text-2xl font-extrabold game-title text-white">
           {project.title}
         </div>
         <div className="text-sm text-white/80 line-clamp-2">
