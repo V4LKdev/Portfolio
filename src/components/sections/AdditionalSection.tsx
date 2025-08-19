@@ -40,14 +40,13 @@ const AdditionalSection: React.FC<AdditionalSectionProps> = ({ onBack }) => {
       <span>← Back to Home</span>
     </button>
     <h2 className="text-3xl md:text-5xl font-bold mb-8 md:mb-16 text-center game-title">
-      ADDITIONAL CONTENT
+      Hobbies & Interests
     </h2>
-    <div className="theme-card rounded-lg p-6 md:p-8 atmospheric-glow text-center">
-      <p className="text-lg md:text-xl theme-text mb-6 md:mb-8">
-        This section is reserved for future content including music career,
-        creative projects, and other endeavors beyond programming.
+    <div className="theme-card-static rounded-2xl p-12 shadow-2xl border border-accent/20 bg-zinc-900/95 text-center">
+      <p className="theme-text text-lg md:text-xl mb-6 max-w-2xl mx-auto">
+        This section is under development — I’m polishing the layout and content for hobbies, creative projects and extracurricular work. Check back soon for a refined view.
       </p>
-      <p className="theme-text-muted">Coming soon...</p>
+  {/* Download Resume removed per request */}
     </div>
   </div>
   );
