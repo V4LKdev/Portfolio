@@ -11,6 +11,7 @@ export type ProjectCardData = {
   image: string; // cover
   slug: string;
   mode: GamemodeSlug;
+  year?: string;
 };
 
 interface ProjectCardProps {
@@ -73,6 +74,11 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onOpen }) => {
           boxShadow: `inset 0 0 0 2px rgba(255,255,255,0.08), 0 0 24px ${accent}`,
         }}
       />
+      {project.year && (
+        <div className="absolute bottom-3 right-4 z-20 text-xs text-white/80 bg-black/60 px-2 py-1 rounded shadow">
+          {project.year}
+        </div>
+      )}
     </motion.button>
   );
 };

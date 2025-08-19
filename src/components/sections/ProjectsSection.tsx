@@ -266,17 +266,18 @@ const ProjectsSection: NavigableSectionComponent<AdditionalProjectsProps> = ({
   const items = await getProjectsByMode(modeSlug);
         if (!cancelled) {
           setRaw(items as unknown as NormalizedProject[]);
-          setList(
-            items.map((p) => ({
-              id: p.id,
-              title: p.title,
-              description: p.description,
-              tags: p.tags,
-              image: (p as any).cover,
-              slug: (p as any).slug,
-              mode: (p as any).gamemode as GamemodeSlug,
-            })),
-          );
+            setList(
+              items.map((p) => ({
+                id: p.id,
+                title: p.title,
+                description: p.description,
+                tags: p.tags,
+                image: (p as any).cover,
+                slug: (p as any).slug,
+                mode: (p as any).gamemode as GamemodeSlug,
+                year: (p as any).year,
+              })),
+            );
         }
       } else {
         // Not on a mode page; clear list state
@@ -430,7 +431,6 @@ const ProjectsSection: NavigableSectionComponent<AdditionalProjectsProps> = ({
                     color: meta.accent,
                     WebkitFontSmoothing: 'antialiased',
                     textRendering: 'optimizeLegibility',
-                    filter: `drop-shadow(0 2px 12px ${meta.accent}) drop-shadow(0 1px 0 #000)`
                   }}
                 >
                   {meta.portfolioLabel}
@@ -449,14 +449,8 @@ const ProjectsSection: NavigableSectionComponent<AdditionalProjectsProps> = ({
             <p className="max-w-3xl theme-text-muted text-sm sm:text-base">
               {meta.description}
             </p>
-          </div>
-
-          {/* Utility row: tag filter chips, completed toggle, sort button */}
-          <div className="px-5 sm:px-8 pb-5 mt-2 flex flex-wrap items-center gap-2 sm:gap-3">
-            {/* Count chip (filtered) */}
-              <span className="text-xs font-semibold text-white/80">
-              {filtered.length} Project{filtered.length === 1 ? '' : 's'}
-            </span>
+            {/* The header div below was previously inside the <p> tag, which caused a syntax error. */}
+            {/* If you want to render a header here, move it outside the <p> tag and ensure 's' is defined in this scope. */}
             {/* Filter dropdown button (UI only) */}
             <div className="relative">
               <button

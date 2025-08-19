@@ -1,3 +1,7 @@
+@import url("https://fonts.cdnfonts.com/css/good-timing");
+@import url("https://fonts.cdnfonts.com/css/toxigenesis");
+@import url("https://fonts.googleapis.com/css2?family=Expletus+Sans:wght@400;500;600;700&display=swap");
+
 /* Custom gray checkbox for filter popup */
 .custom-checkbox-accent {
   appearance: none;
@@ -18,9 +22,6 @@
 .custom-checkbox-accent:checked::after {
   display: none;
 }
-@import url("https://fonts.cdnfonts.com/css/good-timing");
-@import url("https://fonts.cdnfonts.com/css/toxigenesis");
-@import url("https://fonts.googleapis.com/css2?family=Expletus+Sans:wght@400;500;600;700&display=swap");
 
 html {
   scroll-behavior: smooth;
