@@ -13,7 +13,7 @@ export const personalInfo = {
   email: "nico@martin.li",
   phone: "(+49) 171 1209887",
   github: "github.com/V4LKdev",
-  location: "Lindau, Bavaria 88131",
+  location: "Lindau, Bavaria",
 
   // --- Status Information ---
   status: {

@@ -2,7 +2,7 @@
 // Displays contact information in a game-style chat interface
 // Shows email, phone, GitHub, and location information
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { personalInfo } from "../../content";
 import { BackButton } from "../ui/navigation";
 import { NavigableSectionComponent } from "../../types/SharedProps";
@@ -16,58 +16,67 @@ const ContactSection: NavigableSectionComponent = ({
   className,
   id,
 }) => {
+  const [berlinTime, setBerlinTime] = useState<string>(
+    new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Europe/Berlin" })
+  );
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setBerlinTime(new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Europe/Berlin" }));
+    }, 1000 * 30); // update every 30s
+    return () => clearInterval(id);
+  }, []);
+
   return (
-  <div className={`max-w-4xl mx-auto text-selectable ${className || ""}`} id={id}>
+    <div className={`max-w-3xl mx-auto px-4 py-16 text-selectable ${className ?? ""}`} id={id}>
       <BackButton onClick={onBack} label="Back to Home" />
-      <h2 className="text-5xl font-bold mb-16 text-center game-title">
-        Global Chat
-      </h2>
-      <div className="theme-card rounded-lg p-8 atmospheric-glow">
-        {/* User status header */}
-        <div className="border-b theme-divider pb-4 mb-6">
-          <div className="flex items-center space-x-3 mb-2">
-            <div
-              className={`w-3 h-3 ${personalInfo.status.available ? "bg-green-400" : "bg-red-400"} rounded-full animate-pulse`}
-            ></div>
-            <span className="theme-heading font-semibold">
-              {personalInfo.name}
-            </span>
-            <span className="theme-text-muted text-sm">@Game_Programmer</span>
-          </div>
-          <p className="theme-text text-sm">
-            Status: {personalInfo.status.statusText}
+      <div className="theme-card-static rounded-2xl p-10 shadow-2xl border border-accent/30 bg-zinc-900/95">
+        <div className="flex flex-col items-center text-center gap-3">
+          <h2 className="text-4xl font-extrabold game-title tracking-wide text-accent">Contact</h2>
+          <p className="theme-text text-base">
+            Based in <span className="font-semibold text-white/90">{personalInfo.location}</span> — open to opportunities.
           </p>
-        </div>
-
-        {/* Contact information cards */}
-        <div className="space-y-4">
-          <div className="theme-contact-card rounded-lg p-4">
-            <p className="theme-heading mb-2">📧 Direct Message:</p>
-            <p className="theme-text">{personalInfo.email}</p>
-          </div>
-
-          <div className="theme-contact-card rounded-lg p-4">
-            <p className="theme-heading mb-2">📱 Voice Chat:</p>
-            <p className="theme-text">{personalInfo.phone}</p>
-          </div>
-
-          <div className="theme-contact-card rounded-lg p-4">
-            <p className="theme-heading mb-2">🐙 Guild Repository:</p>
-            <p className="theme-text">{personalInfo.github}</p>
-          </div>
-
-          <div className="theme-contact-card rounded-lg p-4">
-            <p className="theme-heading mb-2">📍 Server Location:</p>
-            <p className="theme-text">{personalInfo.location}</p>
+          <div className="flex items-center gap-3">
+            <span className={`inline-block w-2.5 h-2.5 rounded-full ${personalInfo.status.available ? "bg-green-400" : "bg-red-400"}`}></span>
+            <span className="theme-text-muted text-sm">{personalInfo.status.availabilityText}</span>
+            <span className="theme-text-muted text-sm">• {berlinTime} CET</span>
           </div>
         </div>
 
-        {/* Footer message */}
-        <div className="mt-8 pt-6 border-t theme-divider">
-          <p className="theme-text-muted text-sm text-center">
-            Ready to join forces? Send a message and let's build something
-            legendary!
-          </p>
+        <div className="mt-8 border-t border-white/10" />
+
+        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+          <div className="space-y-4">
+            <div>
+              <h3 className="text-sm font-semibold tracking-wide uppercase text-accent/90">Email</h3>
+              <a href={`mailto:${personalInfo.email}`} className="theme-text-link text-base font-mono underline underline-offset-4">
+                {personalInfo.email}
+              </a>
+            </div>
+          </div>
+          <div className="space-y-4">
+            <div>
+              <h3 className="text-sm font-semibold tracking-wide uppercase text-accent/90">GitHub</h3>
+              <a
+                href={personalInfo.github.startsWith("http") ? personalInfo.github : `https://${personalInfo.github}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="theme-text-link text-base font-mono underline underline-offset-4"
+              >
+                {personalInfo.github.replace(/^https?:\/\//, "")}
+              </a>
+            </div>
+          </div>
+
+          {/* Phone - full width row beneath email + github */}
+          <div className="md:col-span-2 flex justify-center">
+            <div className="text-center">
+              <h3 className="text-sm font-semibold tracking-wide uppercase text-accent/90">Phone</h3>
+              <a href={`tel:${personalInfo.phone.replace(/\s|\(|\)|\-/g, "")}`} className="theme-text-link text-base font-mono">
+                {personalInfo.phone}
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </div>
