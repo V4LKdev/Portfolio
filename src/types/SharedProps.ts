@@ -58,3 +58,11 @@ export type NavigableSectionComponent<P = object> = React.FC<
 export type ReadonlyDeep<T> = {
   readonly [P in keyof T]: T[P] extends object ? ReadonlyDeep<T[P]> : T[P];
 };
+
+// Simple patchnote type used for the patchnotes overlay
+export interface Patchnote {
+  id: string;
+  date: string; // ISO date
+  title: string;
+  body: string;
+}

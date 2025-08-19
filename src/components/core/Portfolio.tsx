@@ -31,6 +31,7 @@ import { useSoundEffects } from "../../hooks/useSoundEffects";
 import { useVideo } from "../../hooks/useVideo";
 
 const ProjectDetail = React.lazy(() => import("../projects/ProjectDetail"));
+import PatchnotesOverlay from "../sections/PatchnotesOverlay.tsx";
 
 const PortfolioContent: React.FC = () => {
   const navigate = useNavigate();
@@ -69,6 +70,9 @@ const PortfolioContent: React.FC = () => {
     handleBackClick,
     setSelectedProject,
   } = useNavigation();
+
+  // Local overlay state for patchnotes
+  const [isPatchnotesOpen, setIsPatchnotesOpen] = React.useState(false);
 
   useEffect(() => {
     if (urlSection !== currentSection) {
@@ -132,17 +136,22 @@ const PortfolioContent: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedProject]);
 
-  // Pause background video when project detail overlay is open
+  // Pause background video when project detail or patchnotes overlay is open
   useEffect(() => {
-    if (selectedProject) {
+    if (selectedProject || isPatchnotesOpen) {
       setUIPause(true);
     } else {
       setUIPause(false);
     }
-  }, [selectedProject, setUIPause]);
+  }, [selectedProject, isPatchnotesOpen, setUIPause]);
 
   // Handles navigation menu clicks, with optional delay for animated menus
   const handleMenuClick = (sectionId: string, hierarchy?: string) => {
+    // Open patchnotes as an overlay instead of navigating
+    if (sectionId === "patchnotes") {
+      setIsPatchnotesOpen(true);
+      return;
+    }
     if (sectionId === "exit") {
       setTimeout(() => {
         navigate("/exit");
@@ -326,6 +335,9 @@ const PortfolioContent: React.FC = () => {
           type="button"
           style={{ cursor: "pointer" }}
         />
+      )}
+      {isPatchnotesOpen && (
+        <PatchnotesOverlay onClose={() => setIsPatchnotesOpen(false)} />
       )}
     </div>
   );
