@@ -141,9 +141,10 @@ const GamemodeCard: React.FC<GamemodeCardProps> = ({
       <div className="absolute inset-0">
         <img
           src={image}
-          alt=""
+          alt={portfolioLabel || gameLabel}
           className="w-full h-full object-cover opacity-100"
           draggable={false}
+          loading="lazy"
         />
   {/* vignette layer (blur removed for performance; prefer pre-blurred imagery) */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/20 to-transparent" />

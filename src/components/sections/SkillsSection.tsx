@@ -3,7 +3,7 @@
 // Organized in a grid layout with different categories
 
 import React from "react";
-import { skillsContent } from "../../content";
+import { skillsContent, resumeFileName } from "../../content";
 import { BackButton } from "../ui/navigation";
 import { NavigableSectionComponent } from "../../types/SharedProps";
 
@@ -25,7 +25,7 @@ const SkillsSection: NavigableSectionComponent = ({
           <h2 className="text-5xl font-bold mb-0 game-title">Skills & Tools</h2>
           <div className="flex items-center gap-3">
             <a
-              href="/resume.pdf"
+              href={resumeFileName}
               download
               className="theme-btn-accent theme-btn text-base font-bold px-4 py-2 rounded-xl shadow-md border-2 border-white transition-colors duration-200 hover:bg-white hover:text-zinc-900"
             >

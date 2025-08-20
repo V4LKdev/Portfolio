@@ -40,8 +40,9 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onOpen }) => {
       <div className="absolute inset-0">
         <img
           src={project.image}
-          alt=""
+          alt={project.title || project.slug}
           className="w-full h-full object-cover"
+          loading="lazy"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
       </div>

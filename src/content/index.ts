@@ -7,7 +7,7 @@ export type { Project, ProjectTab, Section } from "./projects";
 
 // --- Content Exports ---
 export { projects } from "./projects";
-export { personalInfo } from "./personal";
+export { personalInfo, resumeFileName } from "./personal";
 export { aboutContent } from "./about";
 export { skillsContent } from "./skills";
 export { navigationItems, videoConfig } from "./ui-config";

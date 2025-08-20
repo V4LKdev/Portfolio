@@ -249,7 +249,7 @@ const FeaturedCarousel: React.FC<{
                 >
                   <img
                     src={s.image}
-                    alt=""
+                    alt={s.title || (s.kind === 'featured' ? 'Featured project' : 'New project')}
                     className="absolute inset-0 w-full h-full object-cover"
                     draggable={false}
                   />
@@ -400,7 +400,7 @@ const ProjectsSection: NavigableSectionComponent<AdditionalProjectsProps> = ({
       p: { slug: string; mode: GamemodeSlug },
       full?: Project,
     ) => {
-      if (DEBUG_LOGS) {
+      if (import.meta.env.DEV && DEBUG_LOGS) {
         console.debug("[ProjectsSection] Open project", {
           mode: p.mode,
           slug: p.slug,
@@ -690,7 +690,7 @@ const ProjectsFeatured: React.FC = () => {
       slides={slides}
       onOpen={async (s) => {
         if (s.mode && s.slug) {
-          if (DEBUG_LOGS) {
+          if (import.meta.env.DEV && DEBUG_LOGS) {
             console.debug("[ProjectsFeatured] Click slide", {
               kind: s.kind,
               mode: s.mode,

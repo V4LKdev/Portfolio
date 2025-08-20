@@ -6,8 +6,9 @@
 import { BackButton } from "../ui/navigation";
 import { NavigableSectionComponent } from "../../types/SharedProps";
 import { Link } from "react-router-dom";
+import { resumeFileName } from "../../content";
 
-const avatarUrl = "/public/placeholder.svg"; // Replace with your image if available
+const avatarUrl = "/placeholder.svg"; // Replace with your image if available
 
 const milestones = [
   { year: "2018", text: "Started programming" },
@@ -23,7 +24,7 @@ const AboutSection: NavigableSectionComponent = ({ onBack, className, id }) => {
         <div className="flex flex-col items-center md:items-start w-full md:w-1/3">
           <img
             src={avatarUrl}
-            alt="Portrait"
+            alt="Portrait of Nicolas Martin"
             className="w-56 h-56 rounded-full object-cover border-4 border-accent shadow-xl mb-8 flex-shrink-0"
           />
           <div className="w-full">
@@ -56,7 +57,7 @@ const AboutSection: NavigableSectionComponent = ({ onBack, className, id }) => {
             <span className="theme-text-muted text-base mb-3">Explore More</span>
             <div className="flex flex-wrap gap-4">
               <Link to="/skills" className="theme-btn-accent theme-btn text-base font-bold px-6 py-2 rounded-xl shadow-md border-2 border-white transition-colors duration-200 hover:bg-white hover:text-zinc-900">Skills</Link>
-              <Link to="/cv" className="theme-btn-accent theme-btn text-base font-bold px-6 py-2 rounded-xl shadow-md border-2 border-white transition-colors duration-200 hover:bg-white hover:text-zinc-900">CV</Link>
+              <a href={resumeFileName} download className="theme-btn-accent theme-btn text-base font-bold px-6 py-2 rounded-xl shadow-md border-2 border-white transition-colors duration-200 hover:bg-white hover:text-zinc-900">CV</a>
               <Link to="/contact" className="theme-btn-accent theme-btn text-base font-bold px-6 py-2 rounded-xl shadow-md border-2 border-white transition-colors duration-200 hover:bg-white hover:text-zinc-900">Contact</Link>
             </div>
           </div>

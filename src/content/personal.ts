@@ -23,3 +23,6 @@ export const personalInfo = {
     statusText: "Currently Available",
   },
 };
+
+// Single source of truth for the public resume filename — change this once you add the file to /public
+export const resumeFileName = "/NicolasMartin_Resume_August25.pdf";

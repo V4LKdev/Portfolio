@@ -174,15 +174,19 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project, onBack }) => {
             block: 'start',
             inline: 'nearest'
           });
-          console.debug('[ProjectDetail] Navigated to:', anchorId);
-        } else {
-          console.debug('[ProjectDetail] Element not found for anchor:', anchorId);
-          // Fallback: scroll to main content area
-          const contentArea = document.getElementById('project-content');
-          if (contentArea) {
-            contentArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          if (import.meta.env.DEV) {
+            console.debug('[ProjectDetail] Navigated to:', anchorId);
           }
-        }
+        } else {
+          if (import.meta.env.DEV) {
+            console.debug('[ProjectDetail] Element not found for anchor:', anchorId);
+          }
+           // Fallback: scroll to main content area
+           const contentArea = document.getElementById('project-content');
+           if (contentArea) {
+             contentArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+           }
+         }
       }, 150); // Increased from 100ms to 150ms for more reliable rendering
     });
   };
