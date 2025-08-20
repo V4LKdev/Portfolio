@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import patchnotes from "../../content/patchnotes";
 import { X } from "lucide-react";
 
@@ -7,8 +7,6 @@ interface Props {
 }
 
 const PatchnotesOverlay: React.FC<Props> = ({ onClose }) => {
-  const overlayRef = useRef<HTMLDivElement | null>(null);
-
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -26,15 +24,8 @@ const PatchnotesOverlay: React.FC<Props> = ({ onClose }) => {
     return () => { document.body.style.overflow = orig; };
   }, []);
 
-  const handleBackdropClick = (e: React.MouseEvent) => {
-    if (e.target === overlayRef.current) {
-      onClose?.();
-    }
-  };
-
   return (
     <div
-      ref={overlayRef}
       className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-6 pointer-events-auto"
       onClick={() => onClose?.()}
       role="dialog"

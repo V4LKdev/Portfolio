@@ -26,10 +26,11 @@ export const skillsContent = {
 
   // --- Soft Skills ---
   softSkills: [
-    "Problem-solving",
-    "Effective communication",
-    "Collaboration",
-    "Analytical thinking",
-    "Quick learner",
+    "Collaboration & teamwork",
+    "Clear and empathetic communication",
+    "Problem solving & debugging",
+    "Analytical thinking & design",
+    "Rapid learning & adaptability",
+    "Time management & reliability",
   ],
 };

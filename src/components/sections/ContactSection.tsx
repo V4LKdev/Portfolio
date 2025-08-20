@@ -72,7 +72,7 @@ const ContactSection: NavigableSectionComponent = ({
           <div className="md:col-span-2 flex justify-center">
             <div className="text-center">
               <h3 className="text-sm font-semibold tracking-wide uppercase text-accent/90">Phone</h3>
-              <a href={`tel:${personalInfo.phone.replace(/\s|\(|\)|\-/g, "")}`} className="theme-text-link text-base font-mono">
+              <a href={`tel:${personalInfo.phone.replace(/\s|\(|\)|-/g, "")}`} className="theme-text-link text-base font-mono">
                 {personalInfo.phone}
               </a>
             </div>

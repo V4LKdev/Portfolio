@@ -46,7 +46,7 @@ const FilterPopup: React.FC<FilterPopupProps> = ({ tags, selectedTags, setSelect
             type="checkbox"
             className="custom-checkbox-accent"
             checked={selectedTags.includes(tag)}
-            style={{ ['--accent' as any]: accent }}
+            style={{ ['--accent' as unknown as string]: accent }}
             onChange={e => {
               if (e.target.checked) {
                 setSelectedTags([...selectedTags, tag]);

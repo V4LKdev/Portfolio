@@ -34,10 +34,125 @@ import {
 import { type Project } from "../../content";
 import { useNavigation } from "../../hooks/useNavigation";
 
+// Types used by ProjectsSection and ProjectControls
+type NormalizedProject = Project & {
+  slug: string;
+  gamemode: GamemodeSlug;
+  cover: string;
+};
+
+type CardItem = {
+  id: string;
+  title: string;
+  description: string;
+  tags: string[];
+  image: string;
+  slug: string;
+  mode: GamemodeSlug;
+  year?: string;
+};
+
+type SortOption = 'recent' | 'oldest' | 'title-az' | 'title-za' | 'completed';
+
+// Top-level presentational component for the header controls
+const ProjectControls: React.FC<{
+  list: CardItem[];
+  selectedTags: string[];
+  setSelectedTags: React.Dispatch<React.SetStateAction<string[]>>;
+  showFilter: boolean;
+  setShowFilter: React.Dispatch<React.SetStateAction<boolean>>;
+  showCompleted: boolean;
+  setShowCompleted: React.Dispatch<React.SetStateAction<boolean>>;
+  filtered: CardItem[];
+  sortOrder: SortOption;
+  setSortOrder: React.Dispatch<React.SetStateAction<SortOption>>;
+  meta: { accent: string };
+}> = ({
+  list,
+  selectedTags,
+  setSelectedTags,
+  showFilter,
+  setShowFilter,
+  showCompleted,
+  setShowCompleted,
+  filtered,
+  sortOrder,
+  setSortOrder,
+  meta,
+}) => {
+  return (
+    <div className="mt-3 flex items-center gap-3 flex-wrap">
+      <div className="relative">
+        <button
+          type="button"
+          className={`px-3 py-1.5 text-xs rounded-full border border-white/15 flex items-center gap-1 transition-colors bg-zinc-900/95
+            ${selectedTags.length > 0 ? 'text-white' : 'text-white/80'}
+            ${selectedTags.length > 0 ? '' : 'hover:text-white'}
+          `}
+          style={selectedTags.length > 0 ? { background: meta.accent, borderColor: meta.accent } : {}}
+          onClick={(e) => {
+            e.preventDefault();
+            setShowFilter((f) => !f);
+          }}
+        >
+          <span>Filter by Tag</span>
+        </button>
+        {showFilter && (
+          <FilterPopup
+            tags={Array.from(new Set((list ?? []).flatMap((p) => p.tags)))}
+            selectedTags={selectedTags}
+            setSelectedTags={setSelectedTags}
+            onClose={() => setShowFilter(false)}
+            accent={meta.accent}
+          />
+        )}
+      </div>
+
+      {/* Completed toggle */}
+      <button
+        type="button"
+        className={`px-3 py-1.5 text-xs rounded-full border border-white/15 transition-colors bg-zinc-900/95
+          ${showCompleted ? 'text-white' : 'text-white/70'}
+          ${showCompleted ? '' : 'hover:text-white'}
+        `}
+        style={showCompleted ? { background: meta.accent, borderColor: meta.accent } : {}}
+        onClick={() => setShowCompleted((v) => !v)}
+      >
+        Completed
+      </button>
+
+      <div className="ml-auto flex items-center gap-3">
+        {/* Project count */}
+        <div className="theme-text-muted text-sm">
+          {filtered.length} {filtered.length === 1 ? 'project' : 'projects'}
+        </div>
+
+        {/* Sort dropdown */}
+        <div>
+          <label htmlFor="sort-select" className="sr-only">Sort projects</label>
+          <select
+            id="sort-select"
+            value={sortOrder}
+            onChange={(e) => setSortOrder(e.target.value as SortOption)}
+            className="px-3 py-1.5 text-xs rounded-xl bg-zinc-900/95 border border-white/15 text-white/80 shadow-xl focus:outline-none select-none caret-transparent transition-colors min-w-[140px] cursor-pointer"
+            style={{ fontFamily: 'inherit' }}
+          >
+            <option value="recent">Most Recent</option>
+            <option value="oldest">Oldest First</option>
+            <option value="title-az">Title (A–Z)</option>
+            <option value="title-za">Title (Z–A)</option>
+            <option value="completed">Completed First</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 // No extra props for now; use empty object type so intersection with NavigableSectionProps
 // does NOT forbid standard props like onBack.
 // (Previously used Record<string, never> which caused 'onBack' to be type 'never').
-type AdditionalProjectsProps = {};
+type AdditionalProjectsProps = object;
 
 type Slide = {
   id: string;
@@ -152,7 +267,7 @@ const FeaturedCarousel: React.FC<{
                         className="game-title text-2xl md:text-3xl lg:text-4xl font-extrabold leading-none drop-shadow-[0_1px_1px_rgba(0,0,0,0.35)]"
                         style={{
                           WebkitFontSmoothing: "antialiased",
-                          textRendering: "optimizeLegibility" as any,
+                          textRendering: "optimizeLegibility" as const,
                         }}
                       >
                         {s.title}
@@ -237,45 +352,30 @@ const ProjectsSection: NavigableSectionComponent<AdditionalProjectsProps> = ({
   // (Icon row and featured banner removed per request)
 
   // --- Mode list state (must be declared unconditionally to keep Hook order stable) ---
-  type NormalizedProject = Project & {
-    slug: string;
-    gamemode: GamemodeSlug;
-    cover: string;
-  };
-  type CardItem = {
-    id: string;
-    title: string;
-    description: string;
-    tags: string[];
-    image: string;
-    slug: string;
-    mode: GamemodeSlug;
-  };
   const [list, setList] = React.useState<CardItem[]>([]);
   const [raw, setRaw] = React.useState<NormalizedProject[]>([]);
   // Filter/sort state
   const [selectedTags, setSelectedTags] = React.useState<string[]>([]);
   const [showCompleted, setShowCompleted] = React.useState(false);
-  type SortOption = 'recent' | 'oldest' | 'title-az' | 'title-za' | 'completed';
   const [sortOrder, setSortOrder] = React.useState<SortOption>('recent');
 
   React.useEffect(() => {
     let cancelled = false;
     async function load() {
       if (modeSlug && isGamemodeSlug(modeSlug)) {
-  const items = await getProjectsByMode(modeSlug);
+      const items = await getProjectsByMode(modeSlug);
         if (!cancelled) {
-          setRaw(items as unknown as NormalizedProject[]);
+          setRaw(items);
             setList(
               items.map((p) => ({
                 id: p.id,
                 title: p.title,
                 description: p.description,
                 tags: p.tags,
-                image: (p as any).cover,
-                slug: (p as any).slug,
-                mode: (p as any).gamemode as GamemodeSlug,
-                year: (p as any).year,
+                image: p.cover,
+                slug: p.slug,
+                mode: p.gamemode as GamemodeSlug,
+                year: p.year ?? (p.createdAt ? String(new Date(p.createdAt).getFullYear()) : undefined),
               })),
             );
         }
@@ -451,61 +551,20 @@ const ProjectsSection: NavigableSectionComponent<AdditionalProjectsProps> = ({
             </p>
             {/* The header div below was previously inside the <p> tag, which caused a syntax error. */}
             {/* If you want to render a header here, move it outside the <p> tag and ensure 's' is defined in this scope. */}
-            {/* Filter dropdown button (UI only) */}
-            <div className="relative">
-              <button
-                type="button"
-                className={`px-3 py-1.5 text-xs rounded-full border border-white/15 flex items-center gap-1 transition-colors bg-zinc-900/95
-                  ${selectedTags.length > 0 ? 'text-white' : 'text-white/80'}
-                  ${selectedTags.length > 0 ? '' : 'hover:text-white'}
-                `}
-                style={selectedTags.length > 0 ? { background: meta.accent, borderColor: meta.accent } : {}}
-                onClick={e => {
-                  e.preventDefault();
-                  setShowFilter(f => !f);
-                }}
-              >
-                <span>Filter by Tag</span>
-              </button>
-              {showFilter && (
-                <FilterPopup
-                  tags={Array.from(new Set(list.flatMap(p => p.tags)))}
-                  selectedTags={selectedTags}
-                  setSelectedTags={setSelectedTags}
-                  onClose={() => setShowFilter(false)}
-                  accent={meta.accent}
-                />
-              )}
-            </div>
-            {/* Completed toggle */}
-            <button
-              type="button"
-              className={`px-3 py-1.5 text-xs rounded-full border border-white/15 transition-colors bg-zinc-900/95
-                ${showCompleted ? 'text-white' : 'text-white/70'}
-                ${showCompleted ? '' : 'hover:text-white'}
-              `}
-              style={showCompleted ? { background: meta.accent, borderColor: meta.accent } : {}}
-              onClick={() => setShowCompleted(v => !v)}
-            >
-              Completed
-            </button>
-            {/* Sort dropdown */}
-            <div className="ml-auto">
-              <label htmlFor="sort-select" className="sr-only">Sort projects</label>
-              <select
-                id="sort-select"
-                value={sortOrder}
-                onChange={e => setSortOrder(e.target.value as SortOption)}
-                className="px-3 py-1.5 text-xs rounded-xl bg-zinc-900/95 border border-white/15 text-white/80 shadow-xl focus:outline-none select-none caret-transparent transition-colors min-w-[140px] cursor-pointer"
-                style={{ fontFamily: 'inherit' }}
-              >
-                <option value="recent">Most Recent</option>
-                <option value="oldest">Oldest First</option>
-                <option value="title-az">Title (A–Z)</option>
-                <option value="title-za">Title (Z–A)</option>
-                <option value="completed">Completed First</option>
-              </select>
-            </div>
+            {/* Filter / Completed / Sort controls */}
+            <ProjectControls
+              list={list}
+              selectedTags={selectedTags}
+              setSelectedTags={setSelectedTags}
+              showFilter={showFilter}
+              setShowFilter={setShowFilter}
+              showCompleted={showCompleted}
+              setShowCompleted={setShowCompleted}
+              filtered={filtered}
+              sortOrder={sortOrder}
+              setSortOrder={setSortOrder}
+              meta={meta}
+            />
           </div>
         </section>
 

@@ -136,14 +136,14 @@ const PortfolioContent: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedProject]);
 
-  // Pause background video when project detail or patchnotes overlay is open
+  // Pause background video only when a project detail is open — patchnotes should not pause video
   useEffect(() => {
-    if (selectedProject || isPatchnotesOpen) {
+    if (selectedProject) {
       setUIPause(true);
     } else {
       setUIPause(false);
     }
-  }, [selectedProject, isPatchnotesOpen, setUIPause]);
+  }, [selectedProject, setUIPause]);
 
   // Handles navigation menu clicks, with optional delay for animated menus
   const handleMenuClick = (sectionId: string, hierarchy?: string) => {

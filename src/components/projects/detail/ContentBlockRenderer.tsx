@@ -100,6 +100,27 @@ const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
     };
   }, [mdImageOpen]);
 
+  // Gallery state (moved out of switch to satisfy Rules of Hooks)
+  const [galleryIsOpen, setGalleryIsOpen] = React.useState(false);
+  const [galleryIndex, setGalleryIndex] = React.useState(0);
+
+  React.useEffect(() => {
+    if (!galleryIsOpen) return;
+    const imagesLen = block.type === 'gallery' ? block.images.length : 1;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setGalleryIsOpen(false);
+      if (e.key === "ArrowLeft") setGalleryIndex(i => (i - 1 + imagesLen) % imagesLen);
+      if (e.key === "ArrowRight") setGalleryIndex(i => (i + 1) % imagesLen);
+    };
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [galleryIsOpen, block]);
+
   switch (block.type) {
     case "text":
     case "quote":
@@ -117,29 +138,37 @@ const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
           </div>
 
           {mdImageOpen && mdImageSrc && (
-            <div
-              role="dialog"
+            <dialog
+              open
               aria-modal="true"
               className="fixed inset-0 z-[1000] bg-black/85 backdrop-blur-sm flex items-center justify-center p-4"
-              onClick={closeMdImage}
             >
-              <button
-                className="absolute top-4 right-4 p-2 rounded-md bg-white/10 border border-white/15 text-white/90 hover:bg-white/15"
-                onClick={(e) => { e.stopPropagation(); closeMdImage(); }}
-                aria-label="Close image"
-                type="button"
-              >
-                <X className="w-5 h-5" />
-              </button>
-              <div className="relative max-w-6xl w-full" onClick={(e) => e.stopPropagation()}>
-                <img
-                  src={mdImageSrc}
-                  alt={mdImageAlt || "Inline visual"}
-                  className="w-full h-auto max-h-[85vh] object-contain rounded-lg border border-white/10 shadow-xl"
-                />
-              </div>
-            </div>
-          )}
+               {/* Interactive backdrop button captures clicks (accessible) */}
+               <button
+                 type="button"
+                 aria-label="Close image"
+                 onClick={closeMdImage}
+                 className="absolute inset-0 w-full h-full bg-transparent z-0"
+               />
+
+               <button
+                 className="absolute top-4 right-4 p-2 rounded-md bg-white/10 border border-white/15 text-white/90 hover:bg-white/15 z-20"
+                 onClick={(e) => { e.stopPropagation(); closeMdImage(); }}
+                 aria-label="Close image"
+                 type="button"
+               >
+                 <X className="w-5 h-5" />
+               </button>
+
+               <div className="relative max-w-6xl w-full z-10">
+                 <img
+                   src={mdImageSrc}
+                   alt={mdImageAlt || "Inline visual"}
+                   className="w-full h-auto max-h-[85vh] object-contain rounded-lg border border-white/10 shadow-xl"
+                 />
+               </div>
+            </dialog>
+           )}
         </div>
       );
 
@@ -156,33 +185,20 @@ const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
       );
 
     case "gallery": {
-      const [isOpen, setIsOpen] = React.useState(false);
-      const [currentIndex, setCurrentIndex] = React.useState(0);
-
+      // Note: state and keyboard handling are declared above to comply with Rules of Hooks
       const openAt = (idx: number) => {
-        setCurrentIndex(idx);
-        setIsOpen(true);
+        setGalleryIndex(idx);
+        setGalleryIsOpen(true);
       };
-      const close = () => setIsOpen(false);
-      const prev = () => setCurrentIndex((i) => (i - 1 + block.images.length) % block.images.length);
-      const next = () => setCurrentIndex((i) => (i + 1) % block.images.length);
-
-      // Handle Escape and arrows, and lock scroll when open
-      React.useEffect(() => {
-        if (!isOpen) return;
-        const onKey = (e: KeyboardEvent) => {
-          if (e.key === "Escape") close();
-          if (e.key === "ArrowLeft") prev();
-          if (e.key === "ArrowRight") next();
-        };
-        const prevOverflow = document.body.style.overflow;
-        document.body.style.overflow = "hidden";
-        window.addEventListener("keydown", onKey);
-        return () => {
-          document.body.style.overflow = prevOverflow;
-          window.removeEventListener("keydown", onKey);
-        };
-      }, [isOpen]);
+      const close = () => setGalleryIsOpen(false);
+      const prev = () => {
+        const len = block.images.length ?? 1;
+        setGalleryIndex(i => (i - 1 + len) % len);
+      };
+      const next = () => {
+        const len = block.images.length ?? 1;
+        setGalleryIndex(i => (i + 1) % len);
+      };
 
       return (
         <div className="space-y-4">
@@ -213,62 +229,67 @@ const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
             })}
           </div>
 
-          {isOpen && (
-            <div
-              role="dialog"
+          {galleryIsOpen && (
+            <dialog
+              open
               aria-modal="true"
               className="fixed inset-0 z-[1000] bg-black/85 backdrop-blur-sm flex items-center justify-center p-4"
-              onClick={close}
             >
-              {/* Close button (overlay-level) */}
-              <button
-                className="absolute top-4 right-4 p-2 rounded-md bg-white/10 border border-white/15 text-white/90 hover:bg-white/15"
-                onClick={(e) => { e.stopPropagation(); close(); }}
-                aria-label="Close image"
-                type="button"
-              >
-                <X className="w-5 h-5" />
-              </button>
+               {/* Interactive backdrop button captures clicks (accessible) */}
+               <button
+                 type="button"
+                 aria-label="Close gallery"
+                 onClick={close}
+                 className="absolute inset-0 w-full h-full bg-transparent z-0"
+               />
 
-              {/* Prev/Next (overlay-level, outside image bounds) */}
-              {block.images.length > 1 && (
-                <>
-                  <button
-                    className="absolute left-4 top-1/2 -translate-y-1/2 p-2 rounded-md bg-white/10 border border-white/15 text-white/90 hover:bg-white/15"
-                    onClick={(e) => { e.stopPropagation(); prev(); }}
-                    aria-label="Previous image"
-                    type="button"
-                  >
-                    <ChevronLeft className="w-6 h-6" />
-                  </button>
-                  <button
-                    className="absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-md bg-white/10 border border-white/15 text-white/90 hover:bg-white/15"
-                    onClick={(e) => { e.stopPropagation(); next(); }}
-                    aria-label="Next image"
-                    type="button"
-                  >
-                    <ChevronRight className="w-6 h-6" />
-                  </button>
-                </>
-              )}
+               {/* Close button (overlay-level) */}
+               <button
+                 className="absolute top-4 right-4 p-2 rounded-md bg-white/10 border border-white/15 text-white/90 hover:bg-white/15 z-20"
+                 onClick={(e) => { e.stopPropagation(); close(); }}
+                 aria-label="Close image"
+                 type="button"
+               >
+                 <X className="w-5 h-5" />
+               </button>
 
-              {/* Content container prevents backdrop click from closing */}
-              <div className="relative max-w-6xl w-full" onClick={(e) => e.stopPropagation()}>
-                <img
-                  src={block.images[currentIndex]}
-                  alt={(block.title ? `${block.title} visual` : "Project visual") + ` ${currentIndex + 1}`}
-                  className="w-full h-auto max-h-[85vh] object-contain rounded-lg border border-white/10 shadow-xl"
-                />
-              </div>
-            </div>
-          )}
+               {/* Prev/Next (overlay-level, outside image bounds) */}
+               {block.images.length > 1 && (
+                 <>
+                   <button
+                     className="absolute left-4 top-1/2 -translate-y-1/2 p-2 rounded-md bg-white/10 border border-white/15 text-white/90 hover:bg-white/15 z-20"
+                     onClick={(e) => { e.stopPropagation(); prev(); }}
+                     aria-label="Previous image"
+                     type="button"
+                   >
+                     <ChevronLeft className="w-6 h-6" />
+                   </button>
+                   <button
+                     className="absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-md bg-white/10 border border-white/15 text-white/90 hover:bg-white/15 z-20"
+                     onClick={(e) => { e.stopPropagation(); next(); }}
+                     aria-label="Next image"
+                     type="button"
+                   >
+                     <ChevronRight className="w-6 h-6" />
+                   </button>
+                 </>
+               )}
+
+               {/* Content container */}
+               <div className="relative max-w-6xl w-full z-10">
+                 <img
+                   src={block.images[galleryIndex]}
+                   alt={(block.title ? `${block.title} visual` : "Project visual") + ` ${galleryIndex + 1}`}
+                   className="w-full h-auto max-h-[85vh] object-contain rounded-lg border border-white/10 shadow-xl"
+                 />
+               </div>
+            </dialog>
+           )}
         </div>
       );
     }
 
     case "video":
-  // ...existing code...
-      
       {
         // Support both YouTube ID and direct URL
         const trimmedYouTubeId = block.youtubeId?.trim();

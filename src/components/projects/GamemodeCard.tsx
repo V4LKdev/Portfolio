@@ -128,8 +128,7 @@ const GamemodeCard: React.FC<GamemodeCardProps> = ({
       transition={{ type: "spring", stiffness: 320, damping: 26 }}
       style={{
         // expose accent color to CSS via custom property for color-mix usage
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-        ["--accent-color" as unknown as string]: accentColor,
+         ["--accent-color" as unknown as string]: accentColor,
         // Soft glow on hover, no hard outline/lines
         boxShadow: hovered ? `0 0 24px 4px ${glow}` : "none",
         background:
