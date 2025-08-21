@@ -11,9 +11,10 @@ import { resumeFileName } from "../../content";
 const avatarUrl = "/placeholder.svg"; // Replace with your image if available
 
 const milestones = [
-  { year: "2018", text: "Started programming" },
+  { year: "2015", text: "Started programming" },
+  { year: "2018", text: "Began using Unreal Engine" },
   { year: "2023", text: "Graduated high school" },
-  { year: "2024", text: "Began Game Programming studies" },
+  { year: "2024", text: "Enrolled in Game Programming program" },
 ];
 
 const AboutSection: NavigableSectionComponent = ({ onBack, className, id }) => {
@@ -24,11 +25,10 @@ const AboutSection: NavigableSectionComponent = ({ onBack, className, id }) => {
         <div className="flex flex-col items-center md:items-start w-full md:w-1/3">
           <img
             src={avatarUrl}
-            alt="Portrait of Nicolas Martin"
             className="w-56 h-56 rounded-full object-cover border-4 border-accent shadow-xl mb-8 flex-shrink-0"
           />
           <div className="w-full">
-            <h3 className="text-2xl font-semibold mb-4 text-accent text-center md:text-left">Key Milestones</h3>
+            <h3 className="text-2xl font-semibold mb-4 text-accent text-center md:text-left">Milestones</h3>
             <ul className="flex flex-col gap-4 w-full max-w-lg mx-auto md:mx-0">
               {milestones.map((m) => (
                 <li key={m.year} className="flex items-center gap-5 text-lg theme-text-muted">
@@ -42,15 +42,15 @@ const AboutSection: NavigableSectionComponent = ({ onBack, className, id }) => {
         <div className="flex-1 flex flex-col items-center md:items-start w-full md:w-2/3">
           <h2 className="text-6xl font-extrabold mb-8 game-title tracking-wide text-accent text-center md:text-left">About Me</h2>
           <p className="text-2xl theme-text mb-8 max-w-2xl text-center md:text-left">
-            Hi! I'm Nicolas Martin, a student game programmer passionate about Unreal Engine, C++, and multiplayer systems. I love solving technical challenges and building tools that empower other developers. Currently studying Game Programming at CGSpectrum Institute.
+            Hi! I'm Nicolas Martin, a student game programmer with a passion for Unreal Engine, Video Games, and Music.<br /> I love solving technical challenges and building flexible tools that empower other developers. Currently studying Game Programming at CGSpectrum Institute.
           </p>
           <div className="mb-8 w-full">
             <h3 className="text-2xl font-semibold mb-4 text-accent">Quick Facts</h3>
             <ul className="flex flex-col gap-3 w-full max-w-lg">
-              <li className="theme-text-muted text-lg">Based in Lindau, Bavaria</li>
-              <li className="theme-text-muted text-lg">Enjoys game jams and collaborative projects</li>
-              <li className="theme-text-muted text-lg">Favorite genres: Platformers, Puzzle, Multiplayer</li>
-              <li className="theme-text-muted text-lg">Always learning and experimenting with new tech</li>
+              <li className="theme-text-muted text-lg">Living lakeside in Lindau, Bavaria</li>
+              <li className="theme-text-muted text-lg">Always exploring new tech and creative ideas</li>
+              <li className="theme-text-muted text-lg">Favorite genres: 3D platformers, multiplayer co-op, roguelikes</li>
+              <li className="theme-text-muted text-lg">I play trombone, piano, and drums, and enjoy composing music</li>
             </ul>
           </div>
           <div className="w-full border-t border-white/10 pt-6 flex flex-col items-center md:items-start">

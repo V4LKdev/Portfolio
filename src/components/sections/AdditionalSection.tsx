@@ -44,9 +44,9 @@ const AdditionalSection: React.FC<AdditionalSectionProps> = ({ onBack }) => {
     </h2>
     <div className="theme-card-static rounded-2xl p-12 shadow-2xl border border-accent/20 bg-zinc-900/95 text-center">
       <p className="theme-text text-lg md:text-xl mb-6 max-w-2xl mx-auto">
-        This section is under development — I’m polishing the layout and content for hobbies, creative projects and extracurricular work. Check back soon for a refined view.
+        This section is under development. I’m polishing the layout and content for hobbies, creative projects and extracurricular work.
+        <br /> Check back soon.
       </p>
-  {/* Download Resume removed per request */}
     </div>
   </div>
   );

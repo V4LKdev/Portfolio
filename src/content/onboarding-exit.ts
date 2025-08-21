@@ -4,8 +4,10 @@
 export const onboardingContent = {
   title: "WELCOME",
   subtitle: "Nicolas Martin - Game Dev Portfolio",
-  description: `Welcome! I'm Nicolas, a passionate game developer and creative technologist.\nThis portfolio showcases my favorite projects, skills, and journey in interactive media and game development.\nDive in and explore my work!`,
-  preferences: "Set your preferences",
+  description: `Hi! I'm Nic, and welcome to my portfolio. Here you can see a few of my projects and learn a bit about who I am.
+
+This site is a work in progress, so you may encounter unfinished pages or missing features. If you notice anything broken or have questions, feel free to reach out. Thanks for stopping by. Enjoy exploring!`,
+  preferences: "Preferences",
   videoToggleOn: "Video ON",
   videoToggleOff: "Video OFF",
   sfxToggleOn: "SFX ON",
@@ -25,8 +27,8 @@ export const onboardingContent = {
 
 export const exitContent = {
   title: "THANK YOU FOR VISITING",
-  subtitle: "You have exited the portfolio.",
-  description: `Hope to see you again soon!\nFeel free to connect or check out my work elsewhere.`,
+  subtitle: "See you soon",
+  description: `Thanks for stopping by. If you have questions, please reach out via the Contact section. See you around!`,
   returnButton: "RETURN TO LOGIN",
-  closeTab: "Or close this tab to fully exit.",
+  closeTab: "Or close this tab to exit.",
 };

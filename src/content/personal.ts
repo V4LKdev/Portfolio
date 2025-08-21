@@ -7,7 +7,7 @@ export const personalInfo = {
   name: "NICOLAS MARTIN",
   title: "Game Programmer",
   tagline:
-    "Crafting immersive worlds and unforgettable experiences through code, art, and innovation",
+    "",
 
   // --- Contact Information ---
   email: "nico@martin.li",
@@ -18,7 +18,7 @@ export const personalInfo = {
   // --- Status Information ---
   status: {
     available: true,
-    availabilityText: "Available for Freelance",
+    availabilityText: "Available",
     workingHours: "Mon-Fri 9AM-6PM CET",
     statusText: "Currently Available",
   },

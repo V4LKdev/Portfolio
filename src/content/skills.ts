@@ -8,20 +8,27 @@ export const skillsContent = {
     "Unreal Engine 4 & 5",
     "Jetbrains Rider",
     "Visual Studio",
+    "VSCode",
+    "Godot",
     "Unity",
-    "Perforce",
+    "Perforce"
   ],
 
   // --- Programming Languages ---
-  programmingLanguages: ["C++ for Unreal Engine", "C#", "HLSL", "JavaScript"],
+  programmingLanguages: ["C++ (Unreal Engine)", "C#", "HLSL", "JavaScript (React)", "Bash"],
 
   // --- Unreal Engine Specific Skills ---
   unrealEngine: [
+    "Gameplay Ability System",
+    "Networking",
+    "Blueprints",
     "Slate",
     "Plugin and Module creation",
     "Editor extensions",
-    "Networking",
-    "Gameplay Ability System",
+    "Material Graph",
+    "AI",
+    "PCG",
+    "Much more..."
   ],
 
   // --- Soft Skills ---

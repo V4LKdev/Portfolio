@@ -110,7 +110,7 @@ const OnboardingPage: React.FC = () => {
         {/* Description */}
         <div className="flex flex-col items-center mb-6 w-full">
           <span className="text-xl sm:text-2xl text-white/90 text-center max-w-2xl px-4 font-semibold mb-2">
-            Nicolas Martin - Game Dev Portfolio
+            {onboardingContent.subtitle}
           </span>
           <span className="text-lg text-white/70 text-center max-w-2xl px-4 leading-relaxed">
             {onboardingContent.description.split("\n").map((line) => (

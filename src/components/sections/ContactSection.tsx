@@ -34,7 +34,7 @@ const ContactSection: NavigableSectionComponent = ({
         <div className="flex flex-col items-center text-center gap-3">
           <h2 className="text-4xl font-extrabold game-title tracking-wide text-accent">Contact</h2>
           <p className="theme-text text-base">
-            Based in <span className="font-semibold text-white/90">{personalInfo.location}</span> — open to opportunities.
+            Based in <span className="font-semibold text-white/90">{personalInfo.location}</span>; open to opportunities.
           </p>
           <div className="flex items-center gap-3">
             <span className={`inline-block w-2.5 h-2.5 rounded-full ${personalInfo.status.available ? "bg-green-400" : "bg-red-400"}`}></span>

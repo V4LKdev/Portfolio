@@ -34,7 +34,7 @@ const SkillsSection: NavigableSectionComponent = ({
           </div>
         </div>
 
-        <p className="theme-text-muted">This section is currently under development — content and layout may change.</p>
+        <p className="theme-text-muted">This section is currently under development. Content and layout will change soon.</p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {/* Software & Tools */}
@@ -104,8 +104,6 @@ const SkillsSection: NavigableSectionComponent = ({
             </div>
           </div>
         </div>
-
-        <div className="mt-4 text-sm theme-text-muted italic">If you want a different résumé format or richer CV details here, tell me and I’ll add it.</div>
       </div>
     </div>
   );
